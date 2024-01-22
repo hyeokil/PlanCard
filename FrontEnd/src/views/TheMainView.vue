@@ -1,11 +1,13 @@
+<template>
+    <div>
+        <h1>TheMainView.vue</h1>
+    </div>
+</template>
+
 <script setup>
 
 </script>
-<template>
-    <div>
-        
-    </div>
-</template>
-<style scoped>
-    
+
+<style lang="scss" scoped>
+
 </style>

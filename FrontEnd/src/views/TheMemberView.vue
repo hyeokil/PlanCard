@@ -1,14 +1,13 @@
-<script>
-export default {
-    
-}
-</script>
 <template>
     <div>
-        <router-view></router-view>        
+        <h1>TheMemberView.vue</h1>
     </div>
 </template>
 
-<style>
-    
+<script setup>
+
+</script>
+
+<style lang="scss" scoped>
+
 </style>

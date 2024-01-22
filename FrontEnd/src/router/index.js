@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from "@/views/Home/HomeView.vue"
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,20 +70,20 @@ const router = createRouter({
     {
       path: '/path',
       name: 'path',
-      component: () => import("@/views/ThePathView/vue"),
+      component: () => import("@/views/ThePathView.vue"),
       redirect: { name: 'path-main' },
       children: [
         {
           path: 'list',
           name: 'path-list',
-          component: () => import('@/components/paths/PathList'),
+          component: () => import('@/components/path/PathList.vue'),
         },
         {
           path: 'detail/:pathid',
           name: 'path-detail',
-          component: () => import('@/components/paths/PathDetail.vue')
+          component: () => import('@/components/path/PathDetail.vue'),
         }
-      ]
+      ],
     },
   ]
 })

@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <h1>PathList.vue</h1>
     </div>
 </template>
 
