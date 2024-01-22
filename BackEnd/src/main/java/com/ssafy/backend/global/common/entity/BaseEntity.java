@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public class BaseEntity {
+public abstract class BaseEntity {
 
     /**
      * 엔티티 생성 시간

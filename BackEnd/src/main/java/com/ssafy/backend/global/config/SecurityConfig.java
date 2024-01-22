@@ -72,9 +72,9 @@ public class SecurityConfig {
         http.logout(AbstractHttpConfigurer::disable);
 
         // 예외 처리 핸들러를 설정합니다. 인증 실패와 권한 부족 상황을 처리합니다.
-        http.exceptionHandling((exceptionHandling) ->
-                exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(jwtAccessDeniedHandler));
+//        http.exceptionHandling((exceptionHandling) ->
+//                exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                        .accessDeniedHandler(jwtAccessDeniedHandler));
 
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 등록합니다.
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

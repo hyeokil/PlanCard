@@ -48,7 +48,7 @@ public class MemberController {
         return ResponseEntity.ok().body(Message.success(loginResponseDto));
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<Message<Void>> logoutMember(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
                                                       HttpServletResponse response) {
