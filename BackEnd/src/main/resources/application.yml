@@ -7,7 +7,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # DB 드라이버
-    url: jdbc:mysql://localhost:3306/dogbomi?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true       # 데이터베이스 URL
+    url: jdbc:mysql://localhost:3306/plancard?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true       # 데이터베이스 URL
     username: ssafy                     # 데이터베이스 계정명
     password: ssafy                       # 데이터베이스 계정 비밀번호
 
@@ -27,6 +27,11 @@ spring:
     job:
       enabled: false
 
+  # Redis setting
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 # jwt setting
 jwt:
@@ -37,8 +42,6 @@ jwt:
   expired-min:
     access: 60   # 액세스 토큰 만료제한시간 60분 (1시간)
     refresh: 10080  # 리프레쉬 토큰 만료제한시간 10080분 (7일)
-
-# Redis setting
 
 # firebase setting
 
