@@ -6,8 +6,84 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'main',
+      component: () => import('@/views/TheMainView.vue')
+    },
+    {
+      path: '/member',
+      name: 'member',
+      component: () => import('@/views/TheMemberView.vue'),
+      children: [
+        {
+          path: 'login',
+          name: 'member-login',
+          component: () => import('@/components/member/MemberLogin.vue')
+        },
+        {
+          path: 'signup',
+          name: 'member-signup',
+          component: () => import('@/components/member/MemberSignUp.vue')
+        },
+        {
+          path: 'mypage',
+          name: 'member-mypage',
+          component: () => import('@/components/member/MemberMyPage.vue'),
+          children: [
+            {
+              path: 'myplan',
+              name: 'mypage-myplan',
+              component: () => import("@/components/member/mypage/MyPagePlan.vue")
+            },
+            {
+              path: 'myalarm',
+              name: 'mypage-alarm',
+              component: () => import("@/components/member/mypage/MyPageAlarm.vue")
+            },
+            {
+              path: 'myfriend',
+              name: 'mypage-myfriend',
+              component: () => import("@/components/member/mypage/MyPageFriend.vue")
+            },
+          ]
+        },
+      ]
+    },
+    {
+      path: '/meeting',
+      name: 'meeting',
+      component: () => import('@/views/TheMeetingView.vue'),
+      redirect: { name: 'meeting-create' },
+      children: [
+        {
+          path: 'create',
+          name: 'meeting-create',
+          component: () => import('@/components/meeting/MeetingCreate.vue')
+        },
+        {
+          path: 'view/:id',
+          name: 'meeting-detail',
+          component: () => import('@/components/meeting/MeetingDetail.vue')
+        }
+      ]
+    },
+    // (추가기능) 경로 추천 
+    {
+      path: '/path',
+      name: 'path',
+      component: () => import("@/views/ThePathView/vue"),
+      redirect: { name: 'path-main' },
+      children: [
+        {
+          path: 'list',
+          name: 'path-list',
+          component: () => import('@/components/paths/PathList'),
+        },
+        {
+          path: 'detail/:pathid',
+          name: 'path-detail',
+          component: () => import('@/components/paths/PathDetail.vue')
+        }
+      ]
     },
   ]
 })
