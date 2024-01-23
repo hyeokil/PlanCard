@@ -3,7 +3,7 @@
     
     <v-app id="inspire">
 
-      <TheHeaderNavbar />
+      <!-- <TheHeaderNavbar /> -->
 
       <v-main class="bg-grey-lighten-3">
         <v-container>
