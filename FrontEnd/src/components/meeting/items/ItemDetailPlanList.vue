@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h1>itemdetailplanlist</h1>
         <ItemDetailPlan />
     </div>
 </template>

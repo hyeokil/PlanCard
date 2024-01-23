@@ -27,7 +27,7 @@
 
 
 <script setup>
-  import TheHeaderNavbar from './components/layout/TheHeaderNavbar.vue'
+  // import TheHeaderNavbar from './components/layout/TheHeaderNavbar.vue'
 
 </script>
 

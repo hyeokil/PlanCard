@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h1>title</h1>
         <div :class="[titlecheck=== '0' ? 'active' : 'hidden']" @click="goTitleUpdate()">{{ planTitle }}</div>
         <form :class="[titlecheck=== '0' ? 'hidden' : 'active']" @submit.prevent="goTitleUpdate()">
             <input type="text" v-model="planTitle" >
