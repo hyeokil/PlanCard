@@ -52,3 +52,8 @@ logging:
     org.hibernate:
       type.descriptor.sql: trace
       org.hibernate.SQLQuery: debug
+
+
+# 공공데이터
+public-data:
+  key: 734364614c73656e32386579495665
