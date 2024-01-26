@@ -5,12 +5,13 @@ import com.ssafy.backend.domain.place.entity.Place;
 import com.ssafy.backend.domain.plan.entity.Plan;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class CardCreateRequestDto {
 
-    private Long id;
     private String memo;
 
     public Card toEntity(Place place, Plan plan){

@@ -2,6 +2,7 @@ package com.ssafy.backend.domain.card.controller;
 
 import com.ssafy.backend.domain.card.dto.CardCreateRequestDto;
 import com.ssafy.backend.domain.card.dto.CardResponseDto;
+import com.ssafy.backend.domain.card.dto.CardUpdateMemoDto;
 import com.ssafy.backend.domain.card.entity.Card;
 import com.ssafy.backend.domain.card.service.CardService;
 import com.ssafy.backend.global.common.dto.Message;
@@ -27,13 +28,14 @@ public class CardController {
         return ResponseEntity.ok().body(Message.success());
     }
 
+    //카드 전체조회
     @GetMapping("/{planId}/card")
     public ResponseEntity<List<CardResponseDto>> getCards(@PathVariable Long planId) {
         List<Card> cards = cardService.getCardsByPlanId(planId);
 
         List<CardResponseDto> rslt = new ArrayList<>();
         for (Card card : cards) {
-            rslt.add(new CardResponseDto(card.getId(), card.getPlan().getName(), card.getPlace().getName(), card.getMemo()));
+            rslt.add(new CardResponseDto(card.getId(), card.getPlace().getName(), card.getPlace().getAddress(), card.getMemo()));
         }
         return ResponseEntity.ok().body(rslt);
     }
@@ -44,11 +46,12 @@ public class CardController {
     public ResponseEntity<CardResponseDto> getCard(@PathVariable Long cardId) {
         //카드 db에 저장된 카드 아이디에 해당하는 카드 조회
         Card card = cardService.findById(cardId);
-        return ResponseEntity.ok().body(new CardResponseDto(card.getId(), card.getPlan().getName(), card.getPlace().getName(), card.getMemo()));
+        return ResponseEntity.ok().body(new CardResponseDto(card.getId(), card.getPlace().getName(), card.getPlace().getAddress(), card.getMemo()));
     }
 
-//    @PatchMapping("/{planId}/card/{cardId}")
-//    public Long updateMemo(@PathVariable Long planId, @PathVariable Long cardId, @RequestBody String updateMemo, CardUpdateMemoDto cardUpdateMemoDto) {
-//        return cardService.updateMemo(planId, cardId, updateMemo, cardUpdateMemoDto);
-//    }
+    @PatchMapping("/{planId}/card/{cardId}")
+    public ResponseEntity<String> updateMemo(@PathVariable Long planId, @PathVariable Long cardId, @RequestBody String updateMemo, CardUpdateMemoDto cardUpdateMemoDto) {
+        cardService.updateMemo(planId, cardId, updateMemo, cardUpdateMemoDto);
+        return ResponseEntity.ok().body("메모 수정 완료");
+    }
 }

@@ -13,8 +13,6 @@ public class FriendshipDto {
     private Long friendId;
     private String name;
     private String email;
-//    private String profileImage;
-
+    // 프로필 이미지
     // 온라인 여부
-
 }

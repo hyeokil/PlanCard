@@ -9,9 +9,9 @@ public class CardResponseDto {
 
     private Long cardId;
 
-    private String planName;
-
     private String placeName;
+
+    private String placeAdds;
 
     private String memo;
 

@@ -1,6 +1,7 @@
 package com.ssafy.backend.domain.card.service;
 
 import com.ssafy.backend.domain.card.dto.CardCreateRequestDto;
+import com.ssafy.backend.domain.card.dto.CardUpdateMemoDto;
 import com.ssafy.backend.domain.card.entity.Card;
 import com.ssafy.backend.domain.card.repository.CardRepository;
 import com.ssafy.backend.domain.place.entity.Place;
@@ -30,6 +31,8 @@ public class CardServiceImpl implements CardService {
         Optional<Plan> currentPlan = planRepository.findById(planId);
         Optional<Place> findPlace = placeInfoRepository.findById(placeId);
         if (currentPlan.isPresent() & findPlace.isPresent()) {
+            log.info(findPlace.toString());
+            log.info(currentPlan.toString());
             cardRepository.save(cardCreateRequestDto.toEntity(findPlace.get(), currentPlan.get()));
         }
     }
@@ -46,5 +49,15 @@ public class CardServiceImpl implements CardService {
         Optional<Card> card = cardRepository.findById(cardId);
         return card.orElse(null);
     }
+
+    @Override
+    public void updateMemo(Long planId, Long placeId, String updateMemo, CardUpdateMemoDto cardUpdateMemoDto) {
+        System.out.println("planId = " + planId);
+        System.out.println("placeId = " + placeId);
+        Card findCard = cardRepository.findCardByPlanAndPlace(planId, placeId);
+        findCard.updateMemo(updateMemo);
+        cardRepository.save(findCard);
+    }
+
 
 }

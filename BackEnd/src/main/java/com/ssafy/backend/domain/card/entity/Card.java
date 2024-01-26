@@ -17,12 +17,20 @@ public class Card extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id")
     private Place place;
 
     private String memo;
+
+    private String position;
+
+    public void updateMemo(String memo) {
+        this.memo = memo;
+    }
 
 
 }

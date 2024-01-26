@@ -10,7 +10,7 @@ public class SliceResponse<T> {
     private List<T> contents;
     private Boolean hasNext;
 
-    public static SliceResponse<?> of(Slice<?> items) {
+    public static <T> SliceResponse<T> of(Slice<T> items) {
         return new SliceResponse<>(items);
     }
 

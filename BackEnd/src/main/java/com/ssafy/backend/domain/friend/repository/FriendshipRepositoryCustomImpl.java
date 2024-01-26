@@ -3,8 +3,6 @@ package com.ssafy.backend.domain.friend.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.backend.domain.friend.dto.FriendshipDto;
-import com.ssafy.backend.domain.friend.entity.QFriendship;
-import com.ssafy.backend.domain.member.entity.QMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
