@@ -1,5 +1,7 @@
 package com.ssafy.backend.global.component.jwt;
 
+import com.ssafy.backend.global.exception.GlobalError;
+import com.ssafy.backend.global.exception.TokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +23,7 @@ public class JwtParser {
                     .build()
                     .parseClaimsJws(token).getBody();
         } catch (Exception e) {
-            // 나중에 Exception 처리해야함
-            throw new RuntimeException("유효하지 않은 토큰");
+            throw new TokenException(GlobalError.INVALID_TOKEN);
         }
 
         return claims;

@@ -1,18 +1,22 @@
 package com.ssafy.backend.domain.friend.service;
 
-import com.ssafy.backend.domain.friend.entity.Friend;
-import com.ssafy.backend.domain.friend.repository.FriendRepository;
+import com.ssafy.backend.domain.friend.dto.FriendshipDto;
+import com.ssafy.backend.domain.friend.entity.Friendship;
+import com.ssafy.backend.domain.friend.repository.FriendshipRepository;
 import com.ssafy.backend.domain.member.entity.Member;
 import com.ssafy.backend.domain.member.repository.MemberRepository;
+import com.ssafy.backend.global.common.dto.SliceResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FriendServiceImpl implements FriendService {
-    private final FriendRepository friendRepository;
+public class FriendshipServiceImpl implements FriendshipService {
+    private final FriendshipRepository friendshipRepository;
     private final MemberRepository memberRepository;
 
     /**
@@ -25,17 +29,23 @@ public class FriendServiceImpl implements FriendService {
         Member owner = memberRepository.findById(ownerId).orElseThrow();
         Member target = memberRepository.findById(friendId).orElseThrow();
 
-        Friend ownerFriendship = Friend.builder()
+        Friendship ownerFriendship = Friendship.builder()
                 .owner(owner)
                 .friend(target)
                 .build();
 
-        Friend targetFriendship = Friend.builder()
+        Friendship targetFriendship = Friendship.builder()
                 .owner(target)
                 .friend(owner)
                 .build();
 
-        friendRepository.save(ownerFriendship);
-        friendRepository.save(targetFriendship);
+        friendshipRepository.save(ownerFriendship);
+        friendshipRepository.save(targetFriendship);
+    }
+
+    @Override
+    public SliceResponse getFriends(Long ownerId, Pageable pageable) {
+        Slice<FriendshipDto> friends = friendshipRepository.findFriends(ownerId, pageable);
+        return SliceResponse.of(friends);
     }
 }

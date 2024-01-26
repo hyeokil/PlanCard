@@ -15,7 +15,6 @@ public enum MemberError {
     CURRENT_CHANGE_MATCH_PASSWORD(HttpStatus.BAD_REQUEST, "현재 비밀번호가 변경하려는 비밀번호와 같습니다.");
 
 
-
     private final HttpStatus httpStatus;
     private final String errorMessage;
 }

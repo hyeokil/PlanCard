@@ -1,7 +1,9 @@
 package com.ssafy.backend.domain.member.entity;
 
 import com.ssafy.backend.domain.member.entity.enums.MemberRole;
+import com.ssafy.backend.domain.member.entity.enums.ProviderType;
 import com.ssafy.backend.global.common.entity.BaseEntity;
+import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomain;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,13 +25,19 @@ public class Member extends BaseEntity {
 
     private String nickname;
 
-    private String address;
+    private String image;
 
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private OAuthDomain oAuthDomain;
+
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public void updateImage(String image) { this.image = image; }
 
 }

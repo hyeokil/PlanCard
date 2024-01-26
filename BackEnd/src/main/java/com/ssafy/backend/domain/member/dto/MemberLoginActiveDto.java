@@ -12,6 +12,7 @@ public class MemberLoginActiveDto {
     private String email;
     private String name;
     private String nickname;
+    private String image;
     private String role;
 
     public static MemberLoginActiveDto from(TokenMemberInfoDto infoDto) {
@@ -20,6 +21,7 @@ public class MemberLoginActiveDto {
                 .email(infoDto.getEmail())
                 .name(infoDto.getName())
                 .nickname(infoDto.getNickname())
+                .image(infoDto.getImage())
                 .role(infoDto.getRole())
                 .build();
     }

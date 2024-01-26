@@ -62,11 +62,13 @@ public class MemberController {
         return ResponseEntity.ok().body(Message.success());
     }
 
-    @PutMapping("/update/password")
+    @PatchMapping("/update/password")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<Message<Void>> updatePasswordMember(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
                                                               @RequestBody MemberPasswordUpdateDto passwordUpdateDto) {
         memberService.updatePasswordMember(loginActiveDto.getId(), passwordUpdateDto);
         return ResponseEntity.ok().body(Message.success());
     }
+
+
 }

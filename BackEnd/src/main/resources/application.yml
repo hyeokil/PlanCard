@@ -3,7 +3,7 @@ spring:
     defer-datasource-initialization: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop                 # ddl 자동 작성 여부
+      ddl-auto: create-drop                # ddl 자동 작성 여부
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # DB 드라이버
@@ -38,11 +38,12 @@ jwt:
   secret-key:
     access: TestAccessKey111111122222222223333333333333aaaaaaaaabbbbbbbbccccccccdddddddddfqwrqwfqwifjaisfjoihfoiqwflasjdglkkjasdlgjlkasdgjiowejgliasjglasjdgio
     refresh: TestRefreshKey111111122222222223333333333333aaaaaaaaabbbbbbbbccccccccdddddddddfqwrqwfqwifjaisfjoihfoiqwflasjdglkkjasdlgjlkasdgjiowejgliasjglasjdgio
+    signup: TestSignupKey111111122222222223333333333333aaaaaaaaabbbbbbbbccccccccdddddddddfqwrqwfqwifjaisfjoihfoiqwflasjdglkkjasdlgjlkasdgjiowejgliasjglasjdgio
 
   expired-min:
     access: 60   # 액세스 토큰 만료제한시간 60분 (1시간)
     refresh: 10080  # 리프레쉬 토큰 만료제한시간 10080분 (7일)
-
+    signup: 5
 # firebase setting
 
 
@@ -57,3 +58,35 @@ logging:
 # 공공데이터
 public-data:
   key: 734364614c73656e32386579495665
+
+
+server:
+  ssl:
+    enabled: false
+
+openvidu:
+  url: http://localhost:4443/
+  secret: MY_SECRET
+
+
+# OAUTH2.0 Setting
+oauth:
+  kakao:
+    client-id: 8e8a2a929b0cbf786ac9567191ac7ff7
+    client-secret: OaZuL5rd6IcxxcwDd4pgcKRnJP9afsHo
+    redirect-uri: http://localhost:8080/api/v1/oauth/kakao/login
+    scope:
+      - profile_nickname
+      - profile_image
+      - account_email
+      - name
+
+  naver:
+    client-id: d5K9OtbM_JbyOZIiOG54
+    client-secret: UAm7jJPmsC
+    redirect_uri: http://localhost:8080/api/v1/oauth/naver/login
+    scope:
+      - id
+      - nickname
+      - name
+      - email

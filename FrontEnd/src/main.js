@@ -35,3 +35,11 @@ app.use(vuetify)
 app.use(VCalendar, {})
 
 app.mount('#app')
+
+
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+}).$mount('#app')

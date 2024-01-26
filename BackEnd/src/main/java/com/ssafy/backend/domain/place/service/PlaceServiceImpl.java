@@ -2,12 +2,14 @@ package com.ssafy.backend.domain.place.service;
 
 import com.ssafy.backend.domain.place.dto.PlaceRegisterDto;
 import com.ssafy.backend.domain.place.repository.PlaceInfoRepository;
+import jakarta.transaction.Transactional;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class PlaceServiceImpl implements PlaceService {
 
     private final String NAME = "POST_SJ"; //상호명

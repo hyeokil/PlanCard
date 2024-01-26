@@ -33,3 +33,27 @@ npm run build
 ```sh
 npm run lint
 ```
+
+
+
+
+
+
+```
+# 메모
+
+[프론트]
+$ cd FrontEnd
+$ npm install
+$ npm install openvidu-browser
+$ npm run dev
+
+[백엔드 - node.js]
+$ cd openvidututorials/openvidu-basic-node
+$ npm install
+$ node index.js
+
+[Docker]
+$ docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET openvidu/openvidu-dev:2.29.0
+
+```

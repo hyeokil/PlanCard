@@ -12,13 +12,14 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "axios": "^1.6.5",
+    "chart.js": "3.3.2",
+    "openvidu-browser": "^2.29.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
-    "v-calendar": "^3.1.2",
-    "chart.js": "3.3.2",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primevue": "3.39.0",
+    "v-calendar": "^3.1.2",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
     "vuetify": "^3.5.1"

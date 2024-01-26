@@ -21,6 +21,7 @@ public class TokenMemberInfoDto {
     private String email;
     private String name;
     private String nickname;
+    private String image;
     private String role;
 
     public Claims toClaims(int expiresMin) {
@@ -32,6 +33,7 @@ public class TokenMemberInfoDto {
         claims.put(KEY_EMAIL, this.email);
         claims.put(KEY_NAME, this.name);
         claims.put(KEY_NICKNAME, this.nickname);
+        claims.put(KEY_IMAGE, this.image);
         claims.put(KEY_ROLE, this.role);
         claims.setExpiration(new Date(now.getTime() + expiresMin * ONE_MINUTE));
 
@@ -44,6 +46,7 @@ public class TokenMemberInfoDto {
                 .email(claims.get(KEY_EMAIL, String.class))
                 .name(claims.get(KEY_NAME, String.class))
                 .nickname(claims.get(KEY_NICKNAME, String.class))
+                .image(claims.get(KEY_IMAGE, String.class))
                 .role(claims.get(KEY_ROLE, String.class))
                 .build();
     }
