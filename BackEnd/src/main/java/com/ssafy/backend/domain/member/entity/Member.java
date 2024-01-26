@@ -1,7 +1,6 @@
 package com.ssafy.backend.domain.member.entity;
 
 import com.ssafy.backend.domain.member.entity.enums.MemberRole;
-import com.ssafy.backend.domain.member.entity.enums.ProviderType;
 import com.ssafy.backend.global.common.entity.BaseEntity;
 import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomain;
 import jakarta.persistence.*;

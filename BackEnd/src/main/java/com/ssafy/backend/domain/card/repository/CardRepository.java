@@ -19,4 +19,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query(value = "select c from Card c where c.plan.id = :planId and c.place.id = :placeId")
     Card findCardByPlanAndPlace(Long planId, Long placeId);
+
+    @Override
+    void deleteById(Long cardId);
 }

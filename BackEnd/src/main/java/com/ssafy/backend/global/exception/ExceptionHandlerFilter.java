@@ -36,7 +36,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (TokenException e) {
             // TokenException이 발생할 경우, 사용자에게 에러 응답을 설정합니다.
-            setErrorResponse(response, e.getErrorCode(), request);
+            setErrorResponse(response, e.getErrorCode());
         }
     }
 
@@ -46,9 +46,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
      *
      * @param response HTTP 응답
      * @param errorCode 발생한 에러의 코드
-     * @param request HTTP 요청
      */
-    private void setErrorResponse(HttpServletResponse response, GlobalError errorCode, HttpServletRequest request) {
+    private void setErrorResponse(HttpServletResponse response, GlobalError errorCode) {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setStatus(errorCode.getHttpStatus().value()); // HTTP 상태 코드 설정
         response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 컨텐츠 유형 설정

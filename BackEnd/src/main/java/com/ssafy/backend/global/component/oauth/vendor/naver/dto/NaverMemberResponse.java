@@ -7,7 +7,9 @@ import com.ssafy.backend.domain.member.entity.enums.MemberRole;
 import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomain;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Setter
 @JsonNaming(SnakeCaseStrategy.class)

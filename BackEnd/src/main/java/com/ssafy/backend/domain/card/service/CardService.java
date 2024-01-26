@@ -17,6 +17,8 @@ public interface CardService {
 
     void updateMemo(Long planId, Long PlaceId, String updateMemo, CardUpdateMemoDto cardUpdateMemoDto);
 
+    void deleteById(Long cardId);
+
 
 
 }

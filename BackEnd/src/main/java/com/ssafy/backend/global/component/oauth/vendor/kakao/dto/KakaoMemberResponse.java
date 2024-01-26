@@ -31,7 +31,7 @@ public class KakaoMemberResponse {
     public Member toDomain() {
         return Member.builder()
                 .email(kakaoAccount.getEmail())
-                .name(kakaoAccount.name)
+                .name(kakaoAccount.getName())
                 .nickname(kakaoAccount.getProfile().getNickname())
                 .image(kakaoAccount.getProfile().getProfileImageUrl())
                 .role(MemberRole.USER)

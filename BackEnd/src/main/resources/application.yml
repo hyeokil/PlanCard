@@ -44,8 +44,6 @@ jwt:
     access: 60   # 액세스 토큰 만료제한시간 60분 (1시간)
     refresh: 10080  # 리프레쉬 토큰 만료제한시간 10080분 (7일)
     signup: 5
-# firebase setting
-
 
 # log 관리
 logging:
@@ -86,7 +84,12 @@ oauth:
     client-secret: UAm7jJPmsC
     redirect_uri: http://localhost:8080/api/v1/oauth/naver/login
     scope:
-      - id
       - nickname
       - name
       - email
+      - profile_image
+
+# firebase setting
+app:
+  firebase-configuration-file: classpath:serviceAccountKey.json
+  firebase-bucket: plancard-3b8f9.appspot.com

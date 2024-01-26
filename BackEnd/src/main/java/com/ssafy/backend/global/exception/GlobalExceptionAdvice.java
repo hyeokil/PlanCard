@@ -20,7 +20,7 @@ public class GlobalExceptionAdvice {
      * @return
      */
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity accessDeniedExceptionHandle(AccessDeniedException exception) {
+    public ResponseEntity<Message<Void>> accessDeniedExceptionHandle(AccessDeniedException exception) {
         log.warn("인가에러 ex : {}", (Object[]) exception.getStackTrace());
 
         return ResponseEntity.status(FORBIDDEN_EXCEPTION.getHttpStatus())
@@ -33,7 +33,7 @@ public class GlobalExceptionAdvice {
      * @return
      */
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity authenticationExceptionHandle(AuthenticationException exception) {
+    public ResponseEntity<Message<Void>>  authenticationExceptionHandle(AuthenticationException exception) {
         log.warn("인증에러 ex : {}", (Object[]) exception.getStackTrace());
 
         return ResponseEntity.status(AUTHENTICATION_EXCEPTION.getHttpStatus())
@@ -46,7 +46,7 @@ public class GlobalExceptionAdvice {
      * @return
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity defaultExceptionHandle(Exception exception) {
+    public ResponseEntity<Message<Void>>  defaultExceptionHandle(Exception exception) {
         log.warn("기본에러 ex : {}", (Object[]) exception.getStackTrace());
 
         return ResponseEntity.status(DEFAULT_EXCEPTION.getHttpStatus())

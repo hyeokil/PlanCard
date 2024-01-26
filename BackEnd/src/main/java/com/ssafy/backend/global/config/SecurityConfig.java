@@ -1,8 +1,5 @@
 package com.ssafy.backend.global.config;
 
-
-import com.ssafy.backend.global.component.jwt.security.JwtAccessDeniedHandler;
-import com.ssafy.backend.global.component.jwt.security.JwtAuthenticationEntryPoint;
 import com.ssafy.backend.global.component.jwt.security.JwtAuthenticationFilter;
 import com.ssafy.backend.global.component.jwt.service.JwtService;
 import com.ssafy.backend.global.exception.ExceptionHandlerFilter;
@@ -31,8 +28,6 @@ public class SecurityConfig {
 
     // 의존성 주입을 위한 필드 선언
     private final JwtService jwtService;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     /**
      * Spring Security의 주요 구성을 담당하는 메서드입니다.
@@ -70,11 +65,6 @@ public class SecurityConfig {
         // 폼 기반 로그인과 로그아웃을 비활성화합니다.
         http.formLogin(AbstractHttpConfigurer::disable);
         http.logout(AbstractHttpConfigurer::disable);
-
-        // 예외 처리 핸들러를 설정합니다. 인증 실패와 권한 부족 상황을 처리합니다.
-//        http.exceptionHandling((exceptionHandling) ->
-//                exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//                        .accessDeniedHandler(jwtAccessDeniedHandler));
 
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 등록합니다.
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
