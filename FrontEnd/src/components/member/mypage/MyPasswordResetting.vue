@@ -47,4 +47,4 @@
 
 <style scoped>
 
-</style>
+</style>@/stores/accountStore

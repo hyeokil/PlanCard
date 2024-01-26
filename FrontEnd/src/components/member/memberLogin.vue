@@ -29,7 +29,7 @@
 
 <script setup>
   import { ref } from 'vue';
-  import { useAccountsStore } from '@/stores/accounts';
+  import { useAccountsStore } from '@/stores/accountsStore.js';
   import { useRouter } from 'vue-router';
 
   const router = useRouter()
@@ -56,4 +56,4 @@
 
 <style scoped>
 
-</style>
+</style>@/stores/accountStore

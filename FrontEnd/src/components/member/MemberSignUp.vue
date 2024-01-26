@@ -36,7 +36,7 @@
 
 <script setup>
   import { ref } from 'vue';
-  import { useAccountsStore } from '@/stores/accounts';
+  import { useAccountsStore } from '@/stores/accountsStore.js';
 
   const accountsStore = useAccountsStore()
 
@@ -64,4 +64,4 @@
 
 <style scoped>
 
-</style>
+</style>@/stores/accountStore

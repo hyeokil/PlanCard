@@ -1,7 +1,7 @@
 <script setup>
-import RadioButton from 'primevue/radiobutton';
+// import RadioButton from 'primevue/radiobutton';
 import Button from 'primevue/button';
-import InputSwitch from 'primevue/inputswitch';
+// import InputSwitch from 'primevue/inputswitch';
 import Sidebar from 'primevue/sidebar';
 
 import { ref } from 'vue';
@@ -53,7 +53,7 @@ const applyScale = () => {
         <i class="pi pi-cog"></i>
     </button>
 
-    <Sidebar v-model:visible="visible" position="right" :transitionOptions="'.3s cubic-bezier(0, 0, 0.2, 1)'" class="layout-config-sidebar w-20rem">
+    <Sidebar v-model:visible="visible" position="right" :transitionOptions="'.3s cubic-bezier(0, 0, 0.2, 1)'" class="layout-config-sidebar w-15rem">
         <h5>Scale</h5>
         <div class="flex align-items-center">
             <Button icon="pi pi-minus" type="button" @click="decrementScale()" class="p-button-text p-button-rounded w-2rem h-2rem mr-2" :disabled="layoutConfig.scale.value === scales[0]"></Button>
@@ -63,7 +63,7 @@ const applyScale = () => {
             <Button icon="pi pi-plus" type="button" pButton @click="incrementScale()" class="p-button-text p-button-rounded w-2rem h-2rem ml-2" :disabled="layoutConfig.scale.value === scales[scales.length - 1]"></Button>
         </div>
 
-        <template v-if="!simple">
+        <!-- <template v-if="!simple">
             <h5>Menu Type</h5>
             <div class="flex">
                 <div class="field-radiobutton flex-1">
@@ -76,9 +76,9 @@ const applyScale = () => {
                     <label for="mode2">Overlay</label>
                 </div>
             </div>
-        </template>
+        </template> -->
 
-        <template v-if="!simple">
+        <!-- <template v-if="!simple">
             <h5>Input Style</h5>
             <div class="flex">
                 <div class="field-radiobutton flex-1">
@@ -93,32 +93,33 @@ const applyScale = () => {
 
             <h5>Ripple Effect</h5>
             <InputSwitch v-model="layoutConfig.ripple.value"></InputSwitch>
-        </template>
+        </template> -->
 
-        <h5>Bootstrap</h5>
+        <h5>Mode</h5>
         <div class="grid">
             <div class="col-3">
                 <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-light-blue', 'light')">
                     <img src="/layout/images/themes/bootstrap4-light-blue.svg" class="w-2rem h-2rem" alt="Bootstrap Light Blue" />
                 </button>
             </div>
-            <div class="col-3">
+            <!-- <div class="col-3">
                 <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-light-purple', 'light')">
                     <img src="/layout/images/themes/bootstrap4-light-purple.svg" class="w-2rem h-2rem" alt="Bootstrap Light Purple" />
                 </button>
-            </div>
+            </div> -->
             <div class="col-3">
                 <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-dark-blue', 'dark')">
                     <img src="/layout/images/themes/bootstrap4-dark-blue.svg" class="w-2rem h-2rem" alt="Bootstrap Dark Blue" />
                 </button>
             </div>
-            <div class="col-3">
+            <!-- <div class="col-3">
                 <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-dark-purple', 'dark')">
                     <img src="/layout/images/themes/bootstrap4-dark-purple.svg" class="w-2rem h-2rem" alt="Bootstrap Dark Purple" />
                 </button>
-            </div>
+            </div> -->
         </div>
 
+<!-- 
         <h5>Material Design</h5>
         <div class="grid">
             <div class="col-3">
@@ -291,7 +292,7 @@ const applyScale = () => {
                     <img src="/layout/images/themes/arya-purple.png" class="w-2rem h-2rem" alt="Arya Purple" />
                 </button>
             </div>
-        </div>
+        </div> -->
     </Sidebar>
 </template>
 

@@ -1,12 +1,11 @@
 <template>
     <div>
-        <h1>title</h1>
-        <div :class="[titlecheck=== '0' ? 'active' : 'hidden']" @click="goTitleUpdate()">{{ planTitle }}</div>
-        <form :class="[titlecheck=== '0' ? 'hidden' : 'active']" @submit.prevent="goTitleUpdate()">
-            <input type="text" v-model="planTitle" >
+        <div :class="[checkName=== '0' ? 'active' : 'hidden']" @click="goNameUpdate()">{{ planName }}</div>
+        <form :class="[checkName=== '0' ? 'hidden' : 'active']" @submit.prevent="goNameUpdate()">
+            <input type="text" v-model="planName" autofocus>
         </form>
         <div @click="goDateUpdate()">{{ startDate }} ~ {{ endDate }}</div>
-        <form :class="[datecheck=== '0' ? 'hidden' : 'active']" @submit.prevent="goDateUpdate()">
+        <form :class="[checkDate=== '0' ? 'hidden' : 'active']" @submit.prevent="goDateUpdate()">
             <VDatePicker v-model.range="range" mode="date"/>
             <input class="primary" type="submit" value="확인">
             <button data-v-d3f5b421="" class="p-button p-component p-button-rounded p-button-info mr-2 mb-2" type="button" aria-label="Info" data-pc-name="button" data-pc-section="root" data-pd-ripple="true">
@@ -21,45 +20,46 @@
 
 <script setup>
 import { ref } from 'vue';
+import { usePlanStore } from "@/stores/planStore";
 
-const titlecheck = ref('0')
-const datecheck = ref('0')
-const planTitle = ref('여행 계획')
+const planStore = usePlanStore()
+const checkName = ref('0') // 체크용
+const checkDate = ref('0')  // 체크용
+const planName = ref('여행 계획')
 const range = ref({
-start: new Date(),
-end: new Date(),
+startDate: planStore.plan.startDate,
+endDate: planStore.plan.endDate,
 });
-const startDate = ref('')
-const endDate = ref('')
+const startDate = ref(range.value.startDate)
+const endDate = ref(range.value.endDate)
 
-const goTitleUpdate = () => {
-    if (titlecheck.value === '0') {
-        titlecheck.value = '1'
+const goNameUpdate = () => {
+    if (checkName.value === '0') {
+        checkName.value = '1'
     } else {
-        titlecheck.value ='0'
+        checkName.value ='0'
     }
-    console.log(titlecheck.value)
-    goCheck()
+    // console.log(checkName.value)
+    const payload = {
+        name: planName,
+        startDate: '',
+        endDate: '',
+    }
+    planStore.goCheck(payload)
 }
 
 const goDateUpdate = () => {
-    if (datecheck.value === '0') {
-        datecheck.value = '1'
+    if (checkDate.value === '0') {
+        checkDate.value = '1'
     } else {
-        datecheck.value ='0'
+        checkDate.value ='0'
     }
-    console.log(datecheck.value)
-    goCheck()
-}
-
-const goCheck = () => {
-    startDate.value = range.value.start
-    endDate.value = range.value.end
     const payload = {
-        'planTitle': planTitle.value,
-        'Date': range.value, 
+        name: '',
+        startDate: range.value.startDate,
+        endDate: range.value.endDate,
     }
-    console.log(payload)    
+    planStore.goCheck(payload)
 }
 
 </script>

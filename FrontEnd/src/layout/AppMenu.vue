@@ -5,13 +5,37 @@ import AppMenuItem from './AppMenuItem.vue';
 
 const model = ref([
     {
-        label: 'Home',
+        label: '홈',
         items: [{ label: 'Home', icon: 'pi pi-fw pi-home', to: '/' }]
     },
     {
-        label: 'UI Components',
+        label: '추천',
         items: [
-            { label: 'Start', icon: 'pi pi-fw pi-id-card', to: 'member' },
+            { label: 'create', icon: 'pi pi-fw pi-id-card', to: '/meeting' },
+            { label: 'login', icon: 'pi pi-fw pi-id-card', to: '/member/login' },
+            { label: 'signup', icon: 'pi pi-fw pi-id-card', to: '/member/signup' },
+            {
+                label: 'mypage',
+                icon: 'pi pi-fw pi-bookmark',
+                items: [
+                    {
+                        label: 'myplan',
+                        icon: 'pi pi-fw pi-bookmark',
+                        to: '/member/mypage/myplan'
+                    },
+                    {
+                        label: 'myalarm',
+                        icon: 'pi pi-fw pi-bookmark',
+                        to: '/member/mypage/myalarm'
+                    },
+                    {
+                        label: 'myfriend',
+                        icon: 'pi pi-fw pi-bookmark',
+                        to: '/member/mypage/myfriend'
+                    }
+                ]
+            },
+
             // { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
             // { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
             // { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },

@@ -1,11 +1,12 @@
 <template>
     <div>
-        <h1>TheMainView.vue</h1>
-        <router-view></router-view>
+        <h1>Plans</h1>
+        <MyPlanItem />
     </div>
 </template>
 
 <script setup>
+import MyPlanItem from "./MyPlanItem.vue";
 
 </script>
 

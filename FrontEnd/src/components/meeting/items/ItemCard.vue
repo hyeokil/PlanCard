@@ -1,13 +1,21 @@
 <template>
-    <div>
-        <h1>itemcard</h1>
+
+    <div class="card card-w-title">
+        <!-- {{ card.card_id }} -->
+        {{ card.place.name }}
     </div>
 </template>
 
 <script setup>
+defineProps({
+    card: Object
+})
 
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+.card{
+    width: 100px;
+    height: 50px;
+}
 </style>

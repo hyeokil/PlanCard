@@ -12,6 +12,14 @@ const router = createRouter({
           path: "/",
           name: "main",
           component: () => import("@/views/TheMainView.vue"),
+          redirect: { name: "main-plan" },
+          children: [
+            {
+              path: "plan",
+              name: "main-plan",
+              component: () => import("@/components/plan/MyPlans.vue"),
+            },
+          ],
         },
         {
           path: "/member",
@@ -96,7 +104,7 @@ const router = createRouter({
 
 export default router;
 
-// const router = createRouter({
+// const router = creatdeRouter({
 //   history: createWebHistory(import.meta.env.BASE_URL),
 //   routes: [
 //     {
