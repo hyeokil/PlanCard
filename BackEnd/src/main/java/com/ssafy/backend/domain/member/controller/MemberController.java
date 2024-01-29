@@ -70,5 +70,13 @@ public class MemberController {
         return ResponseEntity.ok().body(Message.success());
     }
 
+    @PatchMapping("/update/image/nickname")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<Void>> updateImageAndNicknameMember(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
+                                                                      @RequestBody MemberUpdateDto updateDto) {
+        memberService.updateImageAndNicknameMember(loginActiveDto.getId(), updateDto);
+        return ResponseEntity.ok().body(Message.success());
+    }
+
 
 }

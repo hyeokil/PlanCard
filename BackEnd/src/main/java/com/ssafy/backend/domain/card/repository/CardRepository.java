@@ -17,8 +17,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Override
     Optional<Card> findById(Long cardId);
 
-    @Query(value = "select c from Card c where c.plan.id = :planId and c.place.id = :placeId")
-    Card findCardByPlanAndPlace(Long planId, Long placeId);
+    @Query(value = "select c from Card c where c.plan.id = :planId and c.id = :cardId")
+    Card findCardByPlanAndPlace(Long planId, Long cardId);
 
     @Override
     void deleteById(Long cardId);

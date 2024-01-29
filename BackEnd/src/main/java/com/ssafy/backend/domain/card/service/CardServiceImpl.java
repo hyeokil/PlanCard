@@ -51,10 +51,8 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void updateMemo(Long planId, Long placeId, String updateMemo, CardUpdateMemoDto cardUpdateMemoDto) {
-        System.out.println("planId = " + planId);
-        System.out.println("placeId = " + placeId);
-        Card findCard = cardRepository.findCardByPlanAndPlace(planId, placeId);
+    public void updateMemo(Long planId, Long cardId, String updateMemo, CardUpdateMemoDto cardUpdateMemoDto) {
+        Card findCard = cardRepository.findCardByPlanAndPlace(planId, cardId);
         findCard.updateMemo(updateMemo);
         cardRepository.save(findCard);
     }

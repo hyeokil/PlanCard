@@ -12,15 +12,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlanDetailCreateRequestDto {
 
-    private Card card;
-
-    private Plan plan;
+    private Long cardId;
 
     private int orderNumber;
 
     private int day;
 
     private String memo;
+
+    public PlanDetail toEntity(Card card, Plan plan) {
+        return PlanDetail.builder()
+                .card(card)
+                .plan(plan)
+                .orderNumber(orderNumber)
+                .day(day)
+                .build();
+    }
+
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.ssafy.backend.domain.member.entity;
 
+import com.ssafy.backend.domain.member.dto.MemberUpdateDto;
 import com.ssafy.backend.domain.member.entity.enums.MemberRole;
 import com.ssafy.backend.global.common.entity.BaseEntity;
 import com.ssafy.backend.global.component.oauth.vendor.enums.OAuthDomain;
@@ -37,6 +38,9 @@ public class Member extends BaseEntity {
         this.password = password;
     }
 
-    public void updateImage(String image) { this.image = image; }
+    public void updateImageAndNickname(MemberUpdateDto memberUpdateDto) {
+        this.nickname = memberUpdateDto.getNickname();
+        this.image = memberUpdateDto.getImage();
+    }
 
 }

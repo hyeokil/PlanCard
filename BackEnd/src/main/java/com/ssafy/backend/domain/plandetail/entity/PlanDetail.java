@@ -3,12 +3,10 @@ package com.ssafy.backend.domain.plandetail.entity;
 import com.ssafy.backend.domain.card.entity.Card;
 import com.ssafy.backend.domain.plan.entity.Plan;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,8 +26,6 @@ public class PlanDetail {
     private int orderNumber;
 
     private int day;
-
-    private String memo;
 
 
 }

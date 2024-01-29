@@ -3,6 +3,7 @@ package com.ssafy.backend.domain.member.service;
 import com.ssafy.backend.domain.member.dto.MemberLoginRequestDto;
 import com.ssafy.backend.domain.member.dto.MemberPasswordUpdateDto;
 import com.ssafy.backend.domain.member.dto.MemberSignUpRequestDto;
+import com.ssafy.backend.domain.member.dto.MemberUpdateDto;
 import com.ssafy.backend.domain.member.entity.Member;
 import com.ssafy.backend.domain.member.exception.MemberError;
 import com.ssafy.backend.domain.member.exception.MemberException;
@@ -89,6 +90,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
         member.updatePassword(passwordEncoder.encode(passwordUpdateDto.getChangePassword()));
+    }
+
+    @Override
+    public void updateImageAndNicknameMember(Long id, MemberUpdateDto updateDto) {
+        Member member = memberRepository.findById(id).orElseThrow(()
+        -> new MemberException(MemberError.NOT_FOUND_MEMBER));
+        member.updateImageAndNickname(updateDto);
     }
 
 
