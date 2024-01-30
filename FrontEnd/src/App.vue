@@ -1,38 +1,27 @@
 <template>
   <div>
-    
-    <v-app id="inspire">
-
-      <!-- <TheHeaderNavbar /> -->
-
-      <v-main class="bg-grey-lighten-3">
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-sheet min-height="85vh" rounded="lg">
-
-                <router-view />
-
-              </v-sheet>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-main>
-
-  </v-app>
-
+    <router-view />
   </div>
 </template>
 
 
 
 <script setup>
-  // import TheHeaderNavbar from './components/layout/TheHeaderNavbar.vue'
 
 </script>
 
 
 
 <style>
+  /* 폰트 정의 */
+  @font-face {
+    font-family: 'NanumBarunGothic';
+    src: url('/fonts/NanumBarunGothic.eot');
+    src: url('/fonts/NanumBarunGothic.eot') format('embedded-opentype'),url('/fonts/NanumBarunGothic.woff') format('woff');
+  }
 
+  /* 폰트 적용 */
+  * {
+    font-family: 'NanumBarunGothic', 'serif';
+  }
 </style>

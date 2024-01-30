@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="card p-fluid">
         <h1>My calaneder</h1>
         <v-calendar
         :attributes='attribute.attributes'

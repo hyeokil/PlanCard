@@ -1,0 +1,95 @@
+ const plan = ref({
+      id: 1,
+      name: "첫번째 나들이",
+      startDate: new Date(2024, 1, 9),
+      endDate: new Date(2024, 1, 11),
+    });
+
+    const plan_member_list = ref([
+      {
+        plan_member_id: 1,
+      },
+      {
+        plan_member_id: 2,
+      },
+    ]);
+
+    const plan_detail_list = ref([
+      {
+        cardId: 2,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
+        orderNumber: 2,
+        day: 1,
+        memo: "",
+      },
+      {
+        cardId: 3,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
+        orderNumber: 3,
+        day: 1,
+        memo: "",
+      },
+      {
+        cardId: 4,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
+        orderNumber: 1,
+        day: 1,
+        memo: "",
+      },
+      {
+        cardId: 2,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
+        orderNumber: 1,
+        day: 2,
+        memo: "",
+      },
+    ]);
+
+    const card_list = ref([
+      {
+        cardId: 2,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
+        placePosition: "",
+        memo: "",
+      },
+      {
+        cardId: 3,
+        placeName: "마루샤브",
+        placeAddress: "장덕동 1634",
+        placePosition: "",
+        memo: "",
+      },
+      {
+        cardId: 4,
+        placeName: "24시 콩나물국밥",
+        placeAddress: "장덕동 1302",
+        placePosition: "",
+        memo: "",
+      },
+    ]);
+
+    const place_list = ref([
+      {
+        place_id: 1,
+        name: "장인족발",
+        address: "장덕동 1574",
+        image: "",
+      },
+      {
+        place_id: 2,
+        name: "마루샤브",
+        address: "장덕동 1634",
+        image: "",
+      },
+      {
+        place_id: 3,
+        name: "24시 콩나물국밥",
+        address: "장덕동 1302",
+        image: "",
+      },
+    ]);

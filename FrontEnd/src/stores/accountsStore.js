@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 
 export const useAccountsStore = defineStore(
-  "accounts",
+  "accountsStore",
   () => {
     const router = useRouter();
     const API_URL = "/api/v1";

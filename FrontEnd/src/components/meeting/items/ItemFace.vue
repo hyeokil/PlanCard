@@ -1,11 +1,10 @@
 <template>
-  <div id="main-container" style="border: solid black 3px;">
+  <div id="main-container" class="card p-fluid">
 
     
     <!-- session이 false일때! 즉, 방에 들어가지 않았을때 -->
     <div id="join" v-if="!session">
       <div id="join-dialog">
-        <h1>세션 입장하기</h1>
         <div>
           <p>
             <label>이름 : </label>

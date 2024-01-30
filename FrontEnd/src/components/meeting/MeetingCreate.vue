@@ -74,7 +74,6 @@ const goMeeting = () => {
     console.log(dates.value)
 }
 
-
 </script>
 
 <style scoped>

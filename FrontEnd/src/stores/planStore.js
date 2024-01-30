@@ -1,13 +1,13 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-
+import { useRoute } from "vue-router";
 export const usePlanStore = defineStore(
-  "plan",
+  "planStore", //<-- 여기엔 파일의 이름을 써야함
   () => {
     const plan = ref({
       id: 1,
       name: "첫번째 나들이",
-      startDate: new Date(2024, 1, 9),
+      startDate: new Date(2024, 1, 10),
       endDate: new Date(2024, 1, 11),
     });
 
@@ -22,58 +22,59 @@ export const usePlanStore = defineStore(
 
     const plan_detail_list = ref([
       {
-        plan_detail_id: 1,
         cardId: 2,
-        plan_id: 1,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
         orderNumber: 2,
         day: 1,
-        memo: "",
+        memo: "장충동왕족발보쌈보다 장인족발이지",
       },
       {
-        plan_detail_id: 2,
         cardId: 3,
-        plan_id: 1,
+        placeName: "마루샤브",
+        placeAddress: "장덕동 1634",
         orderNumber: 3,
         day: 1,
         memo: "",
       },
       {
-        plan_detail_id: 3,
         cardId: 4,
-        plan_id: 1,
+        placeName: "24시 콩나물국밥",
+        placeAddress: "장덕동 1302",
         orderNumber: 1,
         day: 1,
         memo: "",
       },
       {
-        plan_detail_id: 4,
         cardId: 2,
-        plan_id: 1,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
         orderNumber: 1,
         day: 2,
-        memo: "",
+        memo: "장충동왕족발보쌈보다 장인족발이지",
       },
     ]);
-
-    // 상세계획 조회나 생성때 card로 바꿔주세용
 
     const card_list = ref([
       {
         cardId: 2,
-        planName: "첫번째 나들이",
         placeName: "장인족발",
-        memo: "",
+        placeAddress: "장덕동 1574",
+        placePosition: "",
+        memo: "장충동왕족발보쌈보다 장인족발이지",
       },
       {
         cardId: 3,
-        planName: "첫번째 나들이",
         placeName: "마루샤브",
+        placeAddress: "장덕동 1634",
+        placePosition: "",
         memo: "",
       },
       {
         cardId: 4,
-        planName: "첫번째 나들이",
         placeName: "24시 콩나물국밥",
+        placeAddress: "장덕동 1302",
+        placePosition: "",
         memo: "",
       },
     ]);
@@ -82,42 +83,59 @@ export const usePlanStore = defineStore(
       {
         place_id: 1,
         name: "장인족발",
-        address: "장덕동",
-        category: "food",
+        address: "장덕동 1574",
         image: "",
       },
       {
         place_id: 2,
         name: "마루샤브",
-        address: "수완지구",
-        category: "food",
+        address: "장덕동 1634",
         image: "",
       },
       {
         place_id: 3,
         name: "24시 콩나물국밥",
-        address: "장덕동",
-        category: "food",
+        address: "장덕동 1302",
         image: "",
       },
     ]);
 
-    const dateDiff = ref(
-      Math.abs(
-        (plan.value.endDate.getTime() - plan.value.startDate.getTime()) / (1000 * 60 * 60 * 24)
-      )
+    const meeting_view = ref(true);
+    /////////////////////////////////////////////
+    // const plan = ref(null);
+    // const plan_member_list = ref(null);
+    // const plan_detail_list = ref(null);
+    // const card_list = ref(null);
+    // const place_list = ref(null);
+    /////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////
+    // const dateDiff = ref(
+    //   Math.abs(
+    //     (plan.value.endDate.getTime() - plan.value.startDate.getTime()) / (1000 * 60 * 60 * 24)
+    //   )
+    // );
+    /////////////////////////////////////////////////////
+
+    const dateDiff = computed(
+      () =>
+        Math.abs(
+          new Date(plan.value.endDate).getTime() - new Date(plan.value.startDate).getTime()
+        ) /
+          (1000 * 60 * 60 * 24) +
+        1
     );
 
     const goCheck = (payload) => {
-      if (payload.name !== "") {
+      if (payload.name !== null) {
         plan.value.name = payload.name;
         // axios요청 제목변경
-      } else if (payload.startDate !== "" && payload.endDate !== "") {
-        plan.value.startDate = payload.startDate;
-        plan.value.endDate = payload.endDate;
+      } else {
+        plan.value.startDate = new Date(payload.date[0], payload.date[1], payload.date[2]);
+        plan.value.endDate = new Date(payload.date[3], payload.date[4], payload.date[5]);
         // axios요청 날짜변경
       }
-      console.log(dateDiff);
+      console.log(plan.value);
     };
 
     return {
@@ -126,9 +144,9 @@ export const usePlanStore = defineStore(
       plan_detail_list,
       card_list,
       place_list,
+      meeting_view,
       dateDiff,
       goCheck,
     };
-  },
-  { persist: true }
+  }
 );

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="card p-fluid">
         <h1>PlanItem</h1>
     </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="card p-fluid">
         <h1>MyPasswordRessetting.vue</h1>
         <form @submit.prevent="passwordResetting">
             <div class="box">

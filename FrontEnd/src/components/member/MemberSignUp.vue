@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <h1>MemberSignUp.vue</h1>
+    <div class="card p-fluid">
         <form @submit.prevent="signUp">
             <div class="box">
                 <input type="userEmail" id="userEmail" v-model.trim="userEmail" placeholder="이메일">
