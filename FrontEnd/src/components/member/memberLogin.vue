@@ -199,8 +199,8 @@ const goSignUp = function () {
     margin-right: 10px;
   }
   #signUpBtn {
-    font-weight: bold;
-    color: rgb(52, 152, 219);
+    /* font-weight: bold; */
+    color: #3498db;
   }
   #signUpBtn:hover {
     transform: scale(1.05);

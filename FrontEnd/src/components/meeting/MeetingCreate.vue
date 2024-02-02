@@ -102,15 +102,15 @@
 
     // 친구 리스트 dummy
     const friends = ref([
-        { id: 1, name: '독고재훈' },
-        { id: 2, name: '김재일' },
-        { id: 3, name: '김재이' },
-        { id: 4, name: '김재삼' },
-        { id: 5, name: '김재사' },
-        { id: 6, name: '김재오' },
-        { id: 7, name: '김재육' },
-        { id: 8, name: '김재칠' },
-        { id: 9, name: '김재팔' },
+        { id: 1, name: '김수한무거' },
+        { id: 2, name: '김재훈1' },
+        { id: 3, name: '김재훈2' },
+        { id: 4, name: '김재훈3' },
+        { id: 5, name: '김재훈4' },
+        { id: 6, name: '김재훈5' },
+        { id: 7, name: '김재훈6' },
+        { id: 8, name: '김재훈7' },
+        { id: 9, name: '김재훈8' },
     ]);
     // 친구 검색어
     const searchText = ref("");
@@ -241,8 +241,6 @@
     width: 50%;
     padding: 2%;
     /* font-weight: bold; */
-    font-weight: bold;
-    
     border-radius: 5cm;
     white-space: nowrap;
     justify-content: space-between;
@@ -271,7 +269,7 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
@@ -285,7 +283,7 @@
     border: 1px solid rgba(52, 152, 219, 0.5);
     background-color: #FFFFFF;
     color: rgba(0, 0, 0, 0.5);
-
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
@@ -293,6 +291,5 @@
   }
   #friendList {
     cursor: pointer;
-    display: flex;
   }
 </style>

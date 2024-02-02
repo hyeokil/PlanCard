@@ -749,6 +749,55 @@ const showCreateMeeting = () => {
     margin: 0 auto;
     color: #FFFFFF;
     background-color: #3498DB;
+    position: absolute;
+    right: 1.8%;
+    top: 80%;
+  }
+  .profileHidden{
+    display: none;
+  }
+  .notificationActive{
+    display: block;
+    position: absolute;
+    right: 1.8%;
+    top: 80%;
+  }
+  .notificationHidden{
+    display: none;
+  }
+  .router-link-active { /* router-link의 글자 색이 변하지 않게 하는 css */
+    background-color: transparent !important; /* 배경색을 투명으로 설정 */
+    color: inherit !important; /* 글자색을 상속 받음 */
+  }
+
+  .myPlanBtn {
+    margin: 10px;
+  }
+
+  .startBtn {
+    margin: 10px;
+    background-color: #3498DB;
+    color: white;
+  }
+
+
+
+
+  #notificatonSet {
+    font-size: 25px;
+    /* font-weight: bold; */
+    color: #3498DB;
+    margin-left: 3px;
+  }
+  #clearBtn {
+    text-align: center;
+    color: #FFFFFF;
+    background-color: #3498DB;
+    width: 30%;
+    height: 100%;
+    /* font-weight: bold; */
+    border-radius: 5cm;
+>>>>>>> 172f75d (feat: 여행 생성 친구추가 리스트 수정 및 css)
     border: 1px solid rgba(0, 0, 0, 0.1);
     width: 50%;
     height: 30px;
