@@ -7,6 +7,9 @@
         <div class="col-12 mt-0 pt-0">
             <ItemTitle class="title"/>
         </div>
+        <div>
+            <DragTest/>
+        </div>
         <div class="grid">
             <div class="col-4 pb-0">
                 <ItemCardList class="card-list" 
@@ -34,7 +37,8 @@ import ItemCardList from '@/components/meeting/items/card/ItemCardList.vue'
 import ItemDetailPlanList from '@/components/meeting/items/detailplan/ItemDetailPlanList.vue'
 import ItemFace from '@/components/meeting/items/ItemFace.vue'
 import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
-// import ItemMap from '@/components/meeting/items/ItemMap.vue'
+// import ItemMap from '@/components/meeting/items/ItemMap.vue'\
+import DragTest from '../DragTest.vue'
 import { ref } from "vue"
 const cardList = ref([])
 const detailPlanList = ref([])

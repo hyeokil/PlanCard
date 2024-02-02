@@ -23,7 +23,7 @@
                     id="selectDateCalendar"
                     />
                 
-                <h2>친구 선택</h2>
+                <h2>친구 선택 ({{ selectedFriends.length }})</h2>
                 <div class="box, card p-fluid" id="selectFriendsDiv">
                     <span v-if="!selectedFriends.length" id="selectedFriendHolder">친구를 선택하세요</span>
                     <p v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" id="selectedFriend" @click="removeFriend(selectedFriend)">
@@ -34,7 +34,14 @@
                 <input class="box, card p-fluid" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="친구 및 이메일 검색">
                 <div class="box, card p-fluid" id="FriendsDiv">
                     <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
-                        <p>{{ friend.name }} &nbsp; {{ friend.email }}</p>
+                        <p style="
+                        font-size: medium;
+                        color: #3498DB;
+                        margin-right: 10px;
+                        margin-bottom: 7px;">{{ friend.name }}</p>
+                        <p style="
+                        font-size: small;
+                        color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
                     </div>
                 </div>
             
@@ -94,7 +101,6 @@
 
     // 친구 리스트 dummy
     const friends = ref([
-        { id: 1, name: '김수한무거', email: "tngksanrj@ssafy.com" },
         { id: 2, name: '김재훈1', email: "rlawogns1@ssafy.com" },
         { id: 3, name: '김재훈2', email: "rlawogns2@ssafy.com" },
         { id: 4, name: '김재훈3', email: "rlawogns3@ssafy.com" },
@@ -117,11 +123,11 @@
         // friend.name.toLowerCase().includes(searchText.value.toLowerCase())
         // );
 
-      // 친구 목록 중 이름이 맞는 친구 필터링
+      // 친구 목록 중 이름이 맞는 친구 필터링 (친구는 이메일 안먹음)
       const filteredFriendsList = friends.value.filter(friend =>
         friend.name.toLowerCase().includes(searchText.value.toLowerCase())
       );
-      // 전체 유저 목록 중 이메일이 맞는 친구 필터링
+      // 유저 목록 중 이메일이 맞는 친구 필터링 (유저는 이메일 안먹음)
       const filteredUsersList = users.value.filter(user =>
         user.email.toLowerCase().includes(searchText.value.toLowerCase())
       );
@@ -134,7 +140,7 @@
     // 친구를 선택하여 selectedFriends 배열에 추가
     const addFriend = (friend) => {
         if (!selectedFriends.value.some(fr => fr.id === friend.id)) {
-            selectedFriends.value.push(friend);
+            selectedFriends.value.unshift(friend);
             console.log(selectedFriends.value)
         }
     }
@@ -271,5 +277,6 @@
   }
   #friendList {
     cursor: pointer;
+    display: flex;
   }
 </style>

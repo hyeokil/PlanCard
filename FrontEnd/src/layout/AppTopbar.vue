@@ -52,6 +52,7 @@
                         <p id="notification">{{ notification.name }}&nbsp;{{ notification.content }}</p>
                         <div id="notificationDivider2"></div>
                     </div>
+                    <button id="moreBtn"> 더 보기</button>
                 </div>
                 <v-card-actions>
                     <v-btn variant="text" @click="topbarNotificationActive = false" id="closeBtn">
@@ -627,6 +628,18 @@
     overflow-y: auto;
   }
 
+
+  #moreBtn {
+    display: block;
+    margin: 0 auto;
+    color: #FFFFFF;
+    background-color: #3498DB;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    width: 50%;
+    height: 30px;
+    border-radius: 5cm;
+    margin-bottom: 10px;
+  }
 
 
   .onLine {
