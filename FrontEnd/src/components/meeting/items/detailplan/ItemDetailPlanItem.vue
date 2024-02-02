@@ -1,6 +1,8 @@
 <template>
-    <div class="card p-3 mb-2">
-        {{ detail.orderNumber }} )
+    <div 
+    draggable="true"
+    class="card p-3 mb-2">
+        {{ detail.orderNumber }}
         {{ detail.placeName }}
         <div id="memo" :class="[detail.memo ==='' ? 'hidden':'active']">
             <v-tooltip

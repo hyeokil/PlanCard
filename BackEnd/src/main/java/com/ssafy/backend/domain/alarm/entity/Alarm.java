@@ -29,6 +29,7 @@ public class Alarm extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AlarmType type;
 
+    private String title;
     private String content;
 
     @Enumerated(EnumType.STRING)

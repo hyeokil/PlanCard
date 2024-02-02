@@ -43,11 +43,14 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { memberLoginApi, startSocialLoginApi } from "@/api/memberApi";
+import { useAccountsStore } from '@/stores/accountsStore';
 
 const router = useRouter()
 
 const memberEmail = ref('');
 const memberPassword = ref('');
+
+const accountsStore = useAccountsStore();
 
 const login = async () => {
   const param = {
@@ -59,6 +62,9 @@ const login = async () => {
     await memberLoginApi(param,
       (response) => {
         if (response.data.dataHeader.successCode === 0) {
+          // 로그인 상태와 사용자 정보를 accountsStore에 저장
+          accountsStore.setLogin(true);
+          accountsStore.setMemberInfo(response.data.dataBody.memberInfo);
           router.push({ name: 'main' });  // 로그인 성공 후 메인 페이지로 이동  
         } else {
           // 로그인 실패 처리 메시지

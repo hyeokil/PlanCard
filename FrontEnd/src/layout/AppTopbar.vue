@@ -26,14 +26,13 @@
                 <span>Plan</span>
             </button>
             <!-- Profile -->
-            <button @click="onTopBarMenuProfileButton()" class="p-link layout-topbar-button">
+            <button @click="onTopBarMenuProfileButton()" class="p-link layout-topbar-button" v-show="accountsStore.isLogin">
                 <i class="pi pi-user"></i>
                 <span>Profile</span>
             </button>
-            <!-- 비로그인 상태 -->
-            <p id="userName" @click="onTopBarMenuProfileButton()" v-show="!accountsStore.isLogin">로그인</p>
-            <!-- 로그인 상태 -->
-            <p id="userName" @click="onTopBarMenuProfileButton()" v-show="accountsStore.isLogin">김싸피</p>
+            <p id="userName" @click="onTopBarMenuProfileButton()" :class="{'userName-hover': !accountsStore.isLogin}">
+              {{ accountsStore.isLogin ? accountsStore.memberInfo.nickname : '로그인' }}
+            </p>
             <p style="padding-top: 10px; font-weight: 900;" v-show="accountsStore.isLogin">님</p>
         </div>
 
@@ -43,7 +42,7 @@
         <div>
             <v-card :class="[topbarNotificationActive? 'notificationActive':'notificationHidden']" id="popUp">
                 <div style="display: flex; justify-content: space-between; margin-bottom: -15px;">
-                    <p id="notificatonSet">Notification</p>
+                    <p id="notificatonSet">알림 내역</p>
                     <button id="clearBtn">모두 지우기</button>
                 </div>
                 <div id="notificationsList">
@@ -67,21 +66,21 @@
                 <v-list id="profileInfo">
                     <v-list-item prepend-avatar="/로고 3.png">
                         <template #title>
-                            <span style="font-size: 18px; font-weight: bold; color: #3498DB;">김싸피</span>
+                            <span style="font-size: 18px; font-weight: bold; color: #3498DB;">{{ accountsStore.memberInfo?.name }}</span>
                         </template>
                         <template #subtitle>
-                            <span style="font-size: 15px; ">ssafy@ssafy.com</span>
+                            <span style="font-size: 15px; ">{{ accountsStore.memberInfo?.email }}</span>
                         </template>
                     </v-list-item>
                 </v-list>
                 <div @click="goMyPage()" style="text-align: center;">
-                    <button id="myPageBtn">My Page</button>
-                    <button id="logOutBtn" @click="logOut()">LogOut</button>
+                    <button id="myPageBtn">마이 페이지</button>
+                    <button id="logOutBtn" @click="logout()">로그아웃</button>
                 </div>
                 <v-divider></v-divider>
                 <div id="friendsList">
                     <div style="display: flex;">
-                        <p style="font-weight: bold; font-size: 20px; padding-left: 10px; margin-bottom: 0px; color: rgba(0, 0, 0, 0.5);">My Friends</p>
+                        <p style="font-weight: bold; font-size: 20px; padding-left: 10px; margin-bottom: 0px; color: rgba(0, 0, 0, 0.5);">친구 목록</p>
                         <!-- <button id="requestedBtn">받은 신청</button> -->
                         <button id="requestBtn" @click="FriendRequest()">친구 요청</button>
                     </div>
@@ -134,63 +133,84 @@
 
 
 <script setup>
-    import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { useAccountsStore } from '@/stores/accountsStore';
-    import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
-    import { memberLogoutApi } from "@/api/memberApi";
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAccountsStore } from '@/stores/accountsStore';
+import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
+import { memberLogoutApi } from "@/api/memberApi";
 
-    const accountsStore = useAccountsStore()
-    const router = useRouter()
-    
-    const outsideClickListener = ref(null);
-    const topbarMenuActive = ref(false);
-    const topbarNotificationActive = ref(false);  // 알림 팝업 유무 변수
-    const topbarProfileActive = ref(false);  // 프로필 팝업 유무 변수
-    const friendRequestActive = ref(false);  // 친구요청창
+const accountsStore = useAccountsStore()
+const router = useRouter()
 
-    const friendEmail = ref("");  // 친구 요청할 때 입력하는 email
+const outsideClickListener = ref(null);
+const topbarMenuActive = ref(false);
+const topbarNotificationActive = ref(false);  // 알림 팝업 유무 변수
+const topbarProfileActive = ref(false);  // 프로필 팝업 유무 변수
+const friendRequestActive = ref(false);  // 친구요청창
+
+const friendEmail = ref("");  // 친구 요청할 때 입력하는 email
 
 
-    onMounted(() => {
-        bindOutsideClickListener();
-    });    
-    onBeforeUnmount(() => {
-        unbindOutsideClickListener();
-    });    
-    // const onTopBarMenuNotificationButton = () => {
-    //     topbarMenuActive.value = !topbarMenuActive.value;
-    //     topbarNotificationActive.value = !topbarNotificationActive.value;    
-    // };
-    const topbarMenuClasses = computed(() => {
-        return {        
-            'layout-topbar-menu-mobile-active': topbarMenuActive.value
-        };
-    });
-    const bindOutsideClickListener = () => {
-        if (!outsideClickListener.value) {
-            outsideClickListener.value = (event) => {
-                if (isOutsideClicked(event)) {
-                    topbarMenuActive.value = false;
-                }
-            };
-            document.addEventListener('click', outsideClickListener.value);
+onMounted(() => {
+  bindOutsideClickListener();
+});
+onBeforeUnmount(() => {
+  unbindOutsideClickListener();
+});
+// const onTopBarMenuNotificationButton = () => {
+//     topbarMenuActive.value = !topbarMenuActive.value;
+//     topbarNotificationActive.value = !topbarNotificationActive.value;    
+// };
+const topbarMenuClasses = computed(() => {
+  return {
+    'layout-topbar-menu-mobile-active': topbarMenuActive.value
+  };
+});
+const bindOutsideClickListener = () => {
+  if (!outsideClickListener.value) {
+    outsideClickListener.value = (event) => {
+      if (isOutsideClicked(event)) {
+        topbarMenuActive.value = false;
+      }
+    };
+    document.addEventListener('click', outsideClickListener.value);
+  }
+};
+const unbindOutsideClickListener = () => {
+  if (outsideClickListener.value) {
+    document.removeEventListener('click', outsideClickListener);
+    outsideClickListener.value = null;
+  }
+};
+const isOutsideClicked = (event) => {
+  if (!topbarMenuActive.value) return;
+
+  const sidebarEl = document.querySelector('.layout-topbar-menu');
+  const topbarEl = document.querySelector('.layout-topbar-menu-button');
+
+  return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
+};
+
+const logout = async () => {
+  try {
+    await memberLogoutApi(
+      (response) => {
+        if (response.data.dataHeader.successCode === 0) {
+          accountsStore.setLogout();
+          router.push({ name: 'main' });  // 로그아웃 성공 후 메인 페이지로 이동
         }
-    };
-    const unbindOutsideClickListener = () => {
-        if (outsideClickListener.value) {
-            document.removeEventListener('click', outsideClickListener);
-            outsideClickListener.value = null;
+        // 서버에서 실패 응답 받았을 경우 (즉, redis에 저장된 refresh 토큰 만료돼서 삭제 된 경우인데 이럴 일 사실상 거의 없음)
+        else {
+          alert(response.data.dataHeader.resultMessage);
+          accountsStore.setLogout();
         }
-    };
-    const isOutsideClicked = (event) => {
-        if (!topbarMenuActive.value) return;
-
-        const sidebarEl = document.querySelector('.layout-topbar-menu');
-        const topbarEl = document.querySelector('.layout-topbar-menu-button');
-
-        return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
-    };
+      }
+    )
+  } catch (error) {
+    console.error(error);
+    alert("로그아웃 과정 중 문제가 발생했습니다.");
+  }
+}
 
 
 
@@ -438,6 +458,16 @@
     padding-top: 10px;
     font-weight: 900;
     color: #3498DB;
+  }
+  .userName-hover {
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    color: #3498DB; /* 텍스트 색상 변경 */
+    text-decoration: underline; /* 밑줄 스타일 적용 */
+  }
+  .userName-hover:hover {
+    background-color: rgba(52, 152, 219, 0.2); /* 호버 시 배경 색상 적용 */
+    border-radius: 5px; /* 둥근 모서리 스타일 적용 */
+    padding: 5px; /* 패딩 적용 */
   }
   
   #popUp {

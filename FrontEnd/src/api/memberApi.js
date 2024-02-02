@@ -34,10 +34,10 @@ async function getMyInfoApi(success, fail) {
 
 export {
     memberLoginApi,
-    memberLogoutApi,
     startSocialLoginApi,
     finishSocialLoginApi,
     memberSignUpApi,
+    memberLogoutApi,
     passwordResettingApi,
     getMyInfoApi,
 };

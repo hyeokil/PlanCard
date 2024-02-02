@@ -1,6 +1,9 @@
 package com.ssafy.backend.domain.friend.controller;
 
 
+import com.ssafy.backend.domain.friend.dto.AcceptDto;
+import com.ssafy.backend.domain.friend.dto.FriendshipRequestDto;
+import com.ssafy.backend.domain.friend.dto.RefuseDto;
 import com.ssafy.backend.domain.friend.service.FriendshipService;
 import com.ssafy.backend.domain.member.dto.MemberLoginActiveDto;
 import com.ssafy.backend.global.common.dto.Message;
@@ -19,19 +22,30 @@ public class FriendController {
     private final FriendshipService friendshipService;
 
     /**
-     * 친구추가 수락
-     *
-     * @param friendId       친구 id
-     * @param loginActiveDto 현재 로그인한 회원정보
+     * 친구추가 요청 수락처리
+     * @param acceptDto
      * @return
      */
-    @PostMapping("/{friendId}")
+    @PostMapping("/accept")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity acceptFriend(@PathVariable Long friendId,
-                                       @AuthenticationPrincipal MemberLoginActiveDto loginActiveDto) {
+    public ResponseEntity acceptFriend(@RequestBody AcceptDto acceptDto) {
 
-        friendshipService.accept(loginActiveDto.getId(), friendId);
+        friendshipService.accept(acceptDto.getAlarmId(), acceptDto.getOwnerId(), acceptDto.getFriendId());
 
+        return ResponseEntity.ok(Message.success());
+    }
+
+    @PostMapping("/refuse")
+    @PreAuthorize("hasAuthority('USER') or hasAnyAuthority('ADMIN')")
+    public ResponseEntity refuseFriend(@RequestBody RefuseDto refuseDto) {
+        friendshipService.refuse(refuseDto.getAlarmId());
+        return ResponseEntity.ok(Message.success());
+    }
+
+    @PostMapping("/request")
+    @PreAuthorize("hasAnyAuthority('USER') or hasAnyAuthority('ADMIN')")
+    public ResponseEntity requestFriend(@RequestBody FriendshipRequestDto friendshipRequestDto) {
+        friendshipService.requestFriendship(friendshipRequestDto.getOwnerId(), friendshipRequestDto.getFriendId());
         return ResponseEntity.ok(Message.success());
     }
 

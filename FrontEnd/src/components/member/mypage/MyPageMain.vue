@@ -9,12 +9,12 @@
 
         <div class="box card p-fluid" id="infoBox">
             <div id="profileImg">
-                <img src="/로고 3.png" alt="프로필 이미지">
+                <img :src="memberInfo.image || '/로고 3.png'" alt="프로필 이미지">
             </div>
             <div id="userInfo">
-                <p style="font-weight: bold; font-size: 40pt; color: #3498db;">줴훈줴훈</p>
-                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);">김재훈</p>
-                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);">wognswogns98@ssafy.com</p>
+                <p style="font-weight: bold; font-size: 40pt; color: #3498db;">{{ memberInfo.nickname }}</p>
+                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);"> {{ memberInfo.name }}</p>
+                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);"> {{  memberInfo.email }}</p>
             </div>
 
         </div>
@@ -41,20 +41,23 @@
 
 
 <script setup>
-  import { useRouter } from 'vue-router';
-  const router = useRouter();
+import { useRouter } from 'vue-router';
+import { useAccountsStore } from '@/stores/accountsStore';
 
-  const goMyPlan = () => {
-    router.push({name:"mypage-myplan"})
-  }
+const router = useRouter();
+const { memberInfo } = useAccountsStore();
 
-  const goMyInfoModify = () => {
-    router.push({name:"mypage-myInfoModify"})
-  }
+const goMyPlan = () => {
+  router.push({ name: "mypage-myplan" })
+}
 
-  const goMyPasswordResetting = () => {
-    router.push({name:"mypage-myPasswordResetting"})
-  }
+const goMyInfoModify = () => {
+  router.push({ name: "mypage-myInfoModify" })
+}
+
+const goMyPasswordResetting = () => {
+  router.push({ name: "mypage-myPasswordResetting" })
+}
 
 
 </script>
