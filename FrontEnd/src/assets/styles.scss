@@ -8,3 +8,11 @@ $gutter: 1rem; //for primeflex grid system
 @import 'primeflex/primeflex.scss';
 @import 'primeicons/primeicons.css';
 
+@font-face {
+    font-family: 'Jalnan2';
+    src: url('@/assets/fonts/Jalnan2.otf') format('opentype');
+  }
+  
+  * {
+    font-family: 'Jalnan2', sans-serif;
+  }
