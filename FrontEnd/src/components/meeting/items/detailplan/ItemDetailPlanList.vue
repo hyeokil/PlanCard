@@ -1,14 +1,17 @@
 <template>
-    <div id="detail" class="card p-fluid p-3">
-        <h4>상세 계획</h4>
-        <div class="box">
-            <div class="wrap-vertical">
-                <div class="d-flex">
-                    <ItemDetailPlan 
-                    v-for="day in days" :key="day"
-                    :props="plan_detail[day]"
-                    :day="day"
-                    />
+    <div>
+        <div id="detail" class="card p-fluid p-3">
+            <h4>상세 계획</h4>
+            <div class="box">
+                <div class="wrap-vertical">
+                    <div class="d-flex">
+                        <ItemDetailPlan 
+                        v-for="day in days" :key="day"
+                        :props="planDetail[day]"
+                        :day="day"
+                        @check-day="dateChange(day)"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -18,45 +21,51 @@
 <script setup>
 import ItemDetailPlan from "./ItemDetailPlan.vue";
 import { ref, onMounted, watch } from 'vue'
-import { usePlanStore } from "@/stores/planStore";
-const planStore = usePlanStore()
+import { planDetailGetApi } from '@/api/planApi'
+import { useRoute } from "vue-router";
 
-const plan_detail = ref({}) // key: 일차 value: 카드list
-const days = ref([])
+const route = useRoute()
 
-watch(
-    () => planStore.dateDiff,
-    (newDiff) => {
-        listsort();
-}, {deep:true})
-
-const listsort = () => {
-    const plan_detail_list = planStore.plan_detail_list
-    console.log(plan_detail_list)
-    days.value = []
-    plan_detail.value = {}
-    // days 숫자 추가
-    plan_detail_list.sort((a, b)=> a.orderNumber-b.orderNumber);
-    for (let i = 1; i <= planStore.dateDiff; i++){
-        days.value.push(i) 
-    }
-
-    // 상세계획을 최대 30일로 임의 지정함
-    for (let i = 1; i <= 30; i++){ 
-        plan_detail.value.hasOwnProperty(i) ? plan_detail.value[i] : (plan_detail.value[i] = []);
-    }
-
-    // 상세계획을 집어넣기
-    plan_detail_list.forEach((item) => {
-        plan_detail.value[item.day].push(item);
-    })
-
-    console.log('상세계획리스트는 변했나?',days.value)
+const detailPlanList = ref([])
+const emit = defineEmits(['detailPlanUpdate'])
+const detailPlanUpdate = function () {
+    emit('detailPlanUpdate', detailPlanList.value)
 }
 
+
+const activeDate = ref(1)
+const dateChange = (date) => {
+    activeDate.value = date
+    console.log(date)
+}
+
+
+
+// 마운트될 때 상세계획 조회 요청
+function detailPlanGet() {
+    planDetailGetApi(route.params.id, (response) => {
+            if (response.data.dataHeader.successCode === 1) {
+                let msg = "상세계획 조회 중 문제가 발생했습니다.";
+                alert(msg);
+            } else {
+                console.log("상세계획 조회 성공");
+                if (response.data.dataBody.length > 0) {
+                    // 상세계획의 개수가 0개 이상이라면 (이미 상세계획을 만들어뒀다면 emit)
+                    detailPlanList.value = response.data.dataBody
+                    detailPlanUpdate()    
+                }
+            }
+        },
+        (error) => {
+            console.log(error);
+        }
+        );
+} 
+
 onMounted(() => {
-    listsort()
+    detailPlanGet()
 })
+
 
 </script>
 
@@ -64,7 +73,13 @@ onMounted(() => {
 .card{
     position: relative;
 }
+#detail{
+    height: 30vh;
+}
 
+#map{
+    height: 45vh;
+}
 .box{
     position:absolute;
     top: 20%;
@@ -88,4 +103,27 @@ onMounted(() => {
 /* .wrap-vertical::-webkit-scrollbar{
     display: none; 
 } */
+</style>
+
+<style>
+.overlay{
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+.marker-number{
+    position: relative;
+    top: 5px;
+    left: 10px;
+    color: black;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border: black solid 1px;
+    border-radius: 50%;
+    font-size: 10px;
+    font: bolder;
+    display: inline-block;
+    text-align: center;
+}
 </style>

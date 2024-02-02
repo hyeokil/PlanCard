@@ -14,6 +14,7 @@ import VCalendar from "v-calendar";
 import "v-calendar/style.css";
 import PrimeVue from "primevue/config";
 import "@/assets/styles.scss";
+import ConfirmationService from "primevue/confirmationservice";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -29,7 +30,7 @@ const vuetify = createVuetify({
 app.use(vuetify);
 app.use(PrimeVue, { ripple: true });
 app.use(VCalendar, {});
-
+app.use(ConfirmationService);
 app.mount("#app");
 
 // Vue.config.productionTip = false

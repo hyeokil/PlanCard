@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { useRoute } from "vue-router";
+import { cardMemoUpdateApi, cardDeleteApi } from "@/api/cardApi";
 export const usePlanStore = defineStore(
   "planStore", //<-- 여기엔 파일의 이름을 써야함
   () => {
@@ -19,12 +19,14 @@ export const usePlanStore = defineStore(
         plan_member_id: 2,
       },
     ]);
+    const plan_detail_sort = ref({});
 
     const plan_detail_list = ref([
       {
         cardId: 2,
         placeName: "장인족발",
         placeAddress: "장덕동 1574",
+        placePosition: "",
         orderNumber: 2,
         day: 1,
         memo: "장충동왕족발보쌈보다 장인족발이지",
@@ -33,6 +35,7 @@ export const usePlanStore = defineStore(
         cardId: 3,
         placeName: "마루샤브",
         placeAddress: "장덕동 1634",
+        placePosition: "",
         orderNumber: 3,
         day: 1,
         memo: "",
@@ -41,6 +44,7 @@ export const usePlanStore = defineStore(
         cardId: 4,
         placeName: "24시 콩나물국밥",
         placeAddress: "장덕동 1302",
+        placePosition: "",
         orderNumber: 1,
         day: 1,
         memo: "",
@@ -49,6 +53,7 @@ export const usePlanStore = defineStore(
         cardId: 2,
         placeName: "장인족발",
         placeAddress: "장덕동 1574",
+        placePosition: "",
         orderNumber: 1,
         day: 2,
         memo: "장충동왕족발보쌈보다 장인족발이지",
@@ -126,6 +131,8 @@ export const usePlanStore = defineStore(
         1
     );
 
+    const datecheck = ref(2);
+
     const goCheck = (payload) => {
       if (payload.name !== null) {
         plan.value.name = payload.name;
@@ -138,15 +145,71 @@ export const usePlanStore = defineStore(
       console.log(plan.value);
     };
 
+    const getCardList = () => {
+      // 카드 리스트 조회
+    };
+
+    const getDetailPlanList = () => {
+      // 디테일 플랜 조회
+    };
+
+    const cardMemoUpdate = (payload) => {
+      const { cardId, memo } = payload;
+      card_list.value.forEach((item) => {
+        if (item.cardId === cardId) {
+          item.memo = memo;
+          // axios 수정 요청
+          cardMemoUpdateApi(
+            item,
+            (response) => {
+              if (response.data.dataHeader.successCode === 1) {
+                let msg = "메모 처리 중 문제가 발생했습니다.";
+                alert(msg);
+              } else {
+                console.log("메모 수정 성공");
+                getCardList();
+                getDetailPlanList();
+              }
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+        }
+      });
+    };
+
+    const cardDelete = (cardId) => {
+      cardDeleteApi(
+        cardId,
+        (response) => {
+          if (response.data.dataHeader.successCode === 1) {
+            let msg = "메모 삭제 중 문제가 발생했습니다.";
+            alert(msg);
+          } else {
+            console.log("메모 삭제 성공");
+            getCardList();
+            getDetailPlanList();
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    };
     return {
       plan,
       plan_member_list,
+      plan_detail_sort,
       plan_detail_list,
       card_list,
       place_list,
       meeting_view,
       dateDiff,
+      datecheck,
       goCheck,
+      cardMemoUpdate,
+      cardDelete,
     };
   }
 );
