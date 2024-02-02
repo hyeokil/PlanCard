@@ -102,15 +102,14 @@
 
     // 친구 리스트 dummy
     const friends = ref([
-        { id: 1, name: '김수한무거' },
-        { id: 2, name: '김재훈1' },
-        { id: 3, name: '김재훈2' },
-        { id: 4, name: '김재훈3' },
-        { id: 5, name: '김재훈4' },
-        { id: 6, name: '김재훈5' },
-        { id: 7, name: '김재훈6' },
-        { id: 8, name: '김재훈7' },
-        { id: 9, name: '김재훈8' },
+        { id: 2, name: '김재훈1', email: "rlawogns1@ssafy.com" },
+        { id: 3, name: '김재훈2', email: "rlawogns2@ssafy.com" },
+        { id: 4, name: '김재훈3', email: "rlawogns3@ssafy.com" },
+        { id: 5, name: '김재훈4', email: "rlawogns4@ssafy.com" },
+        { id: 6, name: '김재훈5', email: "rlawogns5@ssafy.com" },
+        { id: 7, name: '김재훈6', email: "rlawogns6@ssafy.com" },
+        { id: 8, name: '김재훈7', email: "rlawogns7@ssafy.com" },
+        { id: 9, name: '김재훈8', email: "rlawogns8@ssafy.com" },
     ]);
     // 친구 검색어
     const searchText = ref("");
@@ -291,5 +290,6 @@
   }
   #friendList {
     cursor: pointer;
+    display: flex;
   }
 </style>

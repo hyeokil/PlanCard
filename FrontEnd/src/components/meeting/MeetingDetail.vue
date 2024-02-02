@@ -27,6 +27,7 @@ import { usePlanStore } from "@/stores/planStore";
 const planStore = usePlanStore()
 
 
+
 onBeforeMount(() => {
     planStore.isMeetingView = true
 })
