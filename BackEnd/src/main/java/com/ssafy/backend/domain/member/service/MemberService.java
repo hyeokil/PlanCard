@@ -1,9 +1,6 @@
 package com.ssafy.backend.domain.member.service;
 
-import com.ssafy.backend.domain.member.dto.MemberLoginRequestDto;
-import com.ssafy.backend.domain.member.dto.MemberPasswordUpdateDto;
-import com.ssafy.backend.domain.member.dto.MemberSignUpRequestDto;
-import com.ssafy.backend.domain.member.dto.MemberUpdateDto;
+import com.ssafy.backend.domain.member.dto.*;
 import com.ssafy.backend.global.component.jwt.dto.TokenMemberInfoDto;
 
 public interface MemberService {
@@ -21,4 +18,7 @@ public interface MemberService {
 
     // 프로필 이미지 및 닉네임 수정 기능
     void updateImageAndNicknameMember(Long id, MemberUpdateDto updateDto);
+
+    // 나의 정보 가져오기 기능
+    MemberGetResponseDto getMember(Long id);
 }

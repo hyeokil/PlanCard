@@ -4,7 +4,6 @@ import com.google.cloud.storage.Acl;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     @Override
     public String uploadFiles(MultipartFile file, String nameFile) throws IOException {
-
         Bucket bucket = StorageClient.getInstance().bucket(firebaseBucket);
 
         // 파일 업로드

@@ -1,33 +1,52 @@
 <template>
+  <div class="card p-fluid">
+
     <div id="div1">
-        <h1>My plan</h1>
-        <v-btn class="startBtn" id="addBtn">
-            <p style="margin-bottom: 20%;">+</p>
-        </v-btn>
+      <h1>My plan</h1>
+      <v-btn class="startBtn" id="addBtn" @click="showCreateMeeting">
+        <p style="margin-bottom: 20%;">+</p>
+      </v-btn>
     </div>
     
     <hr id="separator">
-
+    
     <div v-for="plan in plans" :key="plan.index" class="card f-fluid" id="plan">
-        <div id="planName">
-            <p>{{ plan.name }}</p>
-        </div>
-        <div id="div2">
-            <p class="card f-fluid" id="planPeople">인원 : {{ plan.people }}명</p>
-            <p class="card f-fluid" id="planDate">{{ plan.startDate }} ~ {{ plan.EndDate }}</p>
-            <v-btn class="startBtn">
-                <router-link :to="{path: 'view/:id'}" class="router-link-active">
-                    Start
-                </router-link>
-            </v-btn>
-        </div>
+      <div id="planName">
+        <p>{{ plan.name }}</p>
+      </div>
+      <div id="div2">
+        <p class="card f-fluid" id="planPeople">인원 : {{ plan.people }}명</p>
+        <p class="card f-fluid" id="planDate">{{ plan.startDate }} ~ {{ plan.EndDate }}</p>
+        <v-btn class="startBtn">
+          <router-link :to="{path: 'view/:id'}" class="router-link-active">
+            Start
+          </router-link>
+        </v-btn>
+      </div>
     </div>
-</template>
+
+    <div id="overlay" v-if="showCreateMeetingModal"></div>
+    <div id="createMeetingBox">
+      <MeetingCreate v-if="showCreateMeetingModal" @close-meeting-create="closeMeetingCreate" />
+    </div>
+
+  </div>
+  </template>
 
 
 
 <script setup>
+  import router from "@/router";
   import { ref } from "vue";
+  import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
+
+  const showCreateMeetingModal = ref(false)
+  const closeMeetingCreate = () => {
+    showCreateMeetingModal.value = false;
+  }
+  const showCreateMeeting = () => {
+    showCreateMeetingModal.value = !showCreateMeetingModal.value
+  }
 
   const plans = ref([
     {
@@ -44,7 +63,6 @@
     },
   ])
 
-
 </script>
 
 
@@ -56,9 +74,6 @@
     align-items: center; /* 하위 요소들을 수직 가운데 정렬. */
     justify-content: space-between; /* 좌우 정렬 */
   }
-  h1 {
-    font-weight: bold;
-  }
   #addBtn {
     background-color: #3498DB;
     color: white;
@@ -66,12 +81,15 @@
     font-weight: bold;
     padding: 0;
     margin: 0;
-
+    
     display: flex;
     justify-content: center;
     align-items: center;
   }
-
+  
+  h1 {
+    font-weight: bold;
+  }
   #separator {
     border: none;
     border-top: 4px solid #3498DB;
@@ -93,6 +111,7 @@
     margin-top: 0;
     margin-bottom: 0;
     width: 70%;
+    
     /* 작아지면 텍스트 가리기 */
     white-space: nowrap;
     overflow: hidden;
@@ -141,5 +160,28 @@
   .router-link-active { /* router-link의 글자 색이 변하지 않게 하는 css */
     background-color: transparent !important; /* 배경색을 투명으로 설정 */
     color: inherit !important; /* 글자색을 상속 받음 */
+  }
+
+
+
+
+
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+    z-index: 997; /* 모달보다 한 단계 낮은 z-index */
+  }
+  #createMeetingBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 998;
+    max-height: 70vh;
+    overflow-y: auto;
   }
 </style>

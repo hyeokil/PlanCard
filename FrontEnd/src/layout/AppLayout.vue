@@ -1,6 +1,5 @@
 <template>
-    <div class="layout-wrapper" :class="containerClass">
-        <!-- <div class="topbar"> -->
+    <div class="layout-wrapper" :class="containerClass" style="background-color: rgba(52, 152, 219, 0.15);">
         <app-topbar></app-topbar>
         <!-- </div> -->
         <div class="layout-sidebar">
@@ -26,8 +25,8 @@
     import AppTopbar from './AppTopbar.vue';
     import AppFooter from './AppFooter.vue';
     import AppSidebar from './AppSidebar.vue';
-    import AppConfig from './AppConfig.vue';
     import { useLayout } from '@/layout/composables/layout';
+
 
     const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
@@ -40,6 +39,7 @@
             unbindOutsideClickListener();
         }
     });
+
 
     const containerClass = computed(() => {
         return {
@@ -75,10 +75,9 @@
     const isOutsideClicked = (event) => {
         const sidebarEl = document.querySelector('.layout-sidebar');
         const topbarEl = document.querySelector('.layout-menu-button');
-
         return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
-};
-    
+    };
+
 </script>
 
 

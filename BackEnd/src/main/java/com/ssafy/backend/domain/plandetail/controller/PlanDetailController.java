@@ -19,7 +19,7 @@ public class PlanDetailController {
 
     @PostMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<Void>> createPlanDetail(@PathVariable("planId") Long planId,
+    public ResponseEntity<Message<Void>> createAndUpdatePlanDetail(@PathVariable("planId") Long planId,
                                                           @RequestBody PlanDetailCreateRequestDto planDetailCreateRequestDto) {
         planDetailService.createPlanDetail(planId, planDetailCreateRequestDto);
         return ResponseEntity.ok().body(Message.success());

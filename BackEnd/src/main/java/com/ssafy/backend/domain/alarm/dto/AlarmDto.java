@@ -1,5 +1,6 @@
 package com.ssafy.backend.domain.alarm.dto;
 
+import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,8 +11,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AlarmDto {
-    private Long id;
+    private Long alarmId;
     private Long fromMemberId;
+    private Long toMemberId;
     private AlarmType type;
+    private AlarmStatus status;
     private String content;
 }

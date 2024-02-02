@@ -37,6 +37,9 @@ public class PlanDetailServiceImpl implements PlanDetailService{
 
         return planDetails.stream()
                 .map(planDetail -> new PlanDetailListResponseDto(
+                        planDetail.getCard().getId(),
+                        planDetail.getCard().getPosition(),
+                        planDetail.getCard().getMemo(),
                         planDetail.getCard().getPlace().getName(),
                         planDetail.getCard().getPlace().getAddress(),
                         planDetail.getOrderNumber(),

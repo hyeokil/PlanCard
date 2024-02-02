@@ -1,11 +1,12 @@
 <template>
-    <div class="card p-fluid">
-        <MyPagePlan />
+    <div>
+        <router-view>
+        </router-view>
     </div>
 </template>
 
 <script setup>
-import MyPagePlan from './mypage/MyPagePlan.vue';
+
 </script>
 
 <style scoped>

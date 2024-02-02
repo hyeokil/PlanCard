@@ -1,9 +1,10 @@
+
+
+
+
 <template>
-    <!-- <div class="grid meeting"> -->
         <div class="col-12 mt-0 pt-0">
             <ItemTitle class="title"/>
-            <!-- <div class="card card-w-title">
-            </div> -->
         </div>
         <div class="grid">
             <div class="col-4 pb-0">
@@ -15,7 +16,6 @@
                 <ItemMap class="map pt-5"/>
             </div>
         </div>
-    <!-- </div> -->
 </template>
 
 

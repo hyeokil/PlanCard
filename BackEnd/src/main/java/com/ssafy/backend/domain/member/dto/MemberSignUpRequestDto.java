@@ -29,6 +29,8 @@ public class MemberSignUpRequestDto {
     @NotBlank(message = "이름은 필수 입력값입니다.")
     private String nickname;
 
+    private String image;
+
     // DTO -> Entity
     public Member toEntity() {
         return Member.builder()
@@ -36,7 +38,7 @@ public class MemberSignUpRequestDto {
                 .password(password)
                 .name(name)
                 .nickname(nickname)
-                .image(null)    // 일반 회원가입 시 프로필 이미지는 없음
+                .image(image)
                 .role(MemberRole.USER)
                 .oAuthDomain(null) // 일반 회원가입 시 소셜 로그인 업체 없음
                 .build();

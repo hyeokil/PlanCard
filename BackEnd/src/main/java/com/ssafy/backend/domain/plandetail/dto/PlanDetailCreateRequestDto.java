@@ -18,8 +18,6 @@ public class PlanDetailCreateRequestDto {
 
     private int day;
 
-    private String memo;
-
     public PlanDetail toEntity(Card card, Plan plan) {
         return PlanDetail.builder()
                 .card(card)

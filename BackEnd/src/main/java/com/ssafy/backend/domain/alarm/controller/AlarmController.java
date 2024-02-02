@@ -2,9 +2,11 @@ package com.ssafy.backend.domain.alarm.controller;
 
 import com.ssafy.backend.domain.alarm.dto.AlarmCreateRequestDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
+import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.service.AlarmService;
 import com.ssafy.backend.domain.member.dto.MemberLoginActiveDto;
 import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.common.dto.SliceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -31,17 +33,17 @@ public class AlarmController {
 
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<List<AlarmDto>>> getAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
+    public ResponseEntity<Message<SliceResponse>> getAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
                                                                  Pageable pageable) {
-        List<AlarmDto> alarmList = alarmService.getAlarmList(loginActiveDto.getId(), pageable);
-        return ResponseEntity.ok().body(Message.success(alarmList));
+        SliceResponse alarms = alarmService.getAlarmList(loginActiveDto.getId(), pageable);
+        return ResponseEntity.ok().body(Message.success(alarms));
     }
 
-    @PostMapping("/accept/{alarmId}")
+    @PostMapping("/{alarmId}/{action}")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<Message<Void>> acceptAlarm(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
-                                                     @PathVariable Long alarmId) {
-        alarmService.acceptAlarm(loginActiveDto.getId(), alarmId);
+                                                     @PathVariable Long alarmId, @PathVariable AlarmStatus action) {
+        alarmService.handleAlarm(loginActiveDto.getId(), alarmId, action);
         return ResponseEntity.ok().body(Message.success());
     }
 }

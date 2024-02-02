@@ -1,27 +1,27 @@
 <template>
-    <div class="layout-topbar mb-0 pb-0">
+    <div class="layout-topbar">
+
         <!-- 로고 -->
-        <router-link to="/main" class="layout-topbar-logo">
+        <router-link :to="{name: 'main'}" class="layout-topbar-logo">
             <img src="/로고 3.png" alt="로고" style="height: 100%; width: 55px; border-radius: 50%;"/>
             <span>Plan Card</span>
         </router-link>
 
         <v-spacer></v-spacer>
 
-
         <!-- Button -->
-        <v-btn class="myPlanBtn">
+        <v-btn class="myPlanBtn" v-show="accountsStore.isLogin">
             <router-link :to="{name: 'mypage-myplan'}" class="router-link-active"><b>My Plan</b></router-link>
         </v-btn>
-        
-        <v-btn class="startBtn">
-            <router-link :to="{name: 'meeting-create'}" class="router-link-active"><b>Start</b></router-link>
+
+        <v-btn class="startBtn" v-show="accountsStore.isLogin">
+            <p class="router-link-active" @click="showCreateMeeting"><b>Start</b></p>
         </v-btn>
-        <!--  -->
+
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <!-- Notification -->
-            <button @click="onTopBarMenuNotificationButton()" class="p-link layout-topbar-button">
+            <button @click="onTopBarMenuNotificationButton()" class="p-link layout-topbar-button" v-show="accountsStore.isLogin">
                 <i class="pi pi-bell"></i>
                 <span>Plan</span>
             </button>
@@ -30,11 +30,12 @@
                 <i class="pi pi-user"></i>
                 <span>Profile</span>
             </button>
-            <p id="userName" @click="onTopBarMenuProfileButton()" >김싸피</p>
-            <p style="padding-top: 10px; font-weight: 900;">님</p>
+            <!-- 비로그인 상태 -->
+            <p id="userName" @click="onTopBarMenuProfileButton()" v-show="!accountsStore.isLogin">로그인</p>
+            <!-- 로그인 상태 -->
+            <p id="userName" @click="onTopBarMenuProfileButton()" v-show="accountsStore.isLogin">김싸피</p>
+            <p style="padding-top: 10px; font-weight: 900;" v-show="accountsStore.isLogin">님</p>
         </div>
-
-
 
 
 
@@ -60,7 +61,6 @@
             </v-card>
         </div>
         
-
         <!-- 프로필 클릭 시 나오는 창 -->
         <div>
             <v-card :class="[topbarProfileActive? 'profileActive':'profileHidden']" id="popUp">
@@ -76,21 +76,24 @@
                 </v-list>
                 <div @click="goMyPage()" style="text-align: center;">
                     <button id="myPageBtn">My Page</button>
-                    <button id="logOutBtn">LogOut</button>
+                    <button id="logOutBtn" @click="logOut()">LogOut</button>
                 </div>
                 <v-divider></v-divider>
                 <div id="friendsList">
                     <div style="display: flex;">
                         <p style="font-weight: bold; font-size: 20px; padding-left: 10px; margin-bottom: 0px; color: rgba(0, 0, 0, 0.5);">My Friends</p>
-                        <button id="requestedBtn">받은 신청</button>
-                        <button id="requestBtn">친구 요청</button>
+                        <!-- <button id="requestedBtn">받은 신청</button> -->
+                        <button id="requestBtn" @click="FriendRequest()">친구 요청</button>
                     </div>
                     <div v-for="friend in friends" :key="friend.index" id="friendInfo">
                         <div>
                             <img :src=friend.profileImg alt="프로필 이미지" id="friendProfileImg">
                         </div>
                         <div>
-                            <p id="friendName">{{ friend.name}} </p>
+                            <div style="display: flex;">
+                                <p id="friendName">{{ friend.name}} </p>
+                                <p :class="friend.status ? 'onLine' : 'offLine'">&nbsp;●</p>
+                            </div>
                             <p id="friendEmail">{{ friend.email }}</p>
                         </div>
                     </div>
@@ -102,11 +105,31 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
+        </div>  
+
+        <!-- 친구 요청 창 -->
+        <div id="overlay" v-if="friendRequestActive"></div>
+        <div class="card p-fluid" v-if="friendRequestActive" id="friendRequestBox">
+            <h3 id="friendRequestTitle">친구 요청</h3>
+                <form class="box, card p-fluid" @submit.prevent="SendFriendRequest()" id="friendRequestForm">
+                    <input class="box card p-fluid" type="email" id="friendRequestInput" v-model="friendEmail" placeholder="친구의 Email">
+                    <input class="box card p-fluid" type="submit" id="friendRequestSubmit" value="요청 보내기">
+                </form>
+            <div>
+                <button @click="FriendRequest()" id="friendsRequestcloseBtn">CLOSE</button>
+            </div>
         </div>
-            
-            
+
+        <!-- 미팅 생성 창 -->
+        <div id="overlay" v-if="showCreateMeetingModal"></div>
+        <div id="createMeetingBox">
+            <MeetingCreate v-if="showCreateMeetingModal" @close-meeting-create="closeMeetingCreate" />
         </div>
-    </template>
+
+
+
+    </div>
+</template>
 
 
 
@@ -114,6 +137,9 @@
     import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
     import { useRouter } from 'vue-router';
     import { useAccountsStore } from '@/stores/accountsStore';
+    import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
+    import { memberLogoutApi } from "@/api/memberApi";
+
     const accountsStore = useAccountsStore()
     const router = useRouter()
     
@@ -121,6 +147,10 @@
     const topbarMenuActive = ref(false);
     const topbarNotificationActive = ref(false);  // 알림 팝업 유무 변수
     const topbarProfileActive = ref(false);  // 프로필 팝업 유무 변수
+    const friendRequestActive = ref(false);  // 친구요청창
+
+    const friendEmail = ref("");  // 친구 요청할 때 입력하는 email
+
 
     onMounted(() => {
         bindOutsideClickListener();
@@ -176,6 +206,8 @@
         if (accountsStore.isLogin) {
             topbarMenuActive.value = !topbarMenuActive.value;
             topbarNotificationActive.value = !topbarNotificationActive.value;
+            topbarProfileActive.value = false;
+
         } else if (!accountsStore.isLogin) {
             router.push({name: "member-login"})
         }
@@ -225,7 +257,7 @@
         if (accountsStore.isLogin) {
             topbarMenuActive.value = !topbarMenuActive.value;
             topbarProfileActive.value = !topbarProfileActive.value;
-
+            topbarNotificationActive.value = false;
         } else if (!accountsStore.isLogin) {
             router.push({name: "member-login"})
         }
@@ -240,42 +272,82 @@
         {
             name: "신동근",
             email: "tlsehdrms95@ssafy.com",
-            profileImg: "/로고 3.png"
+            profileImg: "/로고 3.png",
+            status : true
         },
         {
             name: "박정인",
             email: "qkrwjddls96@ssafy.com",
-            profileImg: "/로고 3.png"
+            profileImg: "/로고 3.png",
+            status : false
         },
         {
             name: "강지수",
             email: "rkdwltn96@ssafy.com",
-            profileImg: "/로고 3.png"
+            profileImg: "/로고 3.png",
+            status : true
         },
         {
             name: "김혁일",
             email: "rlagurdlf97@ssafy.com",
-            profileImg: "/로고 3.png"
+            profileImg: "/로고 3.png",
+            status : false
         },
         {
             name: "김재훈",
             email: "rlawogns98@ssafy.com",
-            profileImg: "/로고 3.png"
+            profileImg: "/로고 3.png",
+            status : true
         },
         {
             name: "이세은",
             email: "dltpdms99@ssafy.com",
-            profileImg: "/로고 3.png"
+            profileImg: "/로고 3.png",
+            status : true
         }
     ]);
+
+    // 친구요청 팝업 on/off
+    const FriendRequest = () => {
+        friendRequestActive.value = !friendRequestActive.value;
+        friendEmail.value = "";
+    };
+
+    const SendFriendRequest = () => {
+        // 친구 요청 로직
+    }
 // 프로필 팝업 부분 코드 끝
+
+    // topbar에서 미팅 생성
+    const showCreateMeetingModal = ref(false)
+    const closeMeetingCreate = () => {
+        showCreateMeetingModal.value = false;
+    }
+    const showCreateMeeting = () => {
+        showCreateMeetingModal.value = !showCreateMeetingModal.value
+    }
+  
+  // 로그아웃
+  const logOut = async () => {
+    try {
+      await memberLogoutApi((response) => {
+        if (response.data.dataHeader.successCode === 0) {
+          alert("로그아웃 되었습니다.");
+          router.push('');
+        } else {
+          alert(response.data.dataHeader.resultMessage);
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      alert("로그아웃 중 오류가 발생했습니다.");
+    }
+  }
 </script>
 
 
 
 <style scoped>
-.topbar {top: -100px; transition:top .2s;}
-
   .profileActive{
     display: block;
     position: absolute;
@@ -332,10 +404,10 @@
   }
   #notificationsList {
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
     width: 100%;
     border-radius: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.5);
     margin-bottom: -20px;
   }
   #notification {
@@ -369,8 +441,8 @@
   }
   
   #popUp {
-    width: 300px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    width: 330px;
+    border: 1px solid rgba(52, 152, 219, 0.5);
     border-radius: 5%;
     padding: 7px;
     top: 60px;
@@ -378,7 +450,7 @@
   #profileInfo {
     width: 100%;
     border-radius: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.5);
   }
   #myPageBtn {
     text-align: center;
@@ -391,7 +463,7 @@
     padding: 0.8%;
     font-weight: bold;
     border-radius: 5cm;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.5);
 
   }
   #logOutBtn {
@@ -405,15 +477,15 @@
     padding: 0.8%;
     font-weight: bold;
     border-radius: 5cm;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.5);
   }
 
   #friendsList {
     background-color: #FFFFFF;
     border-radius: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.5);
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-bottom: -50px;
     margin-top: -17px;
   }
@@ -425,11 +497,11 @@
     font-weight: bold;
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    width: 20%;
+    width: 22%;
     height: 10%;
     font-size: 11px;
     margin-right: 2px;
-    margin-left: 50px;
+    margin-left: 40px;
     margin-top: 4px;
   }
   #requestBtn {
@@ -440,11 +512,12 @@
     font-weight: bold;
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    width: 20%;
+    width: 22%;
     height: 10%;
     font-size: 11px;
-    margin-left: 2px;
+    margin-left: 100px;
     margin-top: 4px;
+    margin-right: 3px;
   }
   #friendInfo {
     display: flex;
@@ -484,4 +557,97 @@
     top: 15px;
   }
 
+
+
+
+
+  #friendRequestBox {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+  }
+
+  #friendRequestTitle {
+    color: #3498db;
+    font-weight: bold;
+    margin: 0;
+  }
+  #friendRequestForm {
+    border: none;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    padding-bottom: 0;
+  }
+  #friendRequestInput {
+    background-color: rgba(245, 245, 245, 0.1);
+    width: 300px;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    margin: 5px;
+    text-align: center; /* 입력 내용을 가운데 정렬합니다. */
+    padding: 8px;
+    font-size: large;
+  }
+  #friendRequestSubmit {
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    color: #FFFFFF;
+    background-color: #3498DB;
+    position: relative;
+    font-weight: bold;
+    border-radius: 5cm;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin-top: 5px; /* 위쪽 여백 추가 */
+    line-height: 0px;
+
+  }
+  #friendsRequestcloseBtn {
+    text-align: center;
+    color: #FFFFFF;
+    background-color: #3498DB;
+    position: relative;
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    font-weight: bold;
+    border-radius: 5cm;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    top: 15px;
+  }
+
+
+
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+    z-index: 997; /* 모달보다 한 단계 낮은 z-index */
+  }
+  #createMeetingBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 998;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+
+
+  .onLine {
+    color: #2ECC71;
+  }
+  .offLine {
+    color: #808080;
+  }
 </style>

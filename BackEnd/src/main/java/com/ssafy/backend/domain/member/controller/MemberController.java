@@ -3,6 +3,7 @@ package com.ssafy.backend.domain.member.controller;
 import com.ssafy.backend.domain.member.dto.*;
 import com.ssafy.backend.domain.member.service.MemberService;
 import com.ssafy.backend.global.common.dto.Message;
+import com.ssafy.backend.global.component.email.service.EmailService;
 import com.ssafy.backend.global.component.jwt.dto.TokenDto;
 import com.ssafy.backend.global.component.jwt.dto.TokenMemberInfoDto;
 import com.ssafy.backend.global.component.jwt.service.JwtService;
@@ -23,6 +24,20 @@ public class MemberController {
     private final MemberService memberService;
 
     private final JwtService jwtService;
+
+    private final EmailService emailService;
+
+    @PostMapping("/email/send/{memberEmail}")
+    public ResponseEntity<Message<Void>> sendEmailCode(@PathVariable String memberEmail) {
+        emailService.sendEmailCode(memberEmail);
+        return ResponseEntity.ok().body(Message.success());
+    }
+
+    @PostMapping("/email/verify/{memberEmail}/{emailCode}")
+    public ResponseEntity<Message<Void>> verifyEmailCode(@PathVariable String memberEmail, @PathVariable String emailCode) {
+        emailService.verifyEmailCode(memberEmail, emailCode);
+        return ResponseEntity.ok().body(Message.success());
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<Message<Void>> signUpMember(@RequestBody MemberSignUpRequestDto signUpRequestDto) {
@@ -78,5 +93,11 @@ public class MemberController {
         return ResponseEntity.ok().body(Message.success());
     }
 
+    @GetMapping("/get")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<MemberGetResponseDto>> getMember(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto) {
+        MemberGetResponseDto memberGetResponseDto = memberService.getMember(loginActiveDto.getId());
+        return ResponseEntity.ok().body(Message.success(memberGetResponseDto));
+    }
 
 }

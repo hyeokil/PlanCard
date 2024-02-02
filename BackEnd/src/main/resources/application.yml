@@ -1,9 +1,18 @@
 spring:
   jpa:
+    open-in-view: false
     defer-datasource-initialization: true
     generate-ddl: true
     hibernate:
       ddl-auto: create-drop                # ddl 자동 작성 여부
+    properties:
+      hibernate:
+        format_sql: true             # 하이버네이트가 실행한 SQL을 출력할 때 보기 좋게 정렬
+        use_sql_comments: true
+        show_sql: true               # 하이버네이트가 실행한 SQL을 출력
+        jdbc:
+          batch_size: 100              #   insert/update 쿼리를 원하는 개수만큼 모아서 DB에 날릴 수 있는 옵션
+        default_batch_fetch_size: 100
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # DB 드라이버
@@ -12,15 +21,16 @@ spring:
     password: ssafy                       # 데이터베이스 계정 비밀번호
 
 
-    open-in-view: false
+#    open-in-view: false
 
-    properties:
-      hibernate:
-        format_sql: true             # 하이버네이트가 실행한 SQL을 출력할 때 보기 좋게 정렬
-        show_sql: true               # 하이버네이트가 실행한 SQL을 출력
-        jdbc:
-          batch_size: 100              #   insert/update 쿼리를 원하는 개수만큼 모아서 DB에 날릴 수 있는 옵션
-        default_batch_fetch_size: 100
+#    properties:
+#      hibernate:
+#        format_sql: true             # 하이버네이트가 실행한 SQL을 출력할 때 보기 좋게 정렬
+#        use_sql_comments: true
+#        show_sql: true               # 하이버네이트가 실행한 SQL을 출력
+#        jdbc:
+#          batch_size: 100              #   insert/update 쿼리를 원하는 개수만큼 모아서 DB에 날릴 수 있는 옵션
+#        default_batch_fetch_size: 100
   batch:
     jdbc:
       initialize-schema: always
@@ -32,6 +42,19 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+  # Java Mail Sender setting (Google Mail)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: donggeun3484@gmail.com
+    password: tbplnbqivtwteeki
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 # jwt setting
 jwt:
@@ -57,6 +80,10 @@ logging:
 public-data:
   key: 734364614c73656e32386579495665
 
+stt:
+  id: YrKMFxbs_H29nZ1cZs3r
+  secret: -wXxmNVuqYD-F1_jNH7DRYgQOs0SlL8Vb2W2ArJR
+
 
 server:
   ssl:
@@ -72,7 +99,7 @@ oauth:
   kakao:
     client-id: 8e8a2a929b0cbf786ac9567191ac7ff7
     client-secret: OaZuL5rd6IcxxcwDd4pgcKRnJP9afsHo
-    redirect-uri: http://localhost:8080/api/v1/oauth/kakao/login
+    redirect-uri: http://localhost:5173/member/loading/kakao
     scope:
       - profile_nickname
       - profile_image
@@ -82,7 +109,7 @@ oauth:
   naver:
     client-id: d5K9OtbM_JbyOZIiOG54
     client-secret: UAm7jJPmsC
-    redirect_uri: http://localhost:8080/api/v1/oauth/naver/login
+    redirect_uri: http://localhost:5173/member/loading/naver
     scope:
       - nickname
       - name

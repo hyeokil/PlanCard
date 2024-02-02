@@ -1,50 +1,147 @@
 <template>
     <div class="card p-fluid">
-        <h1>MyPasswordRessetting.vue</h1>
-        <form @submit.prevent="passwordResetting">
-            <div class="box">
-                <input type="password" id="currentPassword" v-model.trim="currentPassword" placeholder="기존 비밀번호">
-            </div>
+      <div>
+        <h1>비밀번호 변경</h1>
+      </div>
+      
+      <hr id="separator">
 
-            <div class="box">
-                <input type="password" id="newPassword1" v-model.trim="newPassword1" placeholder="새로운 비밀번호">
-            </div>
+      <div id="box">
 
-            <div class="box">
-                <input type="password" id="newPassword2" v-model.trim="newPassword2" placeholder="새로운 비밀번호 재입력">
+        <div class="container; card p-fluid" id="resettingBox">
+          <h1 id="passwordResettingTitle">비밀번호 변경</h1>
+          
+          <form @submit.prevent="passwordResetting()" id="passwordResettingForm">
+            
+            <div class="box, card p-fluid" id="nowPasswordInput">
+              <input type="password" id="nowPassword" v-model.trim="nowPassword" placeholder="기존 비밀번호">
             </div>
-    
-            <div class="box" style=" text-align: center;">
-                <input type="submit" style="display: inline-block;" value="변경하기">
+            
+            <div class="box, card p-fluid" id="changePassword1Input">
+              <input type="password" id="changePassword1" v-model.trim="changePassword1" placeholder="새로운 비밀번호">
             </div>
-        </form>
+            
+            <div class="box, card p-fluid" id="changePassword2Input">
+              <input type="password" id="changePassword2" v-model.trim="changePassword2" placeholder="새로운 비밀번호 확인">
+            </div>
+            
+            <div class="box, card p-fluid"  id="resettingSubmit" style=" text-align: center;">
+              <input type="submit" value="변경하기">
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-</template>
+    </template>
+
 
 
 
 <script setup>
   import { ref } from 'vue';
-  import { useAccountsStore } from '@/stores/accounts';
+  import { passwordResettingApi } from "@/api/memberApi";
+  import { useRouter } from 'vue-router';
+  const router = useRouter();
 
-  const accountsStore = useAccountsStore()
 
-  const currentPassword = ref(null);
-  const newPassword1 = ref(null);
-  const newPassword2 = ref(null);
-
-  const passwordResetting = function () {
-      const info = {
-        currentPassword: currentPassword.value,
-        newPassword1: newPassword1.value,
-        newPassword2: newPassword2.value,
+  const nowPassword = ref(null);
+  const changePassword1 = ref(null);
+  const changePassword2 = ref(null);
+  
+  const passwordResetting = async () => {
+    if (changePassword1.value !== changePassword2.value) {
+      alert("변경할 비밀번호가 같지 않습니다.")
+    } else {
+      const passwordResettingData = {
+        nowPassword: nowPassword.value,
+        changePassword: changePassword1.value
+      };
+      
+      try {
+        await passwordResettingApi(passwordResettingData,
+        (response) => {
+          if (response.data.dataHeader.successCode === 0) {
+            alert("비밀번호 변경에 성공했습니다.");
+            router.push('');
+          } else {
+            alert(response.data.dataHeader.resultMessage);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+        alert("비밀번호 변경 중 오류가 발생했습니다.");
       }
-      accountsStore.passwordResetting(info)
+    }
   }
-</script>
+  </script>
 
 
 
 <style scoped>
+  h1 {
+    font-weight: bold;
+  }
+  #separator {
+    border: none;
+    border-top: 4px solid #3498DB;
+    border-radius: 10px;
+  }
 
-</style>@/stores/accountStore
+  #box {
+  display: flex;
+  justify-content: center;
+  }
+
+  #resettingBox {
+    background-color: #FFFFFF;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    width: 400px;
+    height: 50%;
+    padding: 40px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+  #passwordResettingTitle {
+    color: #3498db;
+    font-weight: bold;
+  }
+  #passwordResettingForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+
+  #nowPassword, #changePassword1, #changePassword2 {
+    height: 35px;
+    width: 250px;
+  }
+  #nowPasswordInput, #changePassword1Input, #changePassword2Input {
+    background-color: rgba(245, 245, 245, 0.1);
+    width: 90%;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    height: 40px;
+    margin-bottom: 10px;
+  }
+
+
+  #resettingSubmit {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #3498db;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: medium;
+    height: 20px;
+    padding: 20px;
+  }
+
+</style>

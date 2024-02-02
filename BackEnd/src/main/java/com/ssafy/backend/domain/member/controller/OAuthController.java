@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -23,14 +25,11 @@ public class OAuthController {
     private final OAuthService oAuthService;
     private final JwtService jwtService;
 
-    @SneakyThrows
     @GetMapping("/{oAuthDomain}")
-    public ResponseEntity<Message<Void>> provideAuthCodeRequestUrl(@PathVariable("oAuthDomain") OAuthDomain oAuthDomain,
-                                                                   HttpServletResponse response) {
+    public ResponseEntity<Message<String>> provideAuthCodeRequestUrl(@PathVariable("oAuthDomain") OAuthDomain oAuthDomain) {
         String redirectUrl = oAuthService.provideAuthCodeRequestUrl(oAuthDomain);
-        response.sendRedirect(redirectUrl);
-        log.info(redirectUrl);
-        return ResponseEntity.ok().body(Message.success());
+//        response.sendRedirect(redirectUrl);
+        return ResponseEntity.ok().body(Message.success(redirectUrl));
     }
 
     @GetMapping("/{oAuthDomain}/login")
@@ -48,7 +47,6 @@ public class OAuthController {
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(3600); // 60분(3600초)으로 설정
         response.addCookie(accessTokenCookie);
-
         return ResponseEntity.ok().body(Message.success(loginResponseDto));
     }
 }

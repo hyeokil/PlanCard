@@ -41,7 +41,7 @@ public class Alarm extends BaseEntity {
         }
     }
     public void accept() {
-        this.status = AlarmStatus.ACCEPTED;
+        this.status = AlarmStatus.ACCEPT;
     }
 
 }

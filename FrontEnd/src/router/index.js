@@ -1,18 +1,18 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import AppLayout from "@/layout/AppLayout.vue";
 //  createWebHistory,
 const router = createRouter({
-  history: createWebHashHistory(),  // 브라우저 히스토리 관리 (createWebHashHistory로 해시모드를 선택)
+  history: createWebHistory(import.meta.env.BASE_URL),  // 변경된 부분
   routes: [  // routes : 라우터 경로와 해당 컴포넌트를 정의
     {
       path: "",
       component: AppLayout,
+      redirect: { name: "main" },
       children: [  // children : 하위 경로
         {
-          path: "main",  // 메인 페이지
+          path: "/",  // 메인 페이지
           name: "main",
           component: () => import("@/views/TheMainView.vue"),
-          // redirect: { name: "main" },
           // children: [
           //   {
           //     path: "plan",  // 메인 페이지에 나오는 지도
@@ -32,6 +32,11 @@ const router = createRouter({
               component: () => import("@/components/member/MemberLogin.vue"),
             },
             {
+              path: "loading/:oAuthDomain",
+              name: "member-loading",
+              component: () => import("@/components/member/MemberLoading.vue"),
+            },
+            {
               path: "signup",
               name: "member-signup",
               component: () => import("@/components/member/MemberSignUp.vue"),
@@ -40,11 +45,27 @@ const router = createRouter({
               path: "mypage",
               name: "member-mypage",
               component: () => import("@/components/member/MemberMyPage.vue"),
+              redirect: { name: "mypage-mypagemain" },
               children: [
+                {
+                  path: "mypagemain",
+                  name: "mypage-mypagemain",
+                  component: () => import("@/components/member/mypage/MyPageMain.vue"),
+                },
                 {
                   path: "myplan",
                   name: "mypage-myplan",
                   component: () => import("@/components/member/mypage/MyPagePlan.vue"),
+                },
+                {
+                  path: "myPasswordResetting",
+                  name: "mypage-myPasswordResetting",
+                  component: () => import("@/components/member/mypage/myPasswordResetting.vue"),
+                },
+                {
+                  path: "myInfoModify",
+                  name: "mypage-myInfoModify",
+                  component: () => import("@/components/member/mypage/myInfoModify.vue"),
                 },
               ],
             },
@@ -67,7 +88,7 @@ const router = createRouter({
               component: () => import("@/components/meeting/MeetingDetail.vue"),
             },
           ],
-        },        
+        }     
       ],
     },
   ],

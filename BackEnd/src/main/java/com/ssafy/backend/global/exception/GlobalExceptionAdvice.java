@@ -7,6 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import static com.ssafy.backend.global.exception.GlobalError.*;
 
@@ -38,6 +39,13 @@ public class GlobalExceptionAdvice {
 
         return ResponseEntity.status(AUTHENTICATION_EXCEPTION.getHttpStatus())
                 .body(Message.fail(null, AUTHENTICATION_EXCEPTION.getErrorMessage()));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Message<Void>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        log.warn("파일 업로드 에러 ex : {}", (Object[]) exception.getStackTrace());
+        return ResponseEntity.status(MAXIMUM_UPLOAD_SIZE.getHttpStatus())
+                .body(Message.fail(null, MAXIMUM_UPLOAD_SIZE.getErrorMessage()));
     }
 
     /**

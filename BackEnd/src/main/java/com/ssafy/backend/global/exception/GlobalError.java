@@ -12,6 +12,7 @@ public enum GlobalError {
     CERTIFICATION_NOT_TOKEN(HttpStatus.UNAUTHORIZED, "자격 증명이 되어 있지 않은 토큰입니다."),
     FORBIDDEN_EXCEPTION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     AUTHENTICATION_EXCEPTION(HttpStatus.UNAUTHORIZED, "인증되지 않은 요청입니다."),
+    MAXIMUM_UPLOAD_SIZE(HttpStatus.EXPECTATION_FAILED, "파일 크기가 최대 허용 크기를 초과했습니다."),
     DEFAULT_EXCEPTION(HttpStatus.BAD_REQUEST, "기본에러 입니다.");
 
     private final HttpStatus httpStatus;
