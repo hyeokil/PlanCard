@@ -24,16 +24,17 @@
                     />
                 
                 <h2>친구 선택</h2>
-                <input class="box, card p-fluid" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="친구 검색">
                 <div class="box, card p-fluid" id="selectFriendsDiv">
+                    <span v-if="!selectedFriends.length" id="selectedFriendHolder">친구를 선택하세요</span>
                     <p v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" id="selectedFriend" @click="removeFriend(selectedFriend)">
                         {{ truncateName(selectedFriend.name) }}
                         <span>[X]</span>
                     </p>
                 </div>
+                <input class="box, card p-fluid" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="친구 및 이메일 검색">
                 <div class="box, card p-fluid" id="FriendsDiv">
-                    <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)">
-                        <p>{{ friend.name }}</p>
+                    <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
+                        <p>{{ friend.name }} &nbsp; {{ friend.email }}</p>
                     </div>
                 </div>
             
@@ -41,7 +42,7 @@
                     <input class="card p-fluid" type="submit" id="createSubmit" value = 시작하기>
                 </div>
                 <div style="margin-top: 10px;">
-                    <button class="card p-fluid" id="logoutBtn" @click="$emit('closeMeetingCreate')">
+                    <button class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
                       닫기
                     </button>
                 </div>
@@ -63,8 +64,6 @@
 <script setup>
     import { ref, computed } from "vue";
     import Calendar from 'primevue/calendar'
-    import { useRouter } from "vue-router";
-    const router = useRouter()
     
     const tripTitle = ref("");  // 여행 이름
     const selectedDates = ref(null); // 선택된 여행 일정
@@ -81,31 +80,54 @@
     }
 
 
-
+    // 유저 리스트 dummy
+    const users = ref([
+        { id: 12, name: '유저에요1', email: "user1@ssafy.com" },
+        { id: 13, name: '유저에요2', email: "user2@ssafy.com" },
+        { id: 14, name: '유저에요3', email: "user3@ssafy.com" },
+        { id: 15, name: '유저에요4', email: "user4@ssafy.com" },
+        { id: 16, name: '유저에요5', email: "user5@ssafy.com" },
+        { id: 17, name: '유저에요6', email: "user6@ssafy.com" },
+        { id: 18, name: '유저에요7', email: "user7@ssafy.com" },
+        { id: 19, name: '유저에요8', email: "user8@ssafy.com" },
+      ]);
 
     // 친구 리스트 dummy
     const friends = ref([
-        { id: 1, name: '김수한무거' },
-        { id: 2, name: '김재훈1' },
-        { id: 3, name: '김재훈2' },
-        { id: 4, name: '김재훈3' },
-        { id: 5, name: '김재훈4' },
-        { id: 6, name: '김재훈5' },
-        { id: 7, name: '김재훈6' },
-        { id: 8, name: '김재훈7' },
-        { id: 9, name: '김재훈8' },
+        { id: 1, name: '김수한무거', email: "tngksanrj@ssafy.com" },
+        { id: 2, name: '김재훈1', email: "rlawogns1@ssafy.com" },
+        { id: 3, name: '김재훈2', email: "rlawogns2@ssafy.com" },
+        { id: 4, name: '김재훈3', email: "rlawogns3@ssafy.com" },
+        { id: 5, name: '김재훈4', email: "rlawogns4@ssafy.com" },
+        { id: 6, name: '김재훈5', email: "rlawogns5@ssafy.com" },
+        { id: 7, name: '김재훈6', email: "rlawogns6@ssafy.com" },
+        { id: 8, name: '김재훈7', email: "rlawogns7@ssafy.com" },
+        { id: 9, name: '김재훈8', email: "rlawogns8@ssafy.com" },
     ]);
     // 친구 검색어
-    const searchText = ref('');
+    const searchText = ref("");
+
 
     // 검색어를 기반으로 친구 필터링
     const filteredFriends = computed(() => {
     if (!searchText.value) {
         return friends.value;
     } else {
-        return friends.value.filter(friend =>
+        // return friends.value.filter(friend =>
+        // friend.name.toLowerCase().includes(searchText.value.toLowerCase())
+        // );
+
+      // 친구 목록 중 이름이 맞는 친구 필터링
+      const filteredFriendsList = friends.value.filter(friend =>
         friend.name.toLowerCase().includes(searchText.value.toLowerCase())
-        );
+      );
+      // 전체 유저 목록 중 이메일이 맞는 친구 필터링
+      const filteredUsersList = users.value.filter(user =>
+        user.email.toLowerCase().includes(searchText.value.toLowerCase())
+      );
+      // 합치기
+      const combinedList = [...filteredFriendsList, ...filteredUsersList];
+      return combinedList;
     }
     });
 
@@ -113,6 +135,7 @@
     const addFriend = (friend) => {
         if (!selectedFriends.value.some(fr => fr.id === friend.id)) {
             selectedFriends.value.push(friend);
+            console.log(selectedFriends.value)
         }
     }
     // 선택된 친구를 배열에서 삭제
@@ -120,6 +143,8 @@
       const index = selectedFriends.value.findIndex(fr => fr.id === friend.id);
       if (index !== -1) {
         selectedFriends.value.splice(index, 1);
+        console.log(selectedFriends.value)
+
       }
     }
     // 이름이 4글자를 넘어가면 요약
@@ -136,9 +161,6 @@
 
 
 <style scoped>
-  h1 {
-    font-weight: bold;
-  }
   #separator {
     border: none;
     border-top: 4px solid #3498DB;
@@ -176,7 +198,7 @@
     background-color: rgba(245, 245, 245, 0.1);
     width: 100%;
     align-items: center;
-    border: 1px solid rgba(52, 152, 219, 0.5);
+    border: 5px solid rgba(52, 152, 219, 0.5);
     height: 40px;
     margin-bottom: 10px;
     display: flex;
@@ -187,6 +209,10 @@
     white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
 
   }
+  #selectedFriendHolder {
+  color: rgba(75, 85, 99, 0.8);
+  margin-left: -4px;
+}
   #selectedFriend {
     text-align: center;
     color: white;
@@ -196,9 +222,10 @@
     margin-left: 10px;
     width: 50%;
     padding: 2%;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     white-space: nowrap;
+    cursor: pointer;
   }
   #FriendsDiv {
     background-color: rgba(245, 245, 245, 0.1);
@@ -212,7 +239,7 @@
 
   h2 {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #createSubmit {
     width: 100%;
@@ -222,13 +249,13 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
     line-height: 0px;
   }
-  #logoutBtn {
+  #closeBtn {
     width: 100%;
     display: flex;
     align-items: center;
@@ -236,10 +263,13 @@
     border: 1px solid rgba(52, 152, 219, 0.5);
     background-color: #FFFFFF;
     color: rgba(0, 0, 0, 0.5);
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
     line-height: 0px;
+  }
+  #friendList {
+    cursor: pointer;
   }
 </style>

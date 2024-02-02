@@ -34,7 +34,7 @@
             <p id="userName" @click="onTopBarMenuProfileButton()" v-show="!accountsStore.isLogin">로그인</p>
             <!-- 로그인 상태 -->
             <p id="userName" @click="onTopBarMenuProfileButton()" v-show="accountsStore.isLogin">김싸피</p>
-            <p style="padding-top: 10px; font-weight: 900;" v-show="accountsStore.isLogin">님</p>
+            <p style="padding-top: 10px;" v-show="accountsStore.isLogin">님</p>
         </div>
 
 
@@ -67,7 +67,7 @@
                 <v-list id="profileInfo">
                     <v-list-item prepend-avatar="/로고 3.png">
                         <template #title>
-                            <span style="font-size: 18px; font-weight: bold; color: #3498DB;">김싸피</span>
+                            <span style="font-size: 18px; color: #3498DB;">김싸피</span>
                         </template>
                         <template #subtitle>
                             <span style="font-size: 15px; ">ssafy@ssafy.com</span>
@@ -81,8 +81,7 @@
                 <v-divider></v-divider>
                 <div id="friendsList">
                     <div style="display: flex;">
-                        <p style="font-weight: bold; font-size: 20px; padding-left: 10px; margin-bottom: 0px; color: rgba(0, 0, 0, 0.5);">My Friends</p>
-                        <!-- <button id="requestedBtn">받은 신청</button> -->
+                        <p style="font-size: 20px; padding-left: 10px; margin-bottom: 0px; color: rgba(0, 0, 0, 0.5);">My Friends</p>
                         <button id="requestBtn" @click="FriendRequest()">친구 요청</button>
                     </div>
                     <div v-for="friend in friends" :key="friend.index" id="friendInfo">
@@ -386,7 +385,7 @@
 
   #notificatonSet {
     font-size: 25px;
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #3498DB;
     margin-left: 3px;
   }
@@ -396,7 +395,7 @@
     background-color: #3498DB;
     width: 30%;
     height: 100%;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     margin-top: 5px;
@@ -436,7 +435,7 @@
 
   #userName {
     padding-top: 10px;
-    font-weight: 900;
+    /* font-weight:bold; */
     color: #3498DB;
   }
   
@@ -461,7 +460,7 @@
     margin-right: 1%;
     width: 49%;
     padding: 0.8%;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(52, 152, 219, 0.5);
 
@@ -475,7 +474,7 @@
     margin-left: 1%;
     width: 49%;
     padding: 0.8%;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(52, 152, 219, 0.5);
   }
@@ -489,27 +488,13 @@
     margin-bottom: -50px;
     margin-top: -17px;
   }
-  #requestedBtn {
-    text-align: center;
-    color: #FFFFFF;
-    background-color: #3498DB;
-    position: relative;
-    font-weight: bold;
-    border-radius: 5cm;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    width: 22%;
-    height: 10%;
-    font-size: 11px;
-    margin-right: 2px;
-    margin-left: 40px;
-    margin-top: 4px;
-  }
+
   #requestBtn {
     text-align: center;
     color: #FFFFFF;
     background-color: #3498DB;
     position: relative;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     width: 22%;
@@ -532,7 +517,7 @@
   #friendName {
     color: #3498DB;
     font-size: 18px;
-    font-weight: bold;
+    /* font-weight: bold; */
     margin-bottom: 0;
   }
   #friendEmail {
@@ -551,7 +536,7 @@
     width: 100%;
     height: 25px;
     line-height: 25px;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     top: 15px;
@@ -571,7 +556,7 @@
 
   #friendRequestTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
   }
   #friendRequestForm {
@@ -599,7 +584,7 @@
     color: #FFFFFF;
     background-color: #3498DB;
     position: relative;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -615,7 +600,7 @@
     width: 100%;
     height: 25px;
     line-height: 25px;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     top: 15px;

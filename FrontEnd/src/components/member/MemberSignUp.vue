@@ -186,7 +186,7 @@ const imageUpload = async (file) => {
   }
   #signUpTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #signUpForm {
     display: flex;
@@ -243,7 +243,7 @@ const imageUpload = async (file) => {
     background-color: #FFFFFF;
     border: 1px solid rgba(52, 152, 219, 0.5);
     color: rgba(0, 0, 0, 0.5);
-    font-weight: bold;
+    /* font-weight: bold; */
     width: 100%;
     padding: 5px;
     margin-top: 20px;
@@ -270,7 +270,7 @@ const imageUpload = async (file) => {
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;

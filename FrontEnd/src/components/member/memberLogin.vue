@@ -122,7 +122,7 @@ const goSignUp = function () {
   }
   #logInTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
     padding-bottom: 40px;
   }
 
@@ -172,7 +172,7 @@ const goSignUp = function () {
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
@@ -185,12 +185,12 @@ const goSignUp = function () {
   }
   #signUpGuide {
     color: rgba(0, 0, 0, 0.3);
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
     margin-right: 10px;
   }
   #signUpBtn {
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #3498db;
   }
   #etc2 {
@@ -198,19 +198,19 @@ const goSignUp = function () {
   }
   #pwSearchGuide {
     color: rgba(0, 0, 0, 0.3);
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
     margin-right: 10px;
   }
   #pwSearchBtn {
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #3498db;
   }
 
   #otherLogin {
     background-color: #FFFFFF;
     color: rgba(0, 0, 0, 0.5);
-    font-weight: bold;
+    /* font-weight: bold; */
     width: 100%;
     padding: 5px;
     margin-top: 20px;

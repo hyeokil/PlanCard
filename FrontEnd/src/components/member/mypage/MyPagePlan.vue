@@ -4,7 +4,7 @@
     <div id="div1">
       <h1>My plan</h1>
       <v-btn class="startBtn" id="addBtn" @click="showCreateMeeting">
-        <p style="margin-bottom: 20%;">+</p>
+        <p style="margin-top: 20%;">+</p>
       </v-btn>
     </div>
     
@@ -78,7 +78,6 @@
     background-color: #3498DB;
     color: white;
     font-size: 40px;
-    font-weight: bold;
     padding: 0;
     margin: 0;
     
@@ -106,7 +105,7 @@
   }
   #planName {
     color: #3498DB;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size:xx-large;
     margin-top: 0;
     margin-bottom: 0;
@@ -126,7 +125,7 @@
   #planPeople{
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: larger;
     margin-right: 2%;
     margin-left: 2%;
@@ -139,7 +138,7 @@
   #planDate {
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: larger;
     margin-right: 2%;
     margin-left: 2%;
