@@ -37,11 +37,17 @@ spring:
     job:
       enabled: false
 
-  # Redis setting
+  # NoSQL setting
   data:
+    # Redis setting
     redis:
       host: localhost
       port: 6379
+
+    # mongodb setting
+    mongodb:
+      uri: mongodb://localhost:27017/planCard
+
 
   # Java Mail Sender setting (Google Mail)
   mail:
@@ -56,17 +62,23 @@ spring:
           starttls:
             enable: true
 
+  # RabbitMQ setting
+  rabbitmq:
+    host: localhost  # RabbitMQ 서버 호스트
+    port: 15672       # RabbitMQ 서버 포트, 기본값은 15672
+    username: guest  # RabbitMQ 사용자 이름, 기본값은 guest
+    password: guest  # RabbitMQ 비밀번호, 기본값은 guest
+    virtual-host: /  # RabbitMQ 가상 호스트, 기본값은 /
+
 # jwt setting
 jwt:
   secret-key:
     access: TestAccessKey111111122222222223333333333333aaaaaaaaabbbbbbbbccccccccdddddddddfqwrqwfqwifjaisfjoihfoiqwflasjdglkkjasdlgjlkasdgjiowejgliasjglasjdgio
     refresh: TestRefreshKey111111122222222223333333333333aaaaaaaaabbbbbbbbccccccccdddddddddfqwrqwfqwifjaisfjoihfoiqwflasjdglkkjasdlgjlkasdgjiowejgliasjglasjdgio
-    signup: TestSignupKey111111122222222223333333333333aaaaaaaaabbbbbbbbccccccccdddddddddfqwrqwfqwifjaisfjoihfoiqwflasjdglkkjasdlgjlkasdgjiowejgliasjglasjdgio
 
   expired-min:
     access: 60   # 액세스 토큰 만료제한시간 60분 (1시간)
     refresh: 10080  # 리프레쉬 토큰 만료제한시간 10080분 (7일)
-    signup: 5
 
 # log 관리
 logging:

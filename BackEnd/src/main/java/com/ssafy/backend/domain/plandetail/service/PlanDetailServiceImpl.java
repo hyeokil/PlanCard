@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,21 +23,38 @@ public class PlanDetailServiceImpl implements PlanDetailService{
 
     private final PlanRepository planRepository;
     private final CardRepository cardRepository;
-
     private final PlanDetailRepository planDetailRepository;
     @Override
-    public void createPlanDetail(Long planId, PlanDetailCreateRequestDto planDetailCreateRequestDto) {
-           Plan plan = planRepository.findById(planId).orElseThrow();
-           Card card = cardRepository.findById(planDetailCreateRequestDto.getCardId()).orElseThrow();
-           planDetailRepository.save(planDetailCreateRequestDto.toEntity(card, plan));
+    public void updatePlanDetail(Long planId,
+                                          List<PlanDetailCreateRequestDto> planDetailCreateRequestDtoList) {
+        if (planDetailCreateRequestDtoList == null || planDetailCreateRequestDtoList.isEmpty()) {
+            throw new RuntimeException("생성할 여행 상세 계획이 없습니다.");
+        }
+        Plan plan = planRepository.findById(planId).orElseThrow();
+        Map<Long, PlanDetail> existingPlanDetails = planDetailRepository.findByPlanId(planId)
+                .stream()
+                .collect(Collectors.toMap(PlanDetail::getId, planDetail -> planDetail));
+        for (PlanDetailCreateRequestDto newplanDetail : planDetailCreateRequestDtoList) {
+            if (newplanDetail.getId() == null) {
+                Card card = cardRepository.findById(newplanDetail.getCardId()).orElseThrow();
+                planDetailRepository.save(newplanDetail.toEntity(card, plan));
+            } else {
+                PlanDetail planDetail = planDetailRepository.findById(newplanDetail.getId()).orElseThrow();
+                planDetail.update(newplanDetail.getOrderNumber(), newplanDetail.getDay());
+                planDetailRepository.save(planDetail);
+                existingPlanDetails.remove(newplanDetail.getId());
+            }
+        }
+        planDetailRepository.deleteAll(existingPlanDetails.values());
     }
 
     @Override
     public List<PlanDetailListResponseDto> getPlanDetailList(Long planId) {
         List<PlanDetail> planDetails = planDetailRepository.findByPlanId(planId);
 
-        return planDetails.stream()
+        List<PlanDetailListResponseDto> sortedPlanDetailList = planDetails.stream()
                 .map(planDetail -> new PlanDetailListResponseDto(
+                        planDetail.getId(),
                         planDetail.getCard().getId(),
                         planDetail.getCard().getPosition(),
                         planDetail.getCard().getMemo(),
@@ -44,6 +62,9 @@ public class PlanDetailServiceImpl implements PlanDetailService{
                         planDetail.getCard().getPlace().getAddress(),
                         planDetail.getOrderNumber(),
                         planDetail.getDay()))
+                .sorted() // Comparable에 따라 정렬
                 .collect(Collectors.toList());
+
+        return sortedPlanDetailList;
     }
 }

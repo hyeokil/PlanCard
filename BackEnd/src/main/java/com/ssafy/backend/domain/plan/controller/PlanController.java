@@ -1,7 +1,7 @@
 package com.ssafy.backend.domain.plan.controller;
 
 import com.ssafy.backend.domain.member.dto.MemberLoginActiveDto;
-import com.ssafy.backend.domain.plan.dto.MyPlanListResponseDto;
+import com.ssafy.backend.domain.plan.dto.MyPlanResponseDto;
 import com.ssafy.backend.domain.plan.dto.PlanCreateRequestDto;
 import com.ssafy.backend.domain.plan.dto.PlanDateUpdateRequestDto;
 import com.ssafy.backend.domain.plan.dto.PlanNameUpdateRequestDto;
@@ -53,9 +53,16 @@ public class PlanController {
 
     @GetMapping("/myplanlist")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<List<MyPlanListResponseDto>>> getMyPlanList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto) {
-        List<MyPlanListResponseDto> myPlanList = planService.getMyPlanList(loginActiveDto.getId());
+    public ResponseEntity<Message<List<MyPlanResponseDto>>> getMyPlanList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto) {
+        List<MyPlanResponseDto> myPlanList = planService.getMyPlanList(loginActiveDto.getId());
         return ResponseEntity.ok().body(Message.success(myPlanList));
+    }
+
+    @GetMapping("/{planId}")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<MyPlanResponseDto>> getMyPlan(@PathVariable("planId") Long planId) {
+        MyPlanResponseDto myPlan = planService.getMyPlan(planId);
+        return ResponseEntity.ok().body(Message.success(myPlan));
     }
 
 

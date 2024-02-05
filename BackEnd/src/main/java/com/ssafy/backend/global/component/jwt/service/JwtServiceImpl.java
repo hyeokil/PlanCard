@@ -3,19 +3,14 @@ package com.ssafy.backend.global.component.jwt.service;
 import com.ssafy.backend.global.component.jwt.JwtIssuer;
 import com.ssafy.backend.global.component.jwt.JwtParser;
 import com.ssafy.backend.global.component.jwt.JwtUtils;
-import com.ssafy.backend.global.component.jwt.dto.SignUpTokenMemberInfoDto;
 import com.ssafy.backend.global.component.jwt.dto.TokenDto;
 import com.ssafy.backend.global.component.jwt.dto.TokenMemberInfoDto;
 import com.ssafy.backend.global.component.jwt.repository.RefreshRepository;
-import com.ssafy.backend.global.exception.GlobalError;
-import com.ssafy.backend.global.exception.TokenException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import static com.ssafy.backend.global.component.jwt.JwtUtils.*;
 
@@ -69,23 +64,4 @@ public class JwtServiceImpl implements JwtService {
         return null;
     }
 
-    @Override
-    public String issueSignUpToken(@NonNull String email, @NonNull String provider) {
-        Claims claims = Jwts.claims();
-        claims.put(KEY_ID, email);
-        claims.put(KEY_PROVIDER, provider);
-
-        return jwtIssuer.issueToken(claims, jwtUtils.getEncodedSignupKey());
-    }
-
-    @Override
-    public SignUpTokenMemberInfoDto parseSignUpToken(@NonNull String signUpToken) {
-        Claims claims = jwtParser.parseToken(signUpToken, jwtUtils.getEncodedSignupKey());
-
-        if(!StringUtils.hasText(claims.get(KEY_PROVIDER, String.class))) {
-            throw new TokenException(GlobalError.INVALID_TOKEN);
-        }
-
-        return SignUpTokenMemberInfoDto.from(claims);
-    }
 }

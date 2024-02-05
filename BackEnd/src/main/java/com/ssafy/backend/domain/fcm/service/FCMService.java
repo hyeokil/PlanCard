@@ -6,5 +6,5 @@ public interface FCMService {
 
     void deleteFCMToken(Long memberId);
 
-    void sendMessageTo(Long memberId, String title, String content);
+    void sendMessageTo(Long memberId, String content);
 }

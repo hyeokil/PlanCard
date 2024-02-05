@@ -13,21 +13,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/plan")
+@RequestMapping("/api/v1/plan/{planId}")
 public class PlanDetailController {
     private final PlanDetailService planDetailService;
 
-    @PostMapping("/{planId}/detail")
+    @PostMapping("/detail/update")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<Void>> createAndUpdatePlanDetail(@PathVariable("planId") Long planId,
-                                                          @RequestBody PlanDetailCreateRequestDto planDetailCreateRequestDto) {
-        planDetailService.createPlanDetail(planId, planDetailCreateRequestDto);
+    public ResponseEntity<Message<Void>> updatePlanDetail(@PathVariable("planId") Long planId,
+                                                          @RequestBody List<PlanDetailCreateRequestDto> planDetailCreateRequestDtoList) {
+        planDetailService.updatePlanDetail(planId, planDetailCreateRequestDtoList);
         return ResponseEntity.ok().body(Message.success());
 
 
     }
 
-    @GetMapping("/{planId}/detail")
+    @GetMapping("/detail")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<Message<List<PlanDetailListResponseDto>>> getPlanDetailList(@PathVariable("planId") Long planId) {
         List<PlanDetailListResponseDto> planDetailList = planDetailService.getPlanDetailList(planId);

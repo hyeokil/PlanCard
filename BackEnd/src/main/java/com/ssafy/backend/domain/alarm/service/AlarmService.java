@@ -13,5 +13,7 @@ public interface AlarmService {
 
     SliceResponse getAlarmList(Long memberId, Pageable pageable);
 
+    List<AlarmDto> getAlarmList(Long memberId, Long lastAlarmId, int limit);
+
     void handleAlarm(Long memberId, Long alarmId, AlarmStatus action);
 }

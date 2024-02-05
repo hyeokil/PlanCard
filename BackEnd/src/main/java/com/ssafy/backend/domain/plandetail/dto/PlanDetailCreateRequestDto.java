@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlanDetailCreateRequestDto {
 
+    private Long id;
+
     private Long cardId;
 
     private int orderNumber;
@@ -26,8 +28,4 @@ public class PlanDetailCreateRequestDto {
                 .day(day)
                 .build();
     }
-
-
-
-
 }

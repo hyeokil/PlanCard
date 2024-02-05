@@ -27,5 +27,10 @@ public class PlanDetail {
 
     private int day;
 
+    public void update(int orderNumber, int day) {
+        this.orderNumber = orderNumber;
+        this.day = day;
+    }
+
 
 }

@@ -23,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity  // Spring Security를 활성화하기 위한 어노테이션입니다.
 @RequiredArgsConstructor    // Lombok을 사용하여 생성자 주입을 자동으로 구현합니다.
-@EnableMethodSecurity(securedEnabled = true,prePostEnabled = true)  // 메서드 수준의 보안을 활성화 합니다.
+@EnableMethodSecurity(securedEnabled = true)  // 메서드 수준의 보안을 활성화 합니다.
 public class SecurityConfig {
 
     // 의존성 주입을 위한 필드 선언

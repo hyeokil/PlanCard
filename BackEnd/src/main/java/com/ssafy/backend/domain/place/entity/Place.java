@@ -18,8 +18,12 @@ public class Place {
     private Long id;
 
     private String name;
-    private String address;
-    private String category;
     private String image;
+    private String category;
+    private String address;
+
+    private Double latitude;
+    private Double logitude;
+
 
 }

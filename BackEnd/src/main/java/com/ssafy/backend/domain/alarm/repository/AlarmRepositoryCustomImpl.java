@@ -1,8 +1,10 @@
 package com.ssafy.backend.domain.alarm.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
+import com.ssafy.backend.domain.alarm.entity.QAlarm;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +42,34 @@ public class AlarmRepositoryCustomImpl implements AlarmRepositoryCustom {
                 .fetch();
 
         return new SliceImpl<>(alarms, pageable, hasNext(alarms, pageable.getPageSize()));
+    }
+
+    @Override
+    public List<AlarmDto> findAlarmsAfterId(Long memberId, Long lastAlarmId, int limit) {
+        QAlarm alarm = QAlarm.alarm;
+
+        BooleanExpression wherePredicate = alarm.toMember.id.eq(memberId)
+                .and(alarm.status.ne(AlarmStatus.ACCEPT));
+
+        if (lastAlarmId != null) {
+            wherePredicate = wherePredicate.and(alarm.id.lt(lastAlarmId));
+        }
+
+        return queryFactory.select(
+                        Projections.bean(
+                                AlarmDto.class,
+                                alarm.id.as("alarmId"),
+                                alarm.fromMember.id.as("fromMemberId"),
+                                alarm.toMember.id.as("toMemberId"),
+                                alarm.type,
+                                alarm.content,
+                                alarm.status
+                        ))
+                .from(alarm)
+                .where(wherePredicate)
+                .orderBy(alarm.id.desc())
+                .limit(limit)
+                .fetch();
     }
 
     private boolean hasNext(List<?> contents, int limit) {

@@ -27,7 +27,7 @@ public class FCMServiceImpl implements FCMService {
     }
 
     @Override
-    public void sendMessageTo(Long memberId, String title, String body) {
+    public void sendMessageTo(Long memberId, String body) {
         // token 찾고
         Optional<String> fcmToken = fcmRepository.find(memberId);
 
@@ -41,9 +41,7 @@ public class FCMServiceImpl implements FCMService {
         Message message = Message.builder()
                 .setToken(token)
                 .setNotification(Notification.builder()
-                        .setTitle(title)
                         .setBody(body)
-//                        .setImage(image)
                         .build())
                 .build();
 

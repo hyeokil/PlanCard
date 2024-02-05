@@ -42,14 +42,18 @@ public class AlarmServiceImpl implements AlarmService {
         Alarm alarm = createRequestDto.toEntity(fromMember, toMember);
         alarmRepository.save(alarm);
 
-        fcmService.sendMessageTo(toMember.getId(), "test", "test");
+        fcmService.sendMessageTo(toMember.getId(), alarm.getContent());
     }
 
     @Override
     public SliceResponse getAlarmList(Long memberId, Pageable pageable) {
         Slice<AlarmDto> alarms = alarmRepository.findAlarmSliceByMemberId(memberId, pageable);
-
         return SliceResponse.of(alarms);
+    }
+
+    @Override
+    public List<AlarmDto> getAlarmList(Long memberId, Long lastAlarmId, int limit) {
+        return alarmRepository.findAlarmsAfterId(memberId, lastAlarmId, limit);
     }
 
     @Override
@@ -72,11 +76,11 @@ public class AlarmServiceImpl implements AlarmService {
     }
 
     private void processAcceptAlarm(Alarm alarm, Long memberId) {
-        /*alarm.accept();
+        alarm.accept();
         if (alarm.getType() == AlarmType.FRIEND) {
             friendshipService.accept(memberId, alarm.getFromMember().getId());
         } else if (alarm.getType() == AlarmType.CONFERENCE) {
             // TODO: 회의 참여 요청 알람인 경우, 추가적인 처리하기 (화상회의 url 반환 등)
-        }*/
+        }
     }
 }

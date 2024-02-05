@@ -13,8 +13,8 @@ public class PlaceRegisterDto {
     private String address; //주소
     private String category; //카테고리
     private String img; //이미지
-//    private String business_hours; //운영시간
-//    private String menu; //대표메뉴
+    private Double latitude; //위도
+    private Double longitude; //경도
 
     public Place toEntity() {
         return Place.builder()
@@ -22,6 +22,8 @@ public class PlaceRegisterDto {
                 .address(address)
                 .category(category)
                 .image(img)
+                .latitude(latitude)
+                .logitude(longitude)
                 .build();
     }
 }

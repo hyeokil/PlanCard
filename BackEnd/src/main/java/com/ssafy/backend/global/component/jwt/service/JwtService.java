@@ -1,6 +1,5 @@
 package com.ssafy.backend.global.component.jwt.service;
 
-import com.ssafy.backend.global.component.jwt.dto.SignUpTokenMemberInfoDto;
 import com.ssafy.backend.global.component.jwt.dto.TokenDto;
 import com.ssafy.backend.global.component.jwt.dto.TokenMemberInfoDto;
 import lombok.NonNull;
@@ -15,7 +14,4 @@ public interface JwtService {
     // Redis에 저장된 이메일을 통한 Access, Refresh 토큰 재발급
     TokenDto reissueToken(@NonNull String memberEmail);
 
-    String issueSignUpToken(@NonNull String email,@NonNull String provider);
-
-    SignUpTokenMemberInfoDto parseSignUpToken(@NonNull String signUpToken);
 }

@@ -31,12 +31,21 @@ public class AlarmController {
         return ResponseEntity.ok().body(Message.success());
     }
 
+//    @GetMapping("/list")
+//    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+//    public ResponseEntity<Message<SliceResponse>> getAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
+//                                                                 Pageable pageable) {
+//        SliceResponse alarms = alarmService.getAlarmList(loginActiveDto.getId(), pageable);
+//        return ResponseEntity.ok().body(Message.success(alarms));
+//    }
+
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<SliceResponse>> getAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
-                                                                 Pageable pageable) {
-        SliceResponse alarms = alarmService.getAlarmList(loginActiveDto.getId(), pageable);
-        return ResponseEntity.ok().body(Message.success(alarms));
+    public ResponseEntity<Message<List<AlarmDto>>> getAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
+                                                                @RequestParam(required = false) Long lastAlarmId,
+                                                                @RequestParam(defaultValue = "4") int limit) {
+        List<AlarmDto> alarmList = alarmService.getAlarmList(loginActiveDto.getId(), lastAlarmId, limit);
+        return ResponseEntity.ok().body(Message.success(alarmList));
     }
 
     @PostMapping("/{alarmId}/{action}")

@@ -1,5 +1,7 @@
 package com.ssafy.backend.domain.conference.controller;
 
+import com.ssafy.backend.domain.conference.dto.ConnectionTokenDto;
+import com.ssafy.backend.domain.conference.dto.SessionDto;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,12 +32,13 @@ public class ConferenceController {
      * @return The Session ID
      */
     @PostMapping("/api/v1/sessions")
-    public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
+    public ResponseEntity initializeSession(@RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = openvidu.createSession(properties);
-        return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
+
+        return new ResponseEntity(new SessionDto(session.getSessionId()), HttpStatus.OK);
     }
 
     /**
@@ -44,7 +47,7 @@ public class ConferenceController {
      * @return The Token associated to the Connection
      */
     @PostMapping("/api/v1/sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
+    public ResponseEntity createConnection(@PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
         Session session = openvidu.getActiveSession(sessionId);
@@ -54,6 +57,6 @@ public class ConferenceController {
 
         ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
         Connection connection = session.createConnection(properties);
-        return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
+        return new ResponseEntity<>(new ConnectionTokenDto(connection.getToken()), HttpStatus.OK);
     }
 }

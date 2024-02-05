@@ -1,6 +1,5 @@
 package com.ssafy.backend.domain.plan.dto;
 
-import com.ssafy.backend.domain.planmember.entity.PlanMember;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyPlanListResponseDto {
+public class MyPlanResponseDto {
 
     private Long id;
 
@@ -23,5 +22,8 @@ public class MyPlanListResponseDto {
 
     private LocalDate endDate;
 
+    private int planMemberCount;
+
+    private List<String> planMembersName;
 
 }

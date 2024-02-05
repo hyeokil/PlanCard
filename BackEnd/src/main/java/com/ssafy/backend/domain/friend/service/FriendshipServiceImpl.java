@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 public class FriendshipServiceImpl implements FriendshipService {
     private final FriendshipRepository friendshipRepository;
     private final MemberRepository memberRepository;
-    private final AlarmRepository alarmRepository;
-    private final FCMService fcmService;
 
     /**
      * 친구추가 수락 처리
@@ -34,7 +32,7 @@ public class FriendshipServiceImpl implements FriendshipService {
      * @param friendId 친구추가 요청한 회원 id
      */
     @Override
-    public void accept(Long alarmId, Long ownerId, Long friendId) {
+    public void accept(Long ownerId, Long friendId) {
         Member owner = memberRepository.findById(ownerId).orElseThrow(() -> new MemberException(MemberError.NOT_FOUND_MEMBER));
         Member target = memberRepository.findById(friendId).orElseThrow(() -> new MemberException(MemberError.NOT_FOUND_MEMBER));
 
@@ -48,40 +46,10 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .friend(owner)
                 .build();
 
-        // alarm 찾고 
-        // 해당 alarm 상태 변경
-        Alarm alarm = alarmRepository.findById(alarmId).orElseThrow();
-        alarm.accept();
-
         friendshipRepository.save(ownerFriendship);
         friendshipRepository.save(targetFriendship);
     }
 
-    @Override
-    public void refuse(Long alarmId) {
-        Alarm alarm = alarmRepository.findById(alarmId).orElseThrow();
-        alarmRepository.delete(alarm);
-    }
-
-    // 친구추가 요청
-    @Override
-    public void requestFriendship(Long ownerId, Long friendId) {
-        Member owner = memberRepository.findById(ownerId).orElseThrow(() -> new MemberException(MemberError.NOT_FOUND_MEMBER));
-        Member target = memberRepository.findById(friendId).orElseThrow(() -> new MemberException(MemberError.NOT_FOUND_MEMBER));
-
-        // 친구요청 부분으로 이동
-        Alarm alarm = Alarm.builder().fromMember(owner)
-                .toMember(target)
-                .title(AlarmType.FRIEND.getTitle())
-                .content(owner.getNickname() + AlarmType.FRIEND.getContent())
-                .type(AlarmType.FRIEND)
-                .status(AlarmStatus.UNREAD)
-                .build();
-
-        alarmRepository.save(alarm);
-
-        fcmService.sendMessageTo(target.getId(), alarm.getTitle(), alarm.getContent());
-    }
 
     @Override
     public SliceResponse getFriends(Long ownerId, Pageable pageable) {

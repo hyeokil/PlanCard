@@ -54,7 +54,7 @@ public class PlaceApiController {
         conn.disconnect();
 
         //db저장
-        try{
+        try {
             placeService.registPlace(sb.toString());
 
         } catch (Exception e) {
@@ -62,4 +62,49 @@ public class PlaceApiController {
         }
 
     }
+
+    @GetMapping("/open-api2")
+    //새로운 공공데이터 받기
+    @Transactional
+    public void getdata2() throws IOException {
+
+
+        for (int i = 1; i <= 14; i++) {
+
+            String stringUrl = "http://smarttour.junggu.seoul.kr//junggu/openapi/culture.do?pageIndex=" + i;
+
+            URL url = new URL(stringUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-type", "application/json");
+            BufferedReader rd;
+
+            // 서비스코드가 정상이면 200~300사이의 숫자가 나옵니다.
+            if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            rd.close();
+            conn.disconnect();
+
+            //db저장
+            try {
+//                System.out.println(sb.toString());
+                placeService.registPlace2(sb.toString());
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+    }
+
 }
