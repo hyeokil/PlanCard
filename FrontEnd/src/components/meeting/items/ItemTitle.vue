@@ -25,12 +25,17 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRoute } from "vue-router";
+import { planNameUpdateApi, planDateUpdateApi } from "@/api/planApi"
 import { usePlanStore } from "@/stores/planStore";
 
+// 여행계획 단일조회 추가
 const planStore = usePlanStore()
 const checkName = ref('0') // 클래스 체크용
 const checkDate = ref('0')  // 클래스 체크용
-const planName = ref(planStore.plan.name)
+const planName = ref('텐텐여행1')
+
+const route = useRoute()
 
 // 시작날짜
 const startYear = ref(planStore.plan.startDate.getYear()+1900)
@@ -90,14 +95,22 @@ const goNameUpdate = () => {
     if (checkName.value === '0') {
         checkName.value = '1'
     } else {
-        checkName.value ='0'
+        checkName.value = '0'
         const payload = {
             name: planName.value,
-            date: null
         }
-        planStore.goCheck(payload)
+        planNameUpdateApi(route.params.id, payload, (response) => {
+            if (response.data.dataHeader.successCode === 1) {
+                let msg = "계획 이름 변경 중 문제가 발생했습니다.";
+                alert(msg);
+            } else {
+                console.log("계획 이름 변경 성공");
+            }
+        }, (error) => {
+            console.log(error)
+        }
+        )
     }
-    // console.log(checkName.value)
 }
 
 const goDateUpdate = () => {
@@ -106,10 +119,21 @@ const goDateUpdate = () => {
     } else {
         checkDate.value ='0'
         const payload = {
-            name: null,
-            date:[startYear.value, startMonth.value-1, startDate.value, endYear.value, endMonth.value-1, endDate.value]    
+            "startDate": `${startYear.value}` + '-' + `${startMonth.value - 1}` - `${startDate.value}`,
+            "endDate":`${endYear.value}` + '-' + `${endMonth.value - 1}` - `${endDate.value}`
         }
-        planStore.goCheck(payload)
+
+        planDateUpdateApi(route.params.id, payload, (response) => {
+            if (response.data.dataHeader.successCode === 1) {
+                let msg = "계획 날짜 변경 중 문제가 발생했습니다.";
+                alert(msg);
+            } else {
+                console.log("계획 날짜 변경 성공");
+            }
+        }, (error) => {
+            console.log(error)
+        }
+        )
     }
 }
 

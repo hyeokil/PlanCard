@@ -20,7 +20,7 @@
 
 <script setup>
 import ItemDetailPlan from "./ItemDetailPlan.vue";
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { planDetailGetApi } from '@/api/planApi'
 import { useRoute } from "vue-router";
 
@@ -38,7 +38,6 @@ const dateChange = (date) => {
     activeDate.value = date
     console.log(date)
 }
-
 
 
 // 마운트될 때 상세계획 조회 요청

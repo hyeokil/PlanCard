@@ -1,8 +1,8 @@
 <template>
     <div>
         <KaKaoMap 
-        :card-places="cardList"
-        :detail-places="detailPlanList"
+        :card-places="cardPlaces"
+        :detail-places="detailPlanPlaces"
         />
     </div>
 </template>
@@ -10,17 +10,18 @@
 <script setup>
 import KaKaoMap from "@/components/common/map/KaKaoMap.vue";
 import { computed } from "vue";
-
+0
 const props = defineProps({
     cardList: Array,
     detailPlanList: Array,
 })
+console.log(typeof(props.cardList))
 
 // props 변경 감지
-const cardList = computed(() => {
+const cardPlaces = computed(() => {
     return props.cardList
 })
-let detailPlanList = computed(() => {
+let detailPlanPlaces = computed(() => {
     return props.detailPlanList
 })
 

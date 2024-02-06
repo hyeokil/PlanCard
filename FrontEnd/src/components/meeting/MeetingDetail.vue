@@ -2,23 +2,10 @@
     <div>
         <div class="col-12 mt-0 pt-0">
             <ItemTitle class="title"/>
-        </div>
-        <div class="grid">
+            <ItemDrag />
             <div class="col-4 pb-0">
-                <ItemCardList class="card-list" 
-                @card-update="cardUpdate"
-                />
                 <ItemFace class="face" />
             </div>
-            <!-- <div class="col-8 pt-0">
-                <ItemDetailPlanList class="plan mb-0" 
-                @detail-plan-update="detailPlanUpdate" 
-                />
-                <ItemMap 
-                :card-list="cardList"
-                :detail-plan-list="detailPlanList"
-                class="map pt-5"/>
-            </div> -->
         </div>
         <!-- 기존 코드 유지 -->
         <div class="tab-container">
@@ -32,15 +19,15 @@
 
 
 <script setup>
-import ItemCardList from '@/components/meeting/items/card/ItemCardList.vue'
-import ItemDetailPlanList from '@/components/meeting/items/detailplan/ItemDetailPlanList.vue'
-import ItemFace from '@/components/meeting/items/ItemFace.vue'
 import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
-// import ItemMap from '@/components/meeting/items/ItemMap.vue'
+import ItemFace from '@/components/meeting/items/ItemFace.vue'
 import Chat from '@/components/meeting/items/Chat.vue'
+import ItemDrag from "@/components/meeting/items/ItemDrag.vue"
 import { ref } from "vue"
+
 const cardList = ref([])
 const detailPlanList = ref([])
+
 
 const cardUpdate = (emitCardList) => {
     cardList.value = emitCardList
@@ -49,6 +36,9 @@ const cardUpdate = (emitCardList) => {
 const detailPlanUpdate = (emitdetailPlanList) => {
     detailPlanList.value = emitdetailPlanList
 }
+
+
+
 
 // 탭 상태 추가
 const activeTab = ref('');
@@ -75,10 +65,10 @@ const toggleTab = (tabName) => {
     height: 15vh;
 }
 .plan{
-    /* height: 30vh; */
-    height:75vh;
+    height: 30vh;
+    /* height:75vh; */
 }
-/* .map{
+.map{
     height: 45vh;
 } */
 
