@@ -30,6 +30,13 @@ async function getMyInfoApi(success, fail) {
     return await local.get(`/member/get`).then(success).catch(fail);
 }
 
+async function memberUpdateApi(param, success, fail) {
+    await local.patch(`/member/update/image/nickname`, param).then(success).catch(fail);
+}
+
+async function memberGetApi() {
+    return await local.get(`/member/get`);
+}
 
 
 export {
@@ -40,4 +47,6 @@ export {
     memberLogoutApi,
     passwordResettingApi,
     getMyInfoApi,
+    memberUpdateApi,
+    memberGetApi,
 };

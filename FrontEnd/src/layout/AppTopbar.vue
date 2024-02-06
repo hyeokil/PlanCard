@@ -237,41 +237,7 @@ const onTopBarMenuNotificationButton = () => {
     // router.push({name: "member-login"})
   }
 };
-// 알림 목록 배열 (test)
-const notifications = ref([
-  {
-    name: "신동근",
-    content: "님이 친구 요청을 하셨습니다.",
-  },
-  {
-    name: "신동근",
-    content: "님이 회의를 시작 하셨습니다. (홍대 테이스티버거 뿌수기)",
-  },
-  {
-    name: "신동근",
-    content: "님이 친구 요청을 하셨습니다.",
-  },
-  {
-    name: "신동근",
-    content: "님이 회의를 시작 하셨습니다. (홍대 테이스티버거 뿌수기)",
-  },
-  {
-    name: "신동근",
-    content: "님이 친구 요청을 하셨습니다.",
-  },
-  {
-    name: "신동근",
-    content: "님이 회의를 시작 하셨습니다. (홍대 테이스티버거 뿌수기)",
-  },
-  {
-    name: "신동근",
-    content: "님이 친구 요청을 하셨습니다.",
-  },
-  {
-    name: "신동근",
-    content: "님이 회의를 시작 하셨습니다. (홍대 테이스티버거 뿌수기)",
-  },
-]);
+
 // 알림 팝업 부분 코드 끝
 
 

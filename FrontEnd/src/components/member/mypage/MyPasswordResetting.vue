@@ -62,7 +62,7 @@
         (response) => {
           if (response.data.dataHeader.successCode === 0) {
             alert("비밀번호 변경에 성공했습니다.");
-            router.push('');
+            router.push("/member/mypage");
           } else {
             alert(response.data.dataHeader.resultMessage);
           }

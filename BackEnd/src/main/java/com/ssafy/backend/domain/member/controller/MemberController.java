@@ -16,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -100,4 +102,9 @@ public class MemberController {
         return ResponseEntity.ok().body(Message.success(memberGetResponseDto));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Message<List<MemberGetResponseDto>>> searchMembersByEmail(@RequestParam String email) {
+        List<MemberGetResponseDto> memberSearchList = memberService.searchMembersByEmail(email);
+        return ResponseEntity.ok().body(Message.success(memberSearchList));
+    }
 }
