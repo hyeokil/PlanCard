@@ -13,6 +13,27 @@ $gutter: 1rem; //for primeflex grid system
     src: url('@/assets/fonts/Jalnan2.otf') format('opentype');
   }
   
-  * {
+  .font-title {
     font-family: 'Jalnan2', sans-serif;
   }
+
+  /*
+Copyright (c) 2021 Kil Hyung-jin, with Reserved Font Name Pretendard.
+https://github.com/orioncactus/pretendard
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+*/
+
+@font-face {
+	font-family: 'Pretendard Variable';
+	font-weight: 45 920;
+	font-style: normal;
+	font-display: swap;
+	src: url('./fonts/PretendardVariable.woff2') format('woff2-variations');
+}
+
+.font-content{
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}

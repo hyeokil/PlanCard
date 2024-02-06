@@ -1,10 +1,10 @@
 <template>
-    <div class="layout-wrapper" :class="containerClass" style="background-color: rgba(52, 152, 219, 0.15);">
+    <div class="layout-wrapper font-title" :class="containerClass" style="background-color: rgba(52, 152, 219, 0.15);">
         <app-topbar></app-topbar>
         <!-- </div> -->
-        <div class="layout-sidebar">
+        <!-- <div class="layout-sidebar">
             <app-sidebar></app-sidebar>
-        </div>
+        </div> -->
 
         <div class="layout-main-container">
             <div class="layout-main">
@@ -31,7 +31,7 @@
     const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
     const outsideClickListener = ref(null);
-
+    const TopbarActive = ref(true)
     watch(isSidebarActive, (newVal) => {
         if (newVal) {
             bindOutsideClickListener();
@@ -39,7 +39,6 @@
             unbindOutsideClickListener();
         }
     });
-
 
     const containerClass = computed(() => {
         return {
@@ -82,4 +81,5 @@
 
 
 <style scoped>
+
 </style>

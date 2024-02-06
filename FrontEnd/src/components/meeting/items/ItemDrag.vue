@@ -1,66 +1,13 @@
-<template>
-    <div>
-        <div class="row" style="display: flex;">
-            <div class="col-3 card" style="margin-right: 20px;">
-                <h6>카드 목록</h6>
-                <div style="height: 300px; overflow: auto;">
-                    <draggable
-                    class="DragArea list-group"
-                    :list="cardList"
-                    :group="{name: 'card', pull:'clone', put:false}"
-                    item-key="id"
-                    @change="onCardMove"
-                    >
-                        <template #item="{ element }">
-                            <div :class="[FixCards.reduce((acc,item)=> acc||(item.cardId===element.cardId),false)? 'hidden':'active' ]">
-                                <div  class="list-group-item card">
-                                    {{ element.placeName }}
-                                </div>
-                            </div>
-                        </template>
-                    </draggable>
-                </div>
-            </div>
-        
-            <div class="col-3 card" style="margin-right: 20px;" v-for="(fixCard, index) in days" :key="index">
-                <h6 style="cursor: pointer;" @click="changeDate(index+1)">Day {{ index + 1 }}</h6>
-                <div style="height: 300px; overflow: auto;">
-                    <draggable
-                    class="DragArea list-group"
-                    :list="fixCard"
-                    :group="{name: 'card', put:true}"
-                    item-key="id"
-                    @change="onCardMove"
-                    style="height: 300px;"
-                    >
-                    <template #item="{ element, index }">
-                        <div @click="setCenter(element)" class="list-group-item card">
-                                {{index+1}} {{ element.placeName }}
-                            </div>
-                    </template>
-                    </draggable>
-                </div>
-            </div>
-            <div class="col-3">
-                <KaKaoMap
-                :card-list="filteredCard"
-                :detail-list="filteredPlan"
-                />
-            </div>
-        </div>
-    </div>
-</template>
-    
-
-
 <script setup>
+import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
 import draggable from "@/vuedraggable";
 import KaKaoMap from '@/components/common/map/KaKaoMap.vue'
-import { isProxy, toRaw, ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { usePlanStore } from "@/stores/planStore";
 import _ from 'lodash'
 const planStore = usePlanStore()
-// let idGlobal = computed(()=>cardList.length);
+
+const visible = ref(false)
 
 const cardList = ref([
     {
@@ -227,12 +174,95 @@ onMounted(() => {
 
     
 </script>
+
+<template>
+    <div class="card">
+        <ItemTitle class="title"/>
+        <div class="row" style="display: flex;">
+            <div class="col-3 card" style="margin-right: 20px;">
+                <h6>카드 목록</h6>
+                <div style="height: 300px; overflow: auto;">
+                    <draggable
+                    class="DragArea list-group"
+                    :list="cardList"
+                    :group="{name: 'card', pull:'clone', put:false}"
+                    item-key="id"
+                    @change="onCardMove"
+                    >
+                        <template #item="{ element }">
+                            <div :class="[FixCards.reduce((acc,item)=> acc||(item.cardId===element.cardId),false)? 'hidden':'active' ]">
+                                <div  class="list-group-item card font-content">
+                                    {{ element.placeName }}
+                                </div>
+                            </div>
+                        </template>
+                    </draggable>
+                </div>
+            </div>
+            <div class="card" style="overflow: auto;">
+                <div v-for="(fixCard, index) in days" :key="index">
+                    <h6 style="cursor: pointer;" @click="changeDate(index+1)">Day {{ index + 1 }}</h6>
+                    <div>
+                        <draggable
+                        class="DragArea list-group"
+                        :list="fixCard"
+                        :group="{name: 'card', put:true}"
+                        item-key="id"
+                        @change="onCardMove"
+                        style="height: 300px;"
+                        >
+                        <template #item="{ element, index }">
+                            <div @click="setCenter(element)" class="list-group-item card font-content">
+                                    <div class="orderNumber">{{index+1}}</div> {{ element.placeName }}
+                                </div>
+                        </template>
+                        </draggable>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 지도 사이드바 -->
+            <div class="tab d-flex align-items-start">
+                <button @click="visible=!visible">
+                    <i class="pi pi-map" style="font-size: 2rem;"></i>
+                </button>
+                <div :class="{'sidebar-active':visible, 'sidebar-hidden':!visible}">
+                    <KaKaoMap
+                    :card-list="filteredCard"
+                    :detail-list="filteredPlan"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+    
 <style scoped>
-.hidden{
+.sidebar-active{
     display: block;
+    width: 50vw;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
-.active{
+.sidebar-hidden{
     display: block;
+    width: 0vw;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+.tab{
+    position: fixed;
+    right: 0px;
+    top: 5rem;
+}
+.orderNumber{
+    background-color: blue;
+    width: 20px;
+    height: 20px;
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+    
 }
 </style>
     

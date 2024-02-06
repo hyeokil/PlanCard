@@ -1,7 +1,6 @@
 <template>
     <div>
         <div class="col-12 mt-0 pt-0">
-            <ItemTitle class="title"/>
             <ItemDrag />
             <div class="col-4 pb-0">
                 <ItemFace class="face" />
@@ -19,11 +18,13 @@
 
 
 <script setup>
-import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
 import ItemFace from '@/components/meeting/items/ItemFace.vue'
 import Chat from '@/components/meeting/items/Chat.vue'
 import ItemDrag from "@/components/meeting/items/ItemDrag.vue"
-import { ref } from "vue"
+import { onBeforeMount, onBeforeUnmount, onUnmounted, ref } from "vue"
+import { useLayout } from '@/layout/composables/layout';
+
+const { layoutState } = useLayout();
 
 const cardList = ref([])
 const detailPlanList = ref([])
@@ -37,8 +38,9 @@ const detailPlanUpdate = (emitdetailPlanList) => {
     detailPlanList.value = emitdetailPlanList
 }
 
-
-
+onBeforeMount(() => {
+    layoutState.topbarVisible = false
+})
 
 // 탭 상태 추가
 const activeTab = ref('');
@@ -54,10 +56,6 @@ const toggleTab = (tabName) => {
     width: 100vw;
     height: 100vh;
 }
-.title{
-    width: 100vw;
-    height: 5vh;
-}
 .card-list{
     height: 60vh;
 }
@@ -70,7 +68,7 @@ const toggleTab = (tabName) => {
 }
 .map{
     height: 45vh;
-} */
+}
 
 .tab-container button {
     padding: 10px;

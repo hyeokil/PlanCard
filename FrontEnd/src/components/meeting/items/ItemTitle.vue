@@ -1,13 +1,13 @@
 <template>
     <div class="title">
-        <div class="title-name">
+        <div class="title-name font-title">
             <div :class="[checkName=== '0' ? 'active' : 'hidden']" @click="goNameUpdate()">{{ planName }}</div>
             <form :class="[checkName=== '0' ? 'hidden' : 'active']" @submit.prevent="goNameUpdate()">
                 <input type="text" v-model="planName" autofocus>
                 <input class="primary" type="submit" value="확인">
             </form>
         </div>
-        <div class="title-date">
+        <div class="title-date font-content">
             <div :class="[checkDate=== '0' ? 'active' : 'hidden']"  @click="goDateUpdate()" >{{ startYear }}년 {{ startMonth }}월 {{ startDate }}일({{ startDay }}) ~ {{ endYear }}년 {{ endMonth }}월 {{ endDate }}일({{ endDay }})</div>
             <form :class="[checkDate=== '0' ? 'hidden' : 'active']" @submit.prevent="goDateUpdate()">
                 <input type="number" step="1" v-model="startYear" id="startYear" style="width: 45px;">년 
@@ -142,8 +142,16 @@ const goDateUpdate = () => {
 <style scoped>
 .title{
     display: flex;
-    font-size: 30px;
-    gap: 5%;
+    flex-direction: column;
+    gap: 1%;
+    justify-content: center;
+    align-items: start;
+}
+.title-name{
+    font-size: 20px;
+}
+.title-date{
+    font-size: 14px;
 }
 .active{
     display: block;
