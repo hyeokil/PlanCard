@@ -22,28 +22,7 @@ export const usePlanStore = defineStore(
           (1000 * 60 * 60 * 24) +
         1
     );
-
-    const list = ref([
-      { name: "객체1", id: 2 },
-      { name: "객체2", id: 1 },
-      { name: "객체3", id: 4 },
-      { name: "객체4", id: 3 },
-      { name: "객체5", id: 5 },
-      { name: "객체6", id: 6 },
-      { name: "객체8", id: 7 },
-      { name: "객체7", id: 8 },
-      { name: "객체9", id: 9 },
-    ]);
-    const planList = ref([
-      { name: "객체1", id: 2, day: 1 },
-      { name: "객체2", id: 1, day: 1 },
-      { name: "객체3", id: 4, day: 1 },
-      { name: "객체4", id: 3, day: 1 },
-      { name: "객체5", id: 5, day: 1 },
-      { name: "객체6", id: 6, day: 2 },
-      { name: "객체8", id: 7, day: 2 },
-      { name: "객체7", id: 8, day: 2 },
-    ]);
+    const isMeetingView = ref(false);
 
     return {
       plan,
@@ -51,8 +30,7 @@ export const usePlanStore = defineStore(
       planDetailList,
       cardList,
       dateDiff,
-      planList,
-      list,
+      isMeetingView,
     };
   }
 );

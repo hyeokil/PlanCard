@@ -3,11 +3,11 @@
         <div class="title-name font-title">
             <div :class="[checkName=== '0' ? 'active' : 'hidden']" @click="goNameUpdate()">{{ planName }}</div>
             <form :class="[checkName=== '0' ? 'hidden' : 'active']" @submit.prevent="goNameUpdate()">
-                <input type="text" v-model="planName" autofocus>
-                <input class="primary" type="submit" value="확인">
+                <input type="text" v-model="planName" style="width: 250px; color: gray;">
+                <!-- <input class="primary" type="submit" value="확인"> -->
             </form>
         </div>
-        <div class="title-date font-content">
+        <div class="title-date font-content" style="color:silver;">
             <div :class="[checkDate=== '0' ? 'active' : 'hidden']"  @click="goDateUpdate()" >{{ startYear }}년 {{ startMonth }}월 {{ startDate }}일({{ startDay }}) ~ {{ endYear }}년 {{ endMonth }}월 {{ endDate }}일({{ endDay }})</div>
             <form :class="[checkDate=== '0' ? 'hidden' : 'active']" @submit.prevent="goDateUpdate()">
                 <input type="number" step="1" v-model="startYear" id="startYear" style="width: 45px;">년 
@@ -43,7 +43,6 @@ const startMonth = ref(planStore.plan.startDate.getMonth()+1)
 const startDate = ref(planStore.plan.startDate.getDate())
 const startDay = computed(() => {
     let startDayRaw = new Date(startYear.value, startMonth.value-1, startDate.value).getDay()
-    console.log('날짜', new Date(startYear.value, startMonth.value-1, startDate.value), startDayRaw)
     if (startDayRaw === 0){
         return '일'
     } else if (startDayRaw === 1){
@@ -70,7 +69,6 @@ const endMonth = ref(planStore.plan.endDate.getMonth()+1)
 const endDate = ref(planStore.plan.endDate.getDate())
 const endDay = computed(() => {
     let endDayRaw = new Date(endYear.value, endMonth.value-1, endDate.value).getDay()
-    console.log('날짜', new Date(endYear.value, endMonth.value-1, endDate.value), endDayRaw)
     if (endDayRaw === 0){
         return '일'
     } else if (endDayRaw === 1){
@@ -144,8 +142,9 @@ const goDateUpdate = () => {
     display: flex;
     flex-direction: column;
     gap: 1%;
-    justify-content: center;
+    padding-left: 10%;
     align-items: start;
+    justify-content: end;
 }
 .title-name{
     font-size: 20px;

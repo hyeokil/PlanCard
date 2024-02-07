@@ -1,6 +1,10 @@
 <template>
-  <div class="layout-topbar">
-
+      <!-- 로고
+  <router-link :to="{ name: 'main' }" class="layout-topbar-logo">
+    <img src="/로고 3.png" alt="로고" style="height: 100%; width: 55px; border-radius: 50%;" />
+    <span>Plan Card</span>
+  </router-link> -->
+  <div class="layout-topbar" v-if="!isMeeting">
     <!-- 로고 -->
     <router-link :to="{ name: 'main' }" class="layout-topbar-logo">
       <img src="/로고 3.png" alt="로고" style="height: 100%; width: 55px; border-radius: 50%;" />
@@ -138,13 +142,14 @@
 
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccountsStore } from '@/stores/accountsStore';
 import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
 import { memberLogoutApi } from "@/api/memberApi";
-
+import { usePlanStore } from "@/stores/planStore";
 const accountsStore = useAccountsStore()
+const planStore = usePlanStore()
 const router = useRouter()
 
 const outsideClickListener = ref(null);
@@ -155,6 +160,7 @@ const friendRequestActive = ref(false);  // 친구요청창
 
 const friendEmail = ref("");  // 친구 요청할 때 입력하는 email
 
+let isMeeting = computed(()=> planStore.isMeetingView)
 
 onMounted(() => {
   bindOutsideClickListener();

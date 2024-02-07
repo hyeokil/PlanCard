@@ -1,6 +1,6 @@
 <template>
     <div >
-        <div id="map" style="width: 50vw; height: 75vh;border-radius: 5px;"></div>
+        <div id="map" style="width: 80vw; height: 100vh;border-radius: 5px;"></div>
     </div>
 </template>
 
@@ -68,9 +68,9 @@ const clearMarkersAndOverlays = () => {
     //마커 제거
     if (markers.length !== 0) {   
         markers.forEach((marker, key) => {
-            console.log(`마커 제거 전: ${key}`, marker);
+            // console.log(`마커 제거 전: ${key}`, marker);
             marker.setMap(null);
-            console.log(`마커 제거 후: ${key}`, marker);
+            // console.log(`마커 제거 후: ${key}`, marker);
         });
         markers = []
     }
@@ -151,7 +151,7 @@ const displayMarkersAndPolyline = () => {
         // 마커 이미지 
         const imageSrc = '/image/icon/icon_location_marker.png'
         const imageSize = new kakao.maps.Size(40, 40)
-        const imageOption = { offset: new kakao.maps.Point(13, 35) }
+        const imageOption = { offset: new kakao.maps.Point(21, 35) }
 
         const markerImage = new kakao.maps.MarkerImage(
             imageSrc,
@@ -190,7 +190,7 @@ const displayMarkersAndPolyline = () => {
     polyline.value = new kakao.maps.Polyline({
         path: path,
         strokeWeight: 5,
-        strokeColor: "#FFAE00",
+        strokeColor: "rgba(52, 152, 219, 1)",
         strokeOpacity: 1,
         strokeStyle: "solid",
     });
@@ -213,7 +213,7 @@ const initMap = () => {
     // console.log(cardPlaces.value[1])
     const options = {
         center: center,
-        level: 7
+        level: 5
     }
 
     // 새로 센터 찾기

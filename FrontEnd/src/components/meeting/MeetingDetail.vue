@@ -1,17 +1,18 @@
 <template>
     <div>
-        <div class="col-12 mt-0 pt-0">
+        <div class="mt-0 pt-0">
             <ItemDrag />
-            <div class="col-4 pb-0">
-                <ItemFace class="face" />
+            <div class="chat-tab">
+                <div class="chat-container">
+                    <button @click="activeTab=!activeTab" class="chat-btn"><i class="pi pi-comments" style="font-size: 27px;"></i> 채 팅</button>
+                    <div :class="{'sidebar-active':activeTab, 'sidebar-hidden':!activeTab}">
+                        <ItemFace />
+                        <!-- 조건부 렌더링으로 채팅 컴포넌트 표시 -->
+                        <Chat class="chat" v-if="activeTab === 'chat'"></Chat>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- 기존 코드 유지 -->
-        <div class="tab-container">
-            <button @click="toggleTab('chat')">채팅</button>
-        </div>
-        <!-- 조건부 렌더링으로 채팅 컴포넌트 표시 -->
-        <Chat v-if="activeTab === 'chat'"></Chat>
     </div>
 </template>
 
@@ -21,34 +22,27 @@
 import ItemFace from '@/components/meeting/items/ItemFace.vue'
 import Chat from '@/components/meeting/items/Chat.vue'
 import ItemDrag from "@/components/meeting/items/ItemDrag.vue"
-import { onBeforeMount, onBeforeUnmount, onUnmounted, ref } from "vue"
-import { useLayout } from '@/layout/composables/layout';
+import { onBeforeMount, onBeforeUnmount, ref } from "vue"
+import { usePlanStore } from "@/stores/planStore";
+const planStore = usePlanStore()
 
-const { layoutState } = useLayout();
-
-const cardList = ref([])
-const detailPlanList = ref([])
-
-
-const cardUpdate = (emitCardList) => {
-    cardList.value = emitCardList
-}
-
-const detailPlanUpdate = (emitdetailPlanList) => {
-    detailPlanList.value = emitdetailPlanList
-}
 
 onBeforeMount(() => {
-    layoutState.topbarVisible = false
+    planStore.isMeetingView = true
 })
 
-// 탭 상태 추가
-const activeTab = ref('');
+onBeforeUnmount(() => {
+    planStore.isMeetingView = false
+})
+// // 탭 상태 추가
+// const activeTab = ref('');
 
-// 탭 토글 기능
-const toggleTab = (tabName) => {
-    activeTab.value = activeTab.value === tabName ? '' : tabName;
-};
+// // 탭 토글 기능
+// const toggleTab = (tabName) => {
+//     activeTab.value = activeTab.value === tabName ? '' : tabName;
+// };
+
+const activeTab = ref(false)
 </script>
 
 <style scoped>
@@ -59,25 +53,47 @@ const toggleTab = (tabName) => {
 .card-list{
     height: 60vh;
 }
-.face{
-    height: 15vh;
+.sidebar-active{
+    display: block;
+    width: 30vw;
+    transition: width 1s ;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+.sidebar-hidden{
+    display: block;
+    width: 0vw;
+    transition: width 1s ;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 .plan{
     height: 30vh;
-    /* height:75vh; */
 }
-.map{
-    height: 45vh;
+.chat-tab{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100vh;
+    background-color: #ddd;
+    z-index: 10;
+}
+.chat-container{
+    position: relative;
+}
+.chat-btn{
+    position: absolute;
+    top:5rem;
+    left: -40px;
+    z-index: 5;
+    background-color: #3498DB;
+    width: 40px;
+    height: 110px;
+    border-radius: 5px 0px 0px 5px;
+    font-size: 20px;
+    color: #fff;
 }
 
-.tab-container button {
-    padding: 10px;
-    border: none;
-    background-color: #f0f0f0;
-    cursor: pointer;
+.chat{
+    background-color: aqua;
 }
-.tab-container button.active {
-    background-color: #ddd;
-}
-/* 기존 스타일 유지 */
+
 </style>

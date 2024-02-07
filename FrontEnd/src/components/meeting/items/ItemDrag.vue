@@ -15,7 +15,8 @@ const cardList = ref([
         placeName: "장인족발",
         placeAddress: "장덕동 1574",
         Lat: 35.190427,
-        Lng:126.8125625,
+        Lng: 126.8125625,
+        image: "https://lh5.googleusercontent.com/p/AF1QipNPSfW6JXjsjckMdkZAyejA0YmpQ3TZOTyFziK_=w408-h306-k-no",
         memo: "",
     },
     {
@@ -23,7 +24,8 @@ const cardList = ref([
         placeName: "마루샤브",
         placeAddress: "장덕동 1634",
         Lat:35.1905106,
-        Lng:126.8169632,
+        Lng: 126.8169632,
+        image: "https://lh5.googleusercontent.com/p/AF1QipM2Bk8GPiHYC3Zms9ngsgr3X2MS3wvwJ-t1b-Zl=w260-h175-n-k-no",
         memo: "",
     },
     {
@@ -31,7 +33,8 @@ const cardList = ref([
         placeName: "24시 콩나물국밥",
         placeAddress: "장덕동 1302",
         Lat:35.1911555,
-        Lng:126.8194957,
+        Lng: 126.8194957,
+        image:"https://lh5.googleusercontent.com/p/AF1QipMb3Ne3u_yKvQvLzVgIetlDhZfJYU7i9giMvc2W=w426-h240-k-no",
         memo: "",
     },
     {
@@ -39,7 +42,8 @@ const cardList = ref([
         placeName: "안청근린공원",
         placeAddress: "안청동 736-1",
         Lat:35.2129735,
-        Lng:126.8037158,
+        Lng: 126.8037158,
+        image:"https://lh5.googleusercontent.com/p/AF1QipOjnZPOnGIUGtOkualkcMrX-gudl4hLP5vzfOug=w493-h240-k-no",
         memo: "",
     },
     {
@@ -47,7 +51,8 @@ const cardList = ref([
         placeName: "삼성전자 광주사업장",
         placeAddress: "하남산단6번로 107",
         Lat:35.2040949,
-        Lng:126.8071876,
+        Lng: 126.8071876,
+        image:"https://maps.gstatic.com/tactile/pane/default_geocode-2x.png",
         memo: "",
     },
 ]);
@@ -58,7 +63,8 @@ const planList = ref([
         placeName: "마루샤브",
         placeAddress: "장덕동 1634",
         Lat:35.1905106,
-        Lng:126.8169632,
+        Lng: 126.8169632,
+        image: "https://lh5.googleusercontent.com/p/AF1QipM2Bk8GPiHYC3Zms9ngsgr3X2MS3wvwJ-t1b-Zl=w260-h175-n-k-no",
         orderNumber: 2,
         day: 1,
         memo: "",
@@ -69,6 +75,7 @@ const planList = ref([
         placeAddress: "장덕동 1302",
         Lat:35.1911555,
         Lng:126.8194957,
+        image:"https://lh5.googleusercontent.com/p/AF1QipMb3Ne3u_yKvQvLzVgIetlDhZfJYU7i9giMvc2W=w426-h240-k-no",
         orderNumber: 3,
         day: 1,
         memo: "",
@@ -79,6 +86,7 @@ const planList = ref([
         placeAddress: "장덕동 1574",
         Lat: 35.190427,
         Lng:126.8125625,
+        image: "https://lh5.googleusercontent.com/p/AF1QipNPSfW6JXjsjckMdkZAyejA0YmpQ3TZOTyFziK_=w408-h306-k-no",
         orderNumber: 1,
         day: 1,
         memo: "",
@@ -89,6 +97,7 @@ const planList = ref([
         placeAddress: "안청동 736-1",
         Lat:35.2129735,
         Lng:126.8037158,
+        image:"https://lh5.googleusercontent.com/p/AF1QipOjnZPOnGIUGtOkualkcMrX-gudl4hLP5vzfOug=w493-h240-k-no",
         orderNumber: 1,
         day: 2,
         memo: "",
@@ -100,6 +109,7 @@ const day = computed(() => planStore.dateDiff)
 
 const checkD = ref(1)
 
+const countP = computed(()=>days.value.reduce((acc, r)=> acc+r.length, 0))
 const filteredPlan = ref([])
 const filteredCard = ref([])
 const noneFixCards = ref(cardList.value)
@@ -130,6 +140,8 @@ function saveCards() {
     // 현재 카드 데이터를 로컬 스토리지에 저장
     localStorage.setItem("noneFixCards", JSON.stringify(noneFixCards.value));
     localStorage.setItem("FixCards", JSON.stringify(days.value));
+
+    // 나중에 axios연결
 }
 
 function handleChange(){
@@ -145,6 +157,7 @@ function onCardMove() {
     filteredCard.value = JSON.parse(localStorage.getItem('noneFixCards'));
 
     // saveCards()
+    loadCards()
 }
 
 const changeDate = (day)=> {
@@ -176,12 +189,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="card">
-        <ItemTitle class="title"/>
+    <div class="drag-container">
         <div class="row" style="display: flex;">
-            <div class="col-3 card" style="margin-right: 20px;">
-                <h6>카드 목록</h6>
-                <div style="height: 300px; overflow: auto;">
+            <div class="drag-list">
+                <ItemTitle class="title"/>
+                <h6 style="margin-left: 11%;">카드 목록</h6>
+                <div>
                     <draggable
                     class="DragArea list-group"
                     :list="cardList"
@@ -191,17 +204,36 @@ onMounted(() => {
                     >
                         <template #item="{ element }">
                             <div :class="[FixCards.reduce((acc,item)=> acc||(item.cardId===element.cardId),false)? 'hidden':'active' ]">
-                                <div  class="list-group-item card font-content">
-                                    {{ element.placeName }}
+                                <div class="list-group-item font-content">
+                                    <div class="d-flex align-items-center gap-3 justify-content-center">
+                                        <div class="card-card-list d-flex justify-content-start gap-3 align-items-center">
+                                            <img class="card-image" :src="element.image" alt="">
+                                            <div style="display: flex; flex-direction: column;">
+                                                <div style="font-weight: bold;">{{ element.placeName }}</div>
+                                                <div>{{ element.placeAddress }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </template>
                     </draggable>
                 </div>
+                <button class="quit-btn" @click="goMain">
+                    <i class="pi pi-times" style="font-size: 13px;"></i>끝내기
+                </button>
             </div>
-            <div class="card" style="overflow: auto;">
-                <div v-for="(fixCard, index) in days" :key="index">
-                    <h6 style="cursor: pointer;" @click="changeDate(index+1)">Day {{ index + 1 }}</h6>
+            <div class="drag-list">
+                <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
+                    <div class="d-flex align-items-center">
+                        <div style="font-size: 28px;">
+                        {{ countP }}</div>
+                        <div class="font-content" style="font-size: 15px;">개의 장소</div>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <div class="drag-plan-list" v-for="(fixCard, index) in days" :key="index">
+                    <h6 style="cursor: pointer; margin-left: 6%;" @click="changeDate(index+1)">Day {{ index + 1 }}</h6>
                     <div>
                         <draggable
                         class="DragArea list-group"
@@ -209,42 +241,108 @@ onMounted(() => {
                         :group="{name: 'card', put:true}"
                         item-key="id"
                         @change="onCardMove"
-                        style="height: 300px;"
                         >
-                        <template #item="{ element, index }">
-                            <div @click="setCenter(element)" class="list-group-item card font-content">
-                                    <div class="orderNumber">{{index+1}}</div> {{ element.placeName }}
+                            <template #item="{ element, index }">
+                                <div @click="setCenter(element)" class="list-group-item font-content">
+                                    <div class="d-flex align-items-center gap-3 justify-content-center" style="position: relative; margin-bottom: 10px;">
+                                        <div class="orderNumber">{{index+1}}</div> 
+                                        <div class="card-detail d-flex justify-content-start gap-3 align-items-center">
+                                            <img class="card-image" :src="element.image" alt="">
+                                            <div>{{ element.placeName }}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                        </template>
+                            </template>
                         </draggable>
                     </div>
                 </div>
-            </div>
-
-            <!-- 지도 사이드바 -->
-            <div class="tab d-flex align-items-start">
-                <button @click="visible=!visible">
-                    <i class="pi pi-map" style="font-size: 2rem;"></i>
+                <button class="save-btn" @click="saveCards">
+                    <i class="pi pi-check"></i> 저장
                 </button>
-                <div :class="{'sidebar-active':visible, 'sidebar-hidden':!visible}">
-                    <KaKaoMap
-                    :card-list="filteredCard"
-                    :detail-list="filteredPlan"
-                    />
-                </div>
             </div>
         </div>
+
+            <!-- 지도 사이드바 -->
+            <!-- <div class="tab d-flex align-items-start">
+                <button @click="visible=!visible">
+                    <i class="pi pi-map" style="font-size: 2rem;"></i>
+                </button> -->
+                <!-- <div :class="{'sidebar-active':visible, 'sidebar-hidden':!visible}"> -->
+        <div class="map">
+            <KaKaoMap
+            :card-list="filteredCard"
+            :detail-list="filteredPlan"
+            />
+        </div>
+    </div>
+        <!-- </div> -->
     </div>
 </template>
     
 <style scoped>
+.quit-btn{
+    font-size: 13px;
+    position: absolute;
+    top: 75px;
+    left: 300px;
+    border: #3498DB 1px solid;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #3498DB;
+    width: 70px;
+    height: 30px;
+    text-align: start;
+    padding-left: 8px;
+    padding-top: 3px;
+    z-index: 999;
+}
+.save-btn{
+    position: absolute;
+    bottom: 2rem;
+    left: 670px;
+    border: #3498DB 1px solid;
+    border-radius: 5px;
+    background-color: #3498DB;
+    color: #fff;
+    width: 70px;
+    height: 40px;
+    text-align: start;
+    padding-left: 8px;
+    padding-top: 3px;
+}
+.map{
+    position: relative;
+}
+.title  {
+    height: 130px;
+}
+.card-detail{
+    width: 280px ;
+    border-radius: 5px;
+    padding: 0.4rem;
+    position:relative;
+    box-shadow: 0px 3px 5px gainsboro;
+}
+.card-card-list{
+    width: 300px;
+    height: 70px;
+    border-radius: 5px;
+    padding: 0.4rem;
+    position:relative;
+    box-shadow: 0px 3px 5px gainsboro;
+}
+.card-image{
+    width: 3rem;
+    height: 3rem;
+    border-radius: 5px;
+}
 .sidebar-active{
     display: block;
     width: 50vw;
     transition: width 1s;
     transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
-.sidebar-hidden{
+.sidebar-active{
     display: block;
     width: 0vw;
     transition: width 1s;
@@ -255,14 +353,30 @@ onMounted(() => {
     right: 0px;
     top: 5rem;
 }
+.drag-container{
+    width: 100vw; 
+    height: 100vh;
+}
+.drag-list{
+    height: 100vh;
+    overflow: auto;
+    min-width: 380px;
+    border-left: rgba(0,0,0,0.1) 1px solid;
+    background-color: #fff;
+}
+.drag-plan-list{
+    margin-bottom: 15%;
+    z-index: 2;
+}
 .orderNumber{
-    background-color: blue;
+    background-color: #3498DB;
+    color: #fff;
     width: 20px;
     height: 20px;
     font-size: 15px;
     text-align: center;
     font-weight: bold;
-    
+    border-radius: 50%;
 }
 </style>
     
@@ -274,15 +388,15 @@ onMounted(() => {
 }
 .marker-number{
     position: relative;
-    top: 5px;
-    left: 10px;
-    color: black;
-    width: 14px;
-    height: 14px;
-    background-color: #fff;
-    border: black solid 1px;
+    color: #fff;
+    left: -1px;
+    top: 2px;
+    width: 28px;
+    height:28px;
+    background-color: #3498DB;
+    /* border: black solid 1px; */
     border-radius: 50%;
-    font-size: 10px;
+    font-size: 20px;
     font: bolder;
     display: inline-block;
     text-align: center;

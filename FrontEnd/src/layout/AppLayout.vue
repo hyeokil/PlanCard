@@ -6,11 +6,13 @@
             <app-sidebar></app-sidebar>
         </div> -->
 
-        <div class="layout-main-container">
-            <div class="layout-main">
+        <div :class="{'layout-main-container':!planStore.isMeetingView, 'meeting-container':planStore.isMeetingView}">
+            <div :class="{'layout-main':!planStore.isMeetingView, 'meeting-container':planStore.isMeetingView}">
                 <router-view></router-view>
             </div>
-            <app-footer></app-footer>
+            <div v-if="!planStore.isMeetingView">
+                <app-footer></app-footer>
+            </div>
         </div>
         
         <!-- <app-config></app-config> -->
@@ -24,14 +26,13 @@
     import { computed, watch, ref } from 'vue';
     import AppTopbar from './AppTopbar.vue';
     import AppFooter from './AppFooter.vue';
-    import AppSidebar from './AppSidebar.vue';
     import { useLayout } from '@/layout/composables/layout';
-
+    import { usePlanStore } from "@/stores/planStore";
 
     const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
+    const planStore = usePlanStore()
     const outsideClickListener = ref(null);
-    const TopbarActive = ref(true)
     watch(isSidebarActive, (newVal) => {
         if (newVal) {
             bindOutsideClickListener();
@@ -81,5 +82,9 @@
 
 
 <style scoped>
-
+.meeting-container{
+    padding: 0rem;
+    /* padding-left: 4rem; */
+    /* padding-right: 4rem; */
+}
 </style>
