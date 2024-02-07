@@ -4,7 +4,9 @@ import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
 
 public interface SttService {
-    void startStt() throws IOException, LineUnavailableException;
+//    void startStt() throws IOException, LineUnavailableException;
+
+    void startStt(byte[] audioData) throws IOException, LineUnavailableException;
 
     void stopStt();
 }

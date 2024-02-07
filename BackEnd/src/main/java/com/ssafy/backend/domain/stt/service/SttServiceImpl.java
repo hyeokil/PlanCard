@@ -68,7 +68,7 @@ public class SttServiceImpl implements SttService {
     }
 
     @Override
-    public void startStt() throws IOException, LineUnavailableException {
+    public void startStt(byte[] audioData) throws IOException, LineUnavailableException {
         isSttRunning = true;
 
         String accessToken = getAccessToken();
@@ -98,6 +98,7 @@ public class SttServiceImpl implements SttService {
 
         // 타겟 데이터 라인 얻기
         TargetDataLine line = AudioSystem.getTargetDataLine(audioFormat);
+
         line.open(audioFormat);
         line.start();
 
