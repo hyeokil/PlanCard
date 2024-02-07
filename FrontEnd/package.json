@@ -19,7 +19,7 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
-    "primevue": "^3.39.0",
+    "primevue": "^3.48.0",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "v-calendar": "^3.1.2",
@@ -27,7 +27,7 @@
     "vue-router": "^4.2.5",
     "vue3-cookies": "^1.0.6",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^3.5.1",
+    "vuetify": "^3.5.2",
     "webstomp-client": "^1.2.6"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 <template>
     <div class="card p-fluid">
       <div>
-        <h1>마이 페이지</h1>
+        <h1>내 정보</h1>
       </div>
       
       <hr id="separator">
@@ -12,9 +12,9 @@
                 <img :src="accountStore.memberInfo?.image || '/로고 3.png'" alt="프로필 이미지">
             </div>
             <div id="userInfo">
-                <p style="font-weight: bold; font-size: 40pt; color: #3498db;">{{ accountStore.memberInfo?.nickname }}</p>
-                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);"> {{ accountStore.memberInfo?.name }}</p>
-                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);"> {{  accountStore.memberInfo?.email }}</p>
+                <p style="font-size: 40pt; color: #3498db;">{{ accountStore.memberInfo?.nickname }}</p>
+                <p style="color: rgba(0, 0, 0, 0.5);"> {{ accountStore.memberInfo?.name }}</p>
+                <p style="color: rgba(0, 0, 0, 0.5);"> {{  accountStore.memberInfo?.email }}</p>
             </div>
 
         </div>
@@ -87,7 +87,7 @@ onMounted(() => {
 
 <style scoped>
   h1 {
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #separator {
     border: none;
@@ -168,7 +168,7 @@ onMounted(() => {
   }
 
   p {
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: xx-large;
     display: flex;
     justify-content: center; /* 수평 가운데 정렬 */

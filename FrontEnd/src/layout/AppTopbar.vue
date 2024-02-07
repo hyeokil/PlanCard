@@ -38,7 +38,7 @@
       <p id="userName" @click="onTopBarMenuProfileButton()" :class="{ 'userName-hover': !accountsStore.isLogin }">
         {{ accountsStore.isLogin ? accountsStore.memberInfo.nickname : '로그인' }}
       </p>
-      <p style="padding-top: 10px; font-weight: 900;" v-show="accountsStore.isLogin">님</p>
+      <p style="padding-top: 10px;" v-show="accountsStore.isLogin">님</p>
     </div>
 
 
@@ -48,18 +48,44 @@
       <v-card :class="[topbarNotificationActive ? 'notificationActive' : 'notificationHidden']" id="popUp">
         <div style="display: flex; justify-content: space-between; margin-bottom: -15px;">
           <p id="notificatonSet">알림 내역</p>
-          <button id="clearBtn">모두 지우기</button>
+          <v-btn id="clearBtn">모두 지우기</v-btn>
         </div>
         <div id="notificationsList">
           <div id="notificationDivider1"></div>
-          <div v-for="notification in notifications" :key="notification.index">
-            <p id="notification">{{ notification.name }}&nbsp;{{ notification.content }}</p>
+          <div v-for="notification in notifications" :key="notification.index" style="width: 95%;">
+            <div style="display: flex;">
+              <p id="notification">{{ notification.content }}</p>
+              <div style="display: flex; align-items: center;">
+                <i class="pi pi-check"
+                  id="acceptBtn"
+                  style="font-size: 1.5rem; 
+                  border: 1px solid rgba(255, 255, 255, 0.5);
+                  border-radius: 50%;
+                  padding: 5px;
+                  background-color: #3498DB;
+                  color: white;
+                  width: 35px;
+                  height: 35px;
+                  margin-right: 3px;"></i>
+                <i class="pi pi-times"
+                  id="rejectBtn"
+                  style="font-size: 1.5rem; 
+                  border: 1px solid rgba(255, 255, 255, 0.5);
+                  border-radius: 50%;
+                  padding: 5px;
+                  background-color: red;
+                  color: white;
+                  width: 35px;
+                  height: 35px;
+                  margin-left: 3px;"></i>
+              </div>
+            </div>
             <div id="notificationDivider2"></div>
           </div>
         </div>
         <v-card-actions>
           <v-btn variant="text" @click="topbarNotificationActive = false" id="closeBtn">
-            <p>Close</p>
+            <p>닫기</p>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -71,8 +97,9 @@
         <v-list id="profileInfo">
           <v-list-item :prepend-avatar="accountsStore.memberInfo?.image ? accountsStore.memberInfo.image : '/로고 3.png'">
             <template #title>
-              <span style="font-size: 18px; font-weight: bold; color: #3498DB;">{{ accountsStore.memberInfo?.name
-              }}</span>
+              <span style="font-size: 18px; color: #3498DB;">
+                {{ accountsStore.memberInfo?.name}}
+              </span>
             </template>
             <template #subtitle>
               <span style="font-size: 15px; ">{{ accountsStore.memberInfo?.email }}</span>
@@ -80,17 +107,16 @@
           </v-list-item>
         </v-list>
         <div @click="goMyPage()" style="text-align: center;">
-          <button id="myPageBtn">마이 페이지</button>
-          <button id="logOutBtn" @click="logout()">로그아웃</button>
+          <v-btn id="myPageBtn">내 정보</v-btn>
+          <v-btn id="logOutBtn" @click="logout()">로그아웃</v-btn>
         </div>
         <v-divider></v-divider>
         <div id="friendsList">
           <div style="display: flex;">
             <p
-              style="font-weight: bold; font-size: 20px; padding-left: 10px; margin-bottom: 0px; color: rgba(0, 0, 0, 0.5);">
+              style="font-size: 20px; padding-left: 10px; margin-bottom: 0px; margin-top: 3px; color: rgba(0, 0, 0, 0.5);">
               친구 목록</p>
-            <!-- <button id="requestedBtn">받은 신청</button> -->
-            <button id="requestBtn" @click="FriendRequest()">친구 요청</button>
+            <v-btn id="requestBtn" @click="FriendRequest()">친구 요청</v-btn>
           </div>
           <div v-for="friend in friends" :key="friend.index" id="friendInfo">
             <div>
@@ -108,7 +134,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-btn variant="text" @click="topbarProfileActive = false" id="closeBtn">
-            <p>Close</p>
+            <p>닫기</p>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -124,7 +150,7 @@
         <input class="box card p-fluid" type="submit" id="friendRequestSubmit" value="요청 보내기">
       </form>
       <div>
-        <button @click="FriendRequest()" id="friendsRequestcloseBtn">CLOSE</button>
+        <v-btn @click="FriendRequest()" id="friendsRequestcloseBtn">닫기</v-btn>
       </div>
     </div>
 
@@ -244,6 +270,32 @@ const onTopBarMenuNotificationButton = () => {
   }
 };
 
+const notifications = [
+{
+                          "alarmId": 11,
+                          "fromMemberId": 5,
+                          "toMemberId": 1,
+                          "type": "CONFERENCE",
+                          "status": "UNREAD",
+                          "content": "신동근1234 님."
+                        },
+                        {
+                          "alarmId": 11,
+                          "fromMemberId": 5,
+                          "toMemberId": 1,
+                          "type": "CONFERENCE",
+                          "status": "UNREAD",
+                          "content": "신동근1234 님이 회의를 시작하였습니다."
+                        },
+                        {
+                          "alarmId": 11,
+                          "fromMemberId": 5,
+                          "toMemberId": 1,
+                          "type": "CONFERENCE",
+                          "status": "UNREAD",
+                          "content": "니노막시무스카이저쏘제쏘냐도르앤스파르타죽지않아나는죽지않아오오오오옹ㅇ나는죽지않아키가작은꼬마동훈이예이예에"
+                        },
+                      ]
 // 알림 팝업 부분 코드 끝
 
 
@@ -324,22 +376,7 @@ const showCreateMeeting = () => {
   showCreateMeetingModal.value = !showCreateMeetingModal.value
 }
 
-// 로그아웃
-const logOut = async () => {
-  try {
-    await memberLogoutApi((response) => {
-      if (response.data.dataHeader.successCode === 0) {
-        alert("로그아웃 되었습니다.");
-        router.push('');
-      } else {
-        alert(response.data.dataHeader.resultMessage);
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    alert("로그아웃 중 오류가 발생했습니다.");
-  }
-}
+
 </script>
 
 
@@ -390,7 +427,7 @@ const logOut = async () => {
 
 #notificatonSet {
   font-size: 25px;
-  font-weight: bold;
+  /* font-weight: bold; */
   color: #3498DB;
   margin-left: 3px;
 }
@@ -400,12 +437,16 @@ const logOut = async () => {
   color: #FFFFFF;
   background-color: #3498DB;
   width: 30%;
-  height: 100%;
-  font-weight: bold;
+  height: 20px;
+  /* font-weight: bold; */
   border-radius: 5cm;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 5px;
+  margin-top: 10px;
   font-size: 13px;
+}
+#clearBtn:hover {
+  transform: scale(1.05);
+  border-color: #3498db;
 }
 
 #notificationsList {
@@ -418,8 +459,14 @@ const logOut = async () => {
 }
 
 #notification {
-  margin-left: 12px;
-  width: 90%;
+  margin: 10px;
+  width: 80%;
+}
+#acceptBtn:hover {
+  transform: scale(1.1);
+}
+#rejectBtn:hover {
+  transform: scale(1.1);
 }
 
 #notificationDivider1 {
@@ -432,7 +479,7 @@ const logOut = async () => {
 
 #notificationDivider2 {
   margin-left: 10px;
-  width: 90%;
+  width: 100%;
   height: 1px;
   background-color: #ccc;
   margin-top: 10px;
@@ -447,8 +494,9 @@ const logOut = async () => {
 
 #userName {
   padding-top: 10px;
-  font-weight: 900;
+  /* font-weight: 900; */
   color: #3498DB;
+  cursor: pointer;
 }
 
 .userName-hover {
@@ -491,11 +539,15 @@ const logOut = async () => {
   top: 5px;
   margin-right: 1%;
   width: 49%;
+  height: 30px;
   padding: 0.8%;
-  font-weight: bold;
   border-radius: 5cm;
   border: 1px solid rgba(52, 152, 219, 0.5);
-
+  font-size: 15px;
+}
+#myPageBtn:hover {
+  transform: scale(1.05);
+    border-color: #3498db;
 }
 
 #logOutBtn {
@@ -506,10 +558,15 @@ const logOut = async () => {
   top: 5px;
   margin-left: 1%;
   width: 49%;
+  height: 30px;
   padding: 0.8%;
-  font-weight: bold;
   border-radius: 5cm;
-  border: 1px solid rgba(52, 152, 219, 0.5);
+  /* border: 1px solid rgba(52, 152, 219, 0.5); */
+  font-size: 15px;
+}
+#logOutBtn:hover {
+  transform: scale(1.05);
+  border-color: #3498db;
 }
 
 #friendsList {
@@ -522,36 +579,26 @@ const logOut = async () => {
   margin-top: -17px;
 }
 
-#requestedBtn {
-  text-align: center;
-  color: #FFFFFF;
-  background-color: #3498DB;
-  position: relative;
-  font-weight: bold;
-  border-radius: 5cm;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  width: 22%;
-  height: 10%;
-  font-size: 11px;
-  margin-right: 2px;
-  margin-left: 40px;
-  margin-top: 4px;
-}
-
 #requestBtn {
   text-align: center;
   color: #FFFFFF;
   background-color: #3498DB;
   position: relative;
-  font-weight: bold;
+  /* font-weight: bold; */
   border-radius: 5cm;
   border: 1px solid rgba(0, 0, 0, 0.1);
+
   width: 22%;
-  height: 10%;
+  height: 15%;
   font-size: 11px;
-  margin-left: 100px;
-  margin-top: 4px;
-  margin-right: 3px;
+
+  margin-left: 120px;
+  margin-top: 5px;
+  padding: 3px 10px 3px 10px;
+}
+#requestBtn:hover {
+  transform: scale(1.05);
+  border-color: #3498db;
 }
 
 #friendInfo {
@@ -569,7 +616,7 @@ const logOut = async () => {
 #friendName {
   color: #3498DB;
   font-size: 18px;
-  font-weight: bold;
+  /* font-weight: bold; */
   margin-bottom: 0;
 }
 
@@ -589,10 +636,14 @@ const logOut = async () => {
   width: 100%;
   height: 25px;
   line-height: 25px;
-  font-weight: bold;
+  /* font-weight: bold; */
   border-radius: 5cm;
   border: 1px solid rgba(0, 0, 0, 0.1);
   top: 15px;
+}
+#closeBtn:hover {
+  transform: scale(1.05);
+  border-color: #3498db;
 }
 
 
@@ -609,7 +660,7 @@ const logOut = async () => {
 
 #friendRequestTitle {
   color: #3498db;
-  font-weight: bold;
+  /* font-weight: bold; */
   margin: 0;
 }
 
@@ -641,14 +692,16 @@ const logOut = async () => {
   color: #FFFFFF;
   background-color: #3498DB;
   position: relative;
-  font-weight: bold;
+  /* font-weight: bold; */
   border-radius: 5cm;
   border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 10px;
   margin-top: 5px;
-  /* 위쪽 여백 추가 */
   line-height: 0px;
-
+}
+#friendRequestSubmit:hover {
+  transform: scale(1.05);
+  border-color: #3498db;
 }
 
 #friendsRequestcloseBtn {
@@ -659,11 +712,12 @@ const logOut = async () => {
   width: 100%;
   height: 25px;
   line-height: 25px;
-  font-weight: bold;
+  /* font-weight: bold; */
   border-radius: 5cm;
   border: 1px solid rgba(0, 0, 0, 0.1);
   top: 15px;
 }
+
 
 
 

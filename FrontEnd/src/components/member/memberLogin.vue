@@ -182,7 +182,10 @@ const goSignUp = function () {
     font-size: medium;
     height: 20px;
     padding: 20px;
-    
+  }
+  #loginSubmit:hover {
+    transform: scale(1.05);
+    border-color: #3498db;
   }
 
   #etc1 {
@@ -197,8 +200,12 @@ const goSignUp = function () {
   }
   #signUpBtn {
     font-weight: bold;
-    color: #3498db;
+    color: rgb(52, 152, 219);
   }
+  #signUpBtn:hover {
+    transform: scale(1.05);
+    border-color: #3498db;
+    }
   #etc2 {
     display: flex;
   }
@@ -211,6 +218,10 @@ const goSignUp = function () {
   #pwSearchBtn {
     font-weight: bold;
     color: #3498db;
+  }
+  #pwSearchBtn:hover {
+    transform: scale(1.05);
+    border-color: #3498db;
   }
 
   #otherLogin {

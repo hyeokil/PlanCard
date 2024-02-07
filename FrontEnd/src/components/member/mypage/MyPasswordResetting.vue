@@ -143,5 +143,8 @@
     height: 20px;
     padding: 20px;
   }
+  #resettingSubmit:hover {
+    color: rgb(41, 128, 185);
+  }
 
 </style>

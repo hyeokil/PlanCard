@@ -19,17 +19,19 @@
                     showButtonBar
                     locale="ko-KR"
                     placeholder="여행 일정을 선택하세요"
-                    class="field box, card p-fluid"
+                    class="field box card p-fluid"
                     id="selectDateCalendar"
                     />
                 
                 <h2>친구 선택</h2>
                 <input class="box, card p-fluid" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="친구 검색">
                 <div class="box, card p-fluid" id="selectFriendsDiv">
-                    <p v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" id="selectedFriend" @click="removeFriend(selectedFriend)">
-                        {{ truncateName(selectedFriend.name) }}
-                        <span>[X]</span>
-                    </p>
+                  <div style="width: 150px; ;">
+                    <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" class="font-content" id="selectedFriend" @click="removeFriend(selectedFriend)">
+                      <p style="margin: 0;">{{ truncateName(selectedFriend.name) }}</p>
+                      <!-- <i class="pi pi-times"></i> -->
+                    </v-chip>
+                  </div>
                 </div>
                 <div class="box, card p-fluid" id="FriendsDiv">
                     <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)">
@@ -41,9 +43,9 @@
                     <input class="card p-fluid" type="submit" id="createSubmit" value = 시작하기>
                 </div>
                 <div style="margin-top: 10px;">
-                    <button class="card p-fluid" id="logoutBtn" @click="$emit('closeMeetingCreate')">
+                    <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
                       닫기
-                    </button>
+                    </v-btn>
                 </div>
 
             </form>
@@ -85,15 +87,15 @@
 
     // 친구 리스트 dummy
     const friends = ref([
-        { id: 1, name: '김수한무거' },
-        { id: 2, name: '김재훈1' },
-        { id: 3, name: '김재훈2' },
-        { id: 4, name: '김재훈3' },
-        { id: 5, name: '김재훈4' },
-        { id: 6, name: '김재훈5' },
-        { id: 7, name: '김재훈6' },
-        { id: 8, name: '김재훈7' },
-        { id: 9, name: '김재훈8' },
+        { id: 1, name: '독고재훈' },
+        { id: 2, name: '김재일' },
+        { id: 3, name: '김재이' },
+        { id: 4, name: '김재삼' },
+        { id: 5, name: '김재사' },
+        { id: 6, name: '김재오' },
+        { id: 7, name: '김재육' },
+        { id: 8, name: '김재칠' },
+        { id: 9, name: '김재팔' },
     ]);
     // 친구 검색어
     const searchText = ref('');
@@ -112,7 +114,7 @@
     // 친구를 선택하여 selectedFriends 배열에 추가
     const addFriend = (friend) => {
         if (!selectedFriends.value.some(fr => fr.id === friend.id)) {
-            selectedFriends.value.push(friend);
+            selectedFriends.value.unshift(friend);
         }
     }
     // 선택된 친구를 배열에서 삭제
@@ -122,10 +124,10 @@
         selectedFriends.value.splice(index, 1);
       }
     }
-    // 이름이 4글자를 넘어가면 요약
+    // 이름이 3글자를 넘어가면 자르기
     const truncateName = (name) => {
-        if (name.length > 4) {
-            return name.slice(0, 4) + '...';
+        if (name.length > 3) {
+            return name.slice(0, 3);
         } else {
             return name;
         }
@@ -137,13 +139,18 @@
 
 <style scoped>
   h1 {
-    font-weight: bold;
+    /* font-weight: bold; */
+  }
+  h2 {
+    color: #3498db;
+    /* font-weight: bold; */
   }
   #separator {
     border: none;
     border-top: 4px solid #3498DB;
     border-radius: 10px;
   }
+
   #tripTitleInput {
     background-color: rgba(245, 245, 245, 0.1);
     width: 100%;
@@ -164,6 +171,9 @@
     justify-content: center;
   }
 
+
+
+
   #searchFriendsDiv {
     background-color: rgba(245, 245, 245, 0.1);
     width: 100%;
@@ -172,6 +182,7 @@
     height: 40px;
     margin-bottom: 10px;
   }
+
   #selectFriendsDiv {
     background-color: rgba(245, 245, 245, 0.1);
     width: 100%;
@@ -185,21 +196,21 @@
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
-
   }
   #selectedFriend {
-    text-align: center;
     color: white;
     background-color: #3498DB;
     position: relative;
     margin: 0;
-    margin-left: 10px;
+    margin-right: 10px;
     width: 50%;
-    padding: 2%;
     font-weight: bold;
+    
     border-radius: 5cm;
     white-space: nowrap;
+    justify-content: space-between;
   }
+
   #FriendsDiv {
     background-color: rgba(245, 245, 245, 0.1);
     width: 100%;
@@ -210,10 +221,11 @@
     overflow-y: auto;
   }
 
-  h2 {
-    color: #3498db;
-    font-weight: bold;
-  }
+
+
+
+
+  
   #createSubmit {
     width: 100%;
     display: flex;
@@ -222,13 +234,13 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
     line-height: 0px;
   }
-  #logoutBtn {
+  #closeBtn {
     width: 100%;
     display: flex;
     align-items: center;
@@ -236,7 +248,7 @@
     border: 1px solid rgba(52, 152, 219, 0.5);
     background-color: #FFFFFF;
     color: rgba(0, 0, 0, 0.5);
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
