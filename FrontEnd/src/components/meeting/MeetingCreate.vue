@@ -231,6 +231,7 @@
   color: rgba(75, 85, 99, 0.8);
   margin-left: -4px;
 }
+
   #selectedFriend {
     color: white;
     background-color: #3498DB;

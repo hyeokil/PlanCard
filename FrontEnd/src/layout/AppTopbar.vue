@@ -804,6 +804,18 @@ const showCreateMeeting = () => {
     margin-bottom: 10px;
   }
 
+  #moreBtn {
+    display: block;
+    margin: 0 auto;
+    color: #FFFFFF;
+    background-color: #3498DB;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    width: 50%;
+    height: 30px;
+    border-radius: 5cm;
+    margin-bottom: 10px;
+  }
+
 
 .onLine {
   color: #2ECC71;
