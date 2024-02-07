@@ -10,12 +10,6 @@ const router = createRouter({
       redirect: { name: "main" },
       children: [  // children : 하위 경로
         {
-          path: "/dragtest",  // 메인 페이지
-          name: "dragtest",
-          component: () => import("@/components/DragTest.vue"),
-
-        },
-        {
           path: "/",  // 메인 페이지
           name: "main",
           component: () => import("@/views/TheMainView.vue"),
@@ -66,12 +60,12 @@ const router = createRouter({
                 {
                   path: "myPasswordResetting",
                   name: "mypage-myPasswordResetting",
-                  component: () => import("@/components/member/mypage/myPasswordResetting.vue"),
+                  component: () => import("@/components/member/mypage/MyPasswordResetting.vue"),
                 },
                 {
                   path: "myInfoModify",
                   name: "mypage-myInfoModify",
-                  component: () => import("@/components/member/mypage/myInfoModify.vue"),
+                  component: () => import("@/components/member/mypage/MyInfoModify.vue"),
                 },
               ],
             },

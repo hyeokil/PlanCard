@@ -13,6 +13,7 @@ import lombok.Setter;
 public class AlarmDto {
     private Long alarmId;
     private Long fromMemberId;
+    private String fromMemberNickname;
     private Long toMemberId;
     private AlarmType type;
     private AlarmStatus status;

@@ -3,6 +3,8 @@ package com.ssafy.backend.domain.member.service;
 import com.ssafy.backend.domain.member.dto.*;
 import com.ssafy.backend.global.component.jwt.dto.TokenMemberInfoDto;
 
+import java.util.List;
+
 public interface MemberService {
     // 회원가입 기능
     void signUpMember(MemberSignUpRequestDto signUpRequestDto);
@@ -21,4 +23,7 @@ public interface MemberService {
 
     // 나의 정보 가져오기 기능
     MemberGetResponseDto getMember(Long id);
+
+    // 해당 이메일을 가진 친구 찾기
+    List<MemberGetResponseDto>  searchMembersByEmail(String email);
 }

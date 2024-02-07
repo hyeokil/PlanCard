@@ -4,7 +4,7 @@
     <div id="div1">
       <h1>My plan</h1>
       <v-btn class="startBtn" id="addBtn" @click="showCreateMeeting">
-        <p style="margin-bottom: 20%;">+</p>
+        <p style="margin-top: 8px;">+</p>
       </v-btn>
     </div>
     
@@ -12,7 +12,7 @@
     
     <div v-for="plan in plans" :key="plan.index" class="card f-fluid" id="plan">
       <div id="planName">
-        <p>{{ plan.name }}</p>
+        <p>{{ truncateName(plan.name) }}</p>
       </div>
       <div id="div2">
         <p class="card f-fluid" id="planPeople">인원 : {{ plan.people }}명</p>
@@ -63,6 +63,14 @@
     },
   ])
 
+  // 이름이 20글자를 넘어가면 요약 ("...")
+  const truncateName = (name) => {
+    if (name.length > 20) {
+        return name.slice(0, 20) + "...";
+    } else {
+        return name;
+    }
+  }
 </script>
 
 
@@ -78,7 +86,6 @@
     background-color: #3498DB;
     color: white;
     font-size: 40px;
-    font-weight: bold;
     padding: 0;
     margin: 0;
     
@@ -88,7 +95,7 @@
   }
   
   h1 {
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #separator {
     border: none;
@@ -106,7 +113,7 @@
   }
   #planName {
     color: #3498DB;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size:xx-large;
     margin-top: 0;
     margin-bottom: 0;
@@ -126,7 +133,7 @@
   #planPeople{
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: larger;
     margin-right: 2%;
     margin-left: 2%;
@@ -135,11 +142,13 @@
     padding: 2%;
     padding-top: 1%;
     padding-bottom: 1%;
+    width: 100px;
+    height: 40px;
   }
   #planDate {
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: black;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: larger;
     margin-right: 2%;
     margin-left: 2%;
@@ -148,6 +157,8 @@
     padding: 2%;
     padding-top: 1%;
     padding-bottom: 1%;
+    width: 250px;
+    height: 40px;
   }
   .startBtn {
     border: 1px solid rgba(0, 0, 0, 0.1);

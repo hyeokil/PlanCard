@@ -1,7 +1,7 @@
 <template>
     <div class="card p-fluid">
       <div>
-        <h1>My page</h1>
+        <h1>내 정보</h1>
       </div>
       
       <hr id="separator">
@@ -9,12 +9,12 @@
 
         <div class="box card p-fluid" id="infoBox">
             <div id="profileImg">
-                <img :src="memberInfo.image || '/로고 3.png'" alt="프로필 이미지">
+                <img :src="accountStore.memberInfo?.image || '/로고 3.png'" alt="프로필 이미지">
             </div>
             <div id="userInfo">
-                <p style="font-weight: bold; font-size: 40pt; color: #3498db;">{{ memberInfo.nickname }}</p>
-                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);"> {{ memberInfo.name }}</p>
-                <p style="font-weight: bold; color: rgba(0, 0, 0, 0.5);"> {{  memberInfo.email }}</p>
+                <p style="font-size: 40pt; color: #3498db;">{{ accountStore.memberInfo?.nickname }}</p>
+                <p style="color: rgba(0, 0, 0, 0.5);"> {{ accountStore.memberInfo?.name }}</p>
+                <p style="color: rgba(0, 0, 0, 0.5);"> {{  accountStore.memberInfo?.email }}</p>
             </div>
 
         </div>
@@ -22,7 +22,7 @@
         <div id="flexContainer">
             <div class="card p-fluid" id="myplanImg" @click="goMyPlan()">
                 <img src="/myplan 아이콘.png" alt="myplan">
-                <p>My Plan</p>
+                <p>나의 여행 계획</p>
             </div>
             <div class="card p-fluid" id="infoModifyImg" @click="goMyInfoModify()">
                 <img src="/회원정보수정 아이콘.png" alt="infoResetting">
@@ -41,11 +41,13 @@
 
 
 <script setup>
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccountsStore } from '@/stores/accountsStore';
+import { memberGetApi } from '@/api/memberApi';
 
 const router = useRouter();
-const { memberInfo } = useAccountsStore();
+const accountStore = useAccountsStore();
 
 const goMyPlan = () => {
   router.push({ name: "mypage-myplan" })
@@ -59,14 +61,33 @@ const goMyPasswordResetting = () => {
   router.push({ name: "mypage-myPasswordResetting" })
 }
 
+const fetchMemberInfo = async () => {
+  try {
+    const response = await memberGetApi();
+    if(response.data.dataHeader.successCode == 0) {
+      // 받아온 사용자 정보로 상태 업데이트
+      console.log(response.data.dataBody);
+      accountStore.setMemberInfo(response.data.dataBody);
+    } else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("회원불러오기 중 오류가 발생했습니다.");
+  }
+}
 
+
+onMounted(() => {
+  fetchMemberInfo();
+});
 </script>
 
 
 
 <style scoped>
   h1 {
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #separator {
     border: none;
@@ -147,7 +168,7 @@ const goMyPasswordResetting = () => {
   }
 
   p {
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: xx-large;
     display: flex;
     justify-content: center; /* 수평 가운데 정렬 */

@@ -1,13 +1,13 @@
 <template>
     <div class="title">
-        <div class="title-name">
+        <div class="title-name font-title">
             <div :class="[checkName=== '0' ? 'active' : 'hidden']" @click="goNameUpdate()">{{ planName }}</div>
             <form :class="[checkName=== '0' ? 'hidden' : 'active']" @submit.prevent="goNameUpdate()">
-                <input type="text" v-model="planName" autofocus>
-                <input class="primary" type="submit" value="확인">
+                <input type="text" v-model="planName" style="width: 250px; color: gray;">
+                <!-- <input class="primary" type="submit" value="확인"> -->
             </form>
         </div>
-        <div class="title-date">
+        <div class="title-date font-content" style="color:silver;">
             <div :class="[checkDate=== '0' ? 'active' : 'hidden']"  @click="goDateUpdate()" >{{ startYear }}년 {{ startMonth }}월 {{ startDate }}일({{ startDay }}) ~ {{ endYear }}년 {{ endMonth }}월 {{ endDate }}일({{ endDay }})</div>
             <form :class="[checkDate=== '0' ? 'hidden' : 'active']" @submit.prevent="goDateUpdate()">
                 <input type="number" step="1" v-model="startYear" id="startYear" style="width: 45px;">년 
@@ -25,12 +25,17 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRoute } from "vue-router";
+import { planNameUpdateApi, planDateUpdateApi } from "@/api/planApi"
 import { usePlanStore } from "@/stores/planStore";
 
+// 여행계획 단일조회 추가
 const planStore = usePlanStore()
 const checkName = ref('0') // 클래스 체크용
 const checkDate = ref('0')  // 클래스 체크용
-const planName = ref(planStore.plan.name)
+const planName = ref('텐텐여행1')
+
+const route = useRoute()
 
 // 시작날짜
 const startYear = ref(planStore.plan.startDate.getYear()+1900)
@@ -38,7 +43,6 @@ const startMonth = ref(planStore.plan.startDate.getMonth()+1)
 const startDate = ref(planStore.plan.startDate.getDate())
 const startDay = computed(() => {
     let startDayRaw = new Date(startYear.value, startMonth.value-1, startDate.value).getDay()
-    console.log('날짜', new Date(startYear.value, startMonth.value-1, startDate.value), startDayRaw)
     if (startDayRaw === 0){
         return '일'
     } else if (startDayRaw === 1){
@@ -65,7 +69,6 @@ const endMonth = ref(planStore.plan.endDate.getMonth()+1)
 const endDate = ref(planStore.plan.endDate.getDate())
 const endDay = computed(() => {
     let endDayRaw = new Date(endYear.value, endMonth.value-1, endDate.value).getDay()
-    console.log('날짜', new Date(endYear.value, endMonth.value-1, endDate.value), endDayRaw)
     if (endDayRaw === 0){
         return '일'
     } else if (endDayRaw === 1){
@@ -90,14 +93,22 @@ const goNameUpdate = () => {
     if (checkName.value === '0') {
         checkName.value = '1'
     } else {
-        checkName.value ='0'
+        checkName.value = '0'
         const payload = {
             name: planName.value,
-            date: null
         }
-        planStore.goCheck(payload)
+        planNameUpdateApi(route.params.id, payload, (response) => {
+            if (response.data.dataHeader.successCode === 1) {
+                let msg = "계획 이름 변경 중 문제가 발생했습니다.";
+                alert(msg);
+            } else {
+                console.log("계획 이름 변경 성공");
+            }
+        }, (error) => {
+            console.log(error)
+        }
+        )
     }
-    // console.log(checkName.value)
 }
 
 const goDateUpdate = () => {
@@ -106,10 +117,21 @@ const goDateUpdate = () => {
     } else {
         checkDate.value ='0'
         const payload = {
-            name: null,
-            date:[startYear.value, startMonth.value-1, startDate.value, endYear.value, endMonth.value-1, endDate.value]    
+            "startDate": `${startYear.value}` + '-' + `${startMonth.value - 1}` - `${startDate.value}`,
+            "endDate":`${endYear.value}` + '-' + `${endMonth.value - 1}` - `${endDate.value}`
         }
-        planStore.goCheck(payload)
+
+        planDateUpdateApi(route.params.id, payload, (response) => {
+            if (response.data.dataHeader.successCode === 1) {
+                let msg = "계획 날짜 변경 중 문제가 발생했습니다.";
+                alert(msg);
+            } else {
+                console.log("계획 날짜 변경 성공");
+            }
+        }, (error) => {
+            console.log(error)
+        }
+        )
     }
 }
 
@@ -118,8 +140,17 @@ const goDateUpdate = () => {
 <style scoped>
 .title{
     display: flex;
-    font-size: 30px;
-    gap: 5%;
+    flex-direction: column;
+    gap: 1%;
+    padding-left: 10%;
+    align-items: start;
+    justify-content: end;
+}
+.title-name{
+    font-size: 20px;
+}
+.title-date{
+    font-size: 14px;
 }
 .active{
     display: block;

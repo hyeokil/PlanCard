@@ -1,28 +1,19 @@
-
-
-
-
 <template>
     <div>
-        <div class="col-12 mt-0 pt-0">
-            <ItemTitle class="title"/>
-        </div>
-        <div class="grid">
-            <div class="col-4 pb-0">
-                <ItemCardList class="card-list" 
-                @card-update="cardUpdate"
-                />
-                <ItemFace class="face" />
+        <div class="mt-0 pt-0">
+            <ItemDrag />
+            <div class="chat-tab">
+                <div class="chat-container">
+                    <button @click="activeTab = !activeTab" class="chat-btn">
+                        <i class="pi pi-comments" style="font-size: 27px;"></i> 채 팅
+                    </button>
+                    <div :class="{ 'sidebar-active': activeTab, 'sidebar-hidden': !activeTab }">
+                        <ItemFace />
+                        <!-- 조건부 렌더링으로 채팅 컴포넌트 표시 -->
+                        <Chat class="chat" v-if="activeTab"></Chat>
+                    </div>
+                </div>
             </div>
-            <!-- <div class="col-8 pt-0">
-                <ItemDetailPlanList class="plan mb-0" 
-                @detail-plan-update="detailPlanUpdate" 
-                />
-                <ItemMap 
-                :card-list="cardList"
-                :detail-plan-list="detailPlanList"
-                class="map pt-5"/>
-            </div> -->
         </div>
     </div>
 </template>
@@ -30,47 +21,89 @@
 
 
 <script setup>
-import ItemCardList from '@/components/meeting/items/card/ItemCardList.vue'
-import ItemDetailPlanList from '@/components/meeting/items/detailplan/ItemDetailPlanList.vue'
 import ItemFace from '@/components/meeting/items/ItemFace.vue'
-import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
-// import ItemMap from '@/components/meeting/items/ItemMap.vue'
-import { ref } from "vue"
-const cardList = ref([])
-const detailPlanList = ref([])
+import Chat from '@/components/meeting/items/Chat.vue'
+import ItemDrag from "@/components/meeting/items/ItemDrag.vue"
+import { onBeforeMount, onBeforeUnmount, ref } from "vue"
+import { usePlanStore } from "@/stores/planStore";
+const planStore = usePlanStore()
 
-const cardUpdate = (emitCardList) => {
-    cardList.value = emitCardList
-}
 
-const detailPlanUpdate = (emitdetailPlanList) => {
-    detailPlanList.value = emitdetailPlanList
-}
+
+onBeforeMount(() => {
+    planStore.isMeetingView = true
+})
+
+onBeforeUnmount(() => {
+    planStore.isMeetingView = false
+})
+// // 탭 상태 추가
+// const activeTab = ref('');
+
+// // 탭 토글 기능
+// const toggleTab = (tabName) => {
+//     activeTab.value = activeTab.value === tabName ? '' : tabName;
+// };
+
+// 탭 상태 추가
+const activeTab = ref('');
 
 </script>
 
-
-
 <style scoped>
-.meeting{
+.meeting {
     width: 100vw;
     height: 100vh;
 }
-.title{
-    width: 100vw;
-    height: 5vh;
-}
-.card-list{
+
+.card-list {
     height: 60vh;
 }
-.face{
-    height: 15vh;
+
+.sidebar-active {
+    display: block;
+    width: 30vw;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
-.plan{
-    /* height: 30vh; */
-    height:75vh;
+
+.sidebar-hidden {
+    display: block;
+    width: 0vw;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
-/* .map{
-    height: 45vh;
-} */
-</style>
+
+.plan {
+    height: 30vh;
+}
+
+.chat-tab {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100vh;
+    background-color: #ddd;
+    z-index: 10;
+}
+
+.chat-container {
+    position: relative;
+}
+
+.chat-btn {
+    position: absolute;
+    top: 5rem;
+    left: -40px;
+    z-index: 5;
+    background-color: #3498DB;
+    width: 40px;
+    height: 110px;
+    border-radius: 5px 0px 0px 5px;
+    font-size: 20px;
+    color: #fff;
+}
+
+.chat {
+    background-color: aqua;
+}</style>

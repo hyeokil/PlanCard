@@ -1,0 +1,331 @@
+<script setup>
+import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
+import draggable from "@/vuedraggable";
+import KaKaoMap from '@/components/common/map/KaKaoMap.vue'
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useRoute } from 'vue-router';
+import { WebsocketProvider } from 'y-websocket';
+import * as Y from 'yjs';
+
+const route = useRoute();
+const roomId = route.params.id; // URL에서 roomId 추출
+const wsUrl = `ws://localhost:1234`; // WebSocket 서버 URL
+
+const doc = new Y.Doc();
+const yArray = doc.getArray('travelPlan');
+
+// WebSocket 프로바이더 초기화
+const wsProvider = new WebsocketProvider(wsUrl, roomId, doc);
+
+// Yjs 배열과 동기화된 Vue 상태를 계산합니다.
+const cardList = computed(() => yArray.toArray().filter(item => !item.day));
+const planList = computed(() => yArray.toArray().filter(item => item.day));
+
+
+// 실제 데이터를 Yjs 배열로 옮깁니다.
+// 이 과정은 보통 서버에서 방을 생성할 때 한 번만 수행되며, 클라이언트는 이미 존재하는 데이터를 사용합니다.
+const initData = () => {
+  // 초기 데이터가 Yjs 배열에 아직 존재하지 않으면 추가합니다.
+  // 실제 애플리케이션에서는 서버에서 이를 처리합니다.
+  if (yArray.length === 0) {
+    const initialData = [
+      // 여기에 cardList와 planList에서 가져온 데이터를 삽입합니다.
+      {
+        cardId: 2,
+        placeName: "장인족발",
+        placeAddress: "장덕동 1574",
+        Lat: 35.190427,
+        Lng: 126.8125625,
+        image: "https://lh5.googleusercontent.com/p/AF1QipNPSfW6JXjsjckMdkZAyejA0YmpQ3TZOTyFziK_=w408-h306-k-no",
+        memo: "",
+    },
+    {
+        cardId: 3,
+        placeName: "마루샤브",
+        placeAddress: "장덕동 1634",
+        Lat:35.1905106,
+        Lng: 126.8169632,
+        image: "https://lh5.googleusercontent.com/p/AF1QipM2Bk8GPiHYC3Zms9ngsgr3X2MS3wvwJ-t1b-Zl=w260-h175-n-k-no",
+        memo: "",
+    },
+    {
+        cardId: 4,
+        placeName: "24시 콩나물국밥",
+        placeAddress: "장덕동 1302",
+        Lat:35.1911555,
+        Lng: 126.8194957,
+        image:"https://lh5.googleusercontent.com/p/AF1QipMb3Ne3u_yKvQvLzVgIetlDhZfJYU7i9giMvc2W=w426-h240-k-no",
+        memo: "",
+    },
+    {
+        cardId: 1,
+        placeName: "안청근린공원",
+        placeAddress: "안청동 736-1",
+        Lat:35.2129735,
+        Lng: 126.8037158,
+        image:"https://lh5.googleusercontent.com/p/AF1QipOjnZPOnGIUGtOkualkcMrX-gudl4hLP5vzfOug=w493-h240-k-no",
+        memo: "",
+    },
+    {
+        cardId: 5,
+        placeName: "삼성전자 광주사업장",
+        placeAddress: "하남산단6번로 107",
+        Lat:35.2040949,
+        Lng: 126.8071876,
+        image:"https://maps.gstatic.com/tactile/pane/default_geocode-2x.png",
+        memo: "",
+    },
+      // ... 나머지 카드 및 계획 데이터
+    ];
+    yArray.insert(0, initialData);
+  }
+  console.log(yArray);
+};
+
+// 카드가 드래그 앤 드롭으로 이동될 때 Yjs 배열을 업데이트합니다.
+const onCardMove = (event) => {
+    if (event.added) {
+        const item = event.added.element;
+        yArray.insert(event.added.newIndex, [item]);
+    } else if (event.removed) {
+        yArray.delete(event.removed.oldIndex, 1);
+    } else if (event.moved) {
+        const item = yArray.get(event.moved.oldIndex);
+        yArray.delete(event.moved.oldIndex, 1);
+        yArray.insert(event.moved.newIndex, [item]);
+    }
+};
+
+onMounted(() => {
+  initData(); // 초기 데이터 설정
+  // Yjs 배열을 감시하고 Vue 반응형 데이터를 업데이트합니다.
+  watch(() => yArray.toArray(), (newArray) => {
+    cardList.value = newArray.filter(item => !item.day);
+    planList.value = newArray.filter(item => item.day);
+  }, { deep: true });
+});
+
+
+onUnmounted(() => {
+    wsProvider.disconnect();
+});
+</script>
+
+
+<template>
+    <div class="drag-container">
+        <div class="row" style="display: flex;">
+            <div class="drag-list">
+                <ItemTitle class="title" />
+                <h6 style="margin-left: 11%;">카드 목록</h6>
+                <div>
+                    <draggable class="DragArea list-group" :list="cardList" :group="{ name: 'card', pull: 'clone', put: false }"
+                        item-key="id" @change="onCardMove">
+                        <template #item="{ element }">
+                            <div
+                                :class="[FixCards.reduce((acc, item) => acc || (item.cardId === element.cardId), false) ? 'hidden' : 'active']">
+                                <div class="list-group-item font-content">
+                                    <div class="d-flex align-items-center gap-3 justify-content-center">
+                                        <div class="card-card-list d-flex justify-content-start gap-3 align-items-center">
+                                            <img class="card-image" :src="element.image" alt="">
+                                            <div style="display: flex; flex-direction: column;">
+                                                <div style="font-weight: bold;">{{ element.placeName }}</div>
+                                                <div>{{ element.placeAddress }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </draggable>
+                </div>
+                <button class="quit-btn" @click="goMain">
+                    <i class="pi pi-times" style="font-size: 13px;"></i>끝내기
+                </button>
+            </div>
+            <div class="drag-list">
+                <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
+                    <div class="d-flex align-items-center">
+                        <div style="font-size: 28px;">
+                            {{ countP }}</div>
+                        <div class="font-content" style="font-size: 15px;">개의 장소</div>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <div class="drag-plan-list" v-for="(fixCard, index) in days" :key="index">
+                        <h6 style="cursor: pointer; margin-left: 6%;" @click="changeDate(index + 1)">Day {{ index + 1 }}</h6>
+                        <div>
+                            <draggable class="DragArea list-group" :list="fixCard" :group="{ name: 'card', put: true }"
+                                item-key="id" @change="onCardMove">
+                                <template #item="{ element, index }">
+                                    <div @click="setCenter(element)" class="list-group-item font-content">
+                                        <div class="d-flex align-items-center gap-3 justify-content-center"
+                                            style="position: relative; margin-bottom: 10px;">
+                                            <div class="orderNumber">{{ index + 1 }}</div>
+                                            <div class="card-detail d-flex justify-content-start gap-3 align-items-center">
+                                                <img class="card-image" :src="element.image" alt="">
+                                                <div>{{ element.placeName }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </draggable>
+                        </div>
+                    </div>
+                    <button class="save-btn" @click="saveCards">
+                        <i class="pi pi-check"></i> 저장
+                    </button>
+                </div>
+            </div>
+
+            <!-- 지도 사이드바 -->
+            <!-- <div class="tab d-flex align-items-start">
+                <button @click="visible=!visible">
+                    <i class="pi pi-map" style="font-size: 2rem;"></i>
+                </button> -->
+            <!-- <div :class="{'sidebar-active':visible, 'sidebar-hidden':!visible}"> -->
+            <div class="map">
+                <KaKaoMap :card-list="filteredCard" :detail-list="filteredPlan" />
+            </div>
+        </div>
+        <!-- </div> -->
+    </div>
+</template>
+    
+<style scoped>
+.quit-btn {
+    font-size: 13px;
+    position: absolute;
+    top: 75px;
+    left: 300px;
+    border: #3498DB 1px solid;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #3498DB;
+    width: 70px;
+    height: 30px;
+    text-align: start;
+    padding-left: 8px;
+    padding-top: 3px;
+    z-index: 999;
+}
+
+.save-btn {
+    position: absolute;
+    bottom: 2rem;
+    left: 670px;
+    border: #3498DB 1px solid;
+    border-radius: 5px;
+    background-color: #3498DB;
+    color: #fff;
+    width: 70px;
+    height: 40px;
+    text-align: start;
+    padding-left: 8px;
+    padding-top: 3px;
+}
+
+.map {
+    position: relative;
+}
+
+.title {
+    height: 130px;
+}
+
+.card-detail {
+    width: 280px;
+    border-radius: 5px;
+    padding: 0.4rem;
+    position: relative;
+    box-shadow: 0px 3px 5px gainsboro;
+}
+
+.card-card-list {
+    width: 300px;
+    height: 70px;
+    border-radius: 5px;
+    padding: 0.4rem;
+    position: relative;
+    box-shadow: 0px 3px 5px gainsboro;
+}
+
+.card-image {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 5px;
+}
+
+.sidebar-active {
+    display: block;
+    width: 50vw;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sidebar-active {
+    display: block;
+    width: 0vw;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.tab {
+    position: fixed;
+    right: 0px;
+    top: 5rem;
+}
+
+.drag-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.drag-list {
+    height: 100vh;
+    overflow: auto;
+    min-width: 380px;
+    border-left: rgba(0, 0, 0, 0.1) 1px solid;
+    background-color: #fff;
+}
+
+.drag-plan-list {
+    margin-bottom: 15%;
+    z-index: 2;
+}
+
+.orderNumber {
+    background-color: #3498DB;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 50%;
+}
+</style>
+    
+<style>
+.overlay {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+.marker-number {
+    position: relative;
+    color: #fff;
+    left: -1px;
+    top: 2px;
+    width: 28px;
+    height: 28px;
+    background-color: #3498DB;
+    /* border: black solid 1px; */
+    border-radius: 50%;
+    font-size: 20px;
+    font: bolder;
+    display: inline-block;
+    text-align: center;
+}
+</style>

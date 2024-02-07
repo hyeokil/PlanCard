@@ -11,23 +11,23 @@
       <div class="container; card p-fluid" id="modifyBox">
         <h1 id="modifyTitle">회원 정보 수정</h1>
         
-        <form id="modifyForm">
+        <form @submit.prevent="modify" id="modifyForm">
           
-          <div v-if="userPhotoUrl" id="profileImg">
-            <img :src="userPhotoUrl" alt="프로필 이미지">
+          <div v-if="memberPreviewPhotoUrl" id="profileImg">
+            <img :src="memberPreviewPhotoUrl" alt="프로필 이미지">
           </div>
           <div v-else></div>
           
           
-          <div class="box, card p-fluid" id="userNicknameInput">
-            <input type="userNickname" id="userNickname" v-model.trim="userNickname" placeholder="새로운 닉네임">
+          <div class="box, card p-fluid" id="memberNicknameInput">
+            <input type="text" id="memberNickname" v-model.trim="memberNickname" placeholder="새로운 닉네임">
           </div>
           
           <div class="card p-fluid" id="profilePhoto">
             <p id="profilePhotoGuide">프로필 사진</p>
             <hr id="separator">
-            <div class="box, card p-fluid" id="userPhotoInput">
-              <input type="file" id="userPhoto" accept="image/*" @change="handlePhotoUpload">
+            <div class="box, card p-fluid" id="memberPhotoInput">
+              <input type="file" id="memberPhoto" accept="image/*" @change="handlePhotoUpload" ref="fileInput">
             </div>
           </div>
           
@@ -64,31 +64,136 @@
 
 
 <script setup>
-  import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { memberGetApi } from '@/api/memberApi';
+import { memberUpdateApi } from '@/api/memberApi';
+import { fileUploadApi } from "@/api/commonApi";
+import { useAccountsStore } from '@/stores/accountsStore';
 
-  const userPhoto = ref(null);
-  const userPhotoUrl = ref('');
+const router = useRouter();
+const accountStore = useAccountsStore();
 
-  // 파일 업로드를 위한 이벤트 핸들러
-  const handlePhotoUpload = (event) => {
-      const file = event.target.files[0];
-      // 파일을 FormData에 추가하여 전송 가능
-      userPhoto.value = file;
-      userPhotoUrl.value = URL.createObjectURL(file);
+const memberNickname = ref('');
+const existingNickname = accountStore.memberInfo?.nickname  // 기존 닉네임
+memberNickname.value = existingNickname;  // 기존 닉네임을 초기값으로 설정
+
+const memberImage = ref('');
+
+const memberPreviewPhotoUrl = ref('');
+const fileInput = ref(null);
+
+// 파일 업로드를 위한 이벤트 핸들러
+const handlePhotoUpload = (event) => {
+  const file = event.target.files[0];
+  const maxFileSize = 1 * 1024 * 1024; // 1MB
+
+  if (!file.type.includes("jpeg") && !file.type.includes("png")) {
+    alert("JPG 또는 PNG 이미지만 업로드 가능합니다.");
+    resetFileInput();
+    return;
   }
 
-  const withdrawalActive = ref(false);
-  // 회원탈퇴 팝업 on/off
-  const withdrawalRequest = () => {
-    withdrawalActive.value = !withdrawalActive.value;
+  if (file.size > maxFileSize) {
+    alert("이미지 파일 크기는 1MB 이하만 가능합니다.");
+    resetFileInput();
+    return;
+  }
+
+  // memberPhoto.value = file;
+  memberPreviewPhotoUrl.value = URL.createObjectURL(file);
+  imageUpload(file);
+}
+
+// 입력 필드 리셋
+const resetFileInput = () => {
+  if (fileInput.value) {
+    fileInput.value.value = ""; // Vue 3 Composition API에서 ref를 사용할 경우 .value 사용
+  }
+  memberPreviewPhotoUrl.value = "";
+};
+
+const imageUpload = async (file) => {
+  // 파일을 FormData에 추가하여 전송 가능
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('nameFile', file.name);
+
+  try {
+    const response = await fileUploadApi(formData);
+    if (response.data.dataHeader.successCode === 0) {
+      console.log("이미지가 이미지 서버에 업로드 되었습니다.");
+      memberImage.value = response.data.dataBody;
+    }
+    else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
+  }
+}
+
+const modify = async () => {
+  if (memberNickname.value.trim() === '') {
+    alert("변경할 닉네임을 입력해주세요.");
+    return;
+  }
+
+  const param = {
+    nickname: memberNickname.value,
+    image: memberImage.value
   };
+
+  try {
+    await memberUpdateApi(param,
+    (response) => {
+      if (response.data.dataHeader.successCode === 0) {
+        alert("회원정보 수정이 완료됐습니다.");
+        router.push('/member/mypage');
+      }
+      else {
+        alert(response.data.dataHeader.resultMessage);
+      }
+    })
+  } catch (error) {
+    console.error(error);
+    alert("회원정보 수정 중 오류가 발생했습니다.");
+  }
+}
+
+const fetchMemberInfo = async () => {
+  try {
+    const response = await memberGetApi();
+    if(response.data.dataHeader.successCode == 0) {
+      // 받아온 사용자 정보로 상태 업데이트
+      console.log(response.data.dataBody);
+      accountStore.setMemberInfo(response.data.dataBody);
+    } else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("회원불러오기 중 오류가 발생했습니다.");
+  }
+}
+
+onMounted(() => {
+  fetchMemberInfo();
+});
+
+const withdrawalActive = ref(false);
+// 회원탈퇴 팝업 on/off
+const withdrawalRequest = () => {
+  withdrawalActive.value = !withdrawalActive.value;
+};
 </script>
 
 
 
 <style scoped>
   h1 {
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #separator {
     border: none;
@@ -115,7 +220,7 @@
   }
   #modifyTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #modifyForm {
     display: flex;
@@ -158,7 +263,7 @@
     background-color: #FFFFFF;
     border: 1px solid rgba(52, 152, 219, 0.5);
     color: rgba(0, 0, 0, 0.5);
-    font-weight: bold;
+    /* font-weight: bold; */
     width: 100%;
     padding: 5px;
     margin-top: 20px;
@@ -168,7 +273,7 @@
     padding-top: 5px;
     margin: 0;
   }
-  #userPhotoInput {
+  #memberPhotoInput {
     border: 1px solid rgba(52, 152, 219, 0.5);
     display: flex;
     justify-content: center; /* 수평 가운데 정렬 */
@@ -178,11 +283,11 @@
     margin-bottom: 10px;
   }
 
-  #userNickname, #userPhoto {
+  #memberNickname, #memberPhoto {
     height: 35px;
     width: 250px;
   }
-  #userNicknameInput {
+  #memberNicknameInput {
     background-color: rgba(245, 245, 245, 0.1);
     width: 90%;
     display: flex;
@@ -201,10 +306,13 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
+  }
+  #modifySubmit:hover {
+    background-color: rgb(41, 128, 185); /* 마우스를 올렸을 때 배경색 변경 */
   }
 
 
@@ -216,13 +324,16 @@
   }
   #withdrawalGuide {
     color: rgba(0, 0, 0, 0.3);
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
     margin-right: 10px;
   }
   #withdrawalBtn {
-    font-weight: bold;
-    color: rgba(255, 0, 0, 1);
+    /* font-weight: bold; */
+    color: rgba(255, 0, 0, 0.3);
+  }
+  #withdrawalBtn:hover {
+    color: rgb(255, 0, 0);
   }
 
   #overlay {
@@ -257,7 +368,7 @@
   }
   #withdrawalTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
   }
   #withdrawalSubmit {
@@ -265,15 +376,17 @@
     height: 30px;
     text-align: center;
     color: #FFFFFF;
-    background-color: #FF0000;
+    background-color: rgb(255, 0, 0);
     position: relative;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 10px;
     margin-top: 5px; /* 위쪽 여백 추가 */
     line-height: 0px;
-
+  }
+  #withdrawalSubmit:hover {
+    background-color: rgb(244, 0, 0);
   }
 
   #withdrawalCloseBtn {
@@ -281,13 +394,16 @@
     height: 30px;
     text-align: center;
     color: #FFFFFF;
-    background-color: #3498DB;
+    background-color: rgb(52, 152, 219);
     position: relative;
     line-height: 25px;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     top: 15px;
+  }
+  #withdrawalCloseBtn:hover {
+    background-color: rgb(41, 128, 185);
   }
 
 </style>

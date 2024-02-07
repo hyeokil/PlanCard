@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -109,5 +111,15 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
+    @Override
+    public List<MemberGetResponseDto> searchMembersByEmail(String email) {
+        return memberRepository.findByEmailContaining(email).stream()
+                .map(member -> new MemberGetResponseDto(
+                        member.getEmail(),
+                        member.getName(),
+                        member.getNickname(),
+                        member.getImage()))
+                .collect(Collectors.toList());
+    }
 
 }

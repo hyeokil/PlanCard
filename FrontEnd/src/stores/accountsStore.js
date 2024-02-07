@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useCookies } from 'vue3-cookies';
 
 export const useAccountsStore = defineStore('accountsStore', {
   state: () => ({
@@ -15,6 +16,10 @@ export const useAccountsStore = defineStore('accountsStore', {
     setLogout() {
       this.isLogin = false;
       this.memberInfo = null;
+    },
+    checkLoginStatus() {
+      const { cookies } = useCookies();
+      this.isLogin = !!cookies.get('accessToken');
     }
   },
   persist: true, 
