@@ -86,7 +86,6 @@
     background-color: #3498DB;
     color: white;
     font-size: 40px;
-    /* font-weight: bold; */
     padding: 0;
     margin: 0;
     
