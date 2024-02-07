@@ -51,7 +51,7 @@
   const plans = ref([
     {
         name: "텐텐 여행1",
-        people: 6,
+        people: 611,
         startDate: "2024.01.29",
         EndDate: "2024.02.01"
     },
@@ -142,7 +142,6 @@
     padding: 2%;
     padding-top: 1%;
     padding-bottom: 1%;
-    width: 100px;
     height: 40px;
   }
   #planDate {

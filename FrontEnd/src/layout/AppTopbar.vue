@@ -15,11 +15,11 @@
 
     <!-- Button -->
     <v-btn class="myPlanBtn" v-show="accountsStore.isLogin">
-      <router-link :to="{ name: 'mypage-myplan' }" class="router-link-active"><b>My Plan</b></router-link>
+      <router-link :to="{ name: 'mypage-myplan' }" class="router-link-active"><b>나의 여행 계획</b></router-link>
     </v-btn>
 
     <v-btn class="startBtn" v-show="accountsStore.isLogin">
-      <p class="router-link-active" @click="showCreateMeeting"><b>Start</b></p>
+      <p class="router-link-active" @click="showCreateMeeting"><b>시작</b></p>
     </v-btn>
 
 
@@ -73,7 +73,8 @@
                   color: white;
                   width: 35px;
                   height: 35px;
-                  margin-right: 3px;"></i>
+                  margin-right: 3px;
+                  cursor: pointer;"></i>
                 <i class="pi pi-times"
                   id="rejectBtn"
                   style="font-size: 1.5rem; 
@@ -84,7 +85,8 @@
                   color: white;
                   width: 35px;
                   height: 35px;
-                  margin-left: 3px;"></i>
+                  margin-left: 3px;
+                  cursor: pointer;"></i>
               </div>
             </div>
             <div id="notificationDivider2"></div>
@@ -105,11 +107,16 @@
           <v-list-item :prepend-avatar="accountsStore.memberInfo?.image ? accountsStore.memberInfo.image : '/로고 3.png'">
             <template #title>
               <span style="font-size: 18px; color: #3498DB;">
-                {{ accountsStore.memberInfo?.name}}
+                {{ accountsStore.memberInfo?.nickname }}
+              </span>
+              <span style="font-size: 15px; color: #3498DB;">
+                ({{ accountsStore.memberInfo?.name}})
               </span>
             </template>
             <template #subtitle>
-              <span style="font-size: 15px; ">{{ accountsStore.memberInfo?.email }}</span>
+              <span style="font-size: 15px; ">
+                {{ accountsStore.memberInfo?.email }}
+              </span>
             </template>
           </v-list-item>
         </v-list>
@@ -748,7 +755,8 @@ const showCreateMeeting = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 998;
-  max-height: 70vh;
+  max-height: 120vh;
+  max-width: 120vw;
   overflow-y: auto;
 }
 

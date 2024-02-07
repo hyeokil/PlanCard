@@ -1,17 +1,21 @@
 <template>
-    <div class="card p-fluid" style="width: 400px; justify-content: center;">
+    <div class="card p-fluid" style="
+    /* width: 400px; */
+     justify-content: center;">
         <div>
-            <h1>미팅 생성</h1>
+            <h2 style="color: black;">미팅 생성</h2>
         </div>
         <hr id="separator">
 
-        <div class="card p-fluid">    
-            <form @submit.prevent="goMeeting" style="width: 300px;">
-                <h2>여행 이름</h2>
-                <input type="text" class="box, card p-fluid" id="tripTitleInput" v-model.trim="tripTitle" placeholder="여행 이름을 알려주세요">
-    
-                <h2>여행 일정 선택</h2>
-                    <Calendar 
+        <div>    
+            <form @submit.prevent="goMeeting" style="width: 600px;">
+              <div style="display: flex; justify-content: space-between;">
+                <div style="width: 295px;">
+                  <h3>여행 이름</h3>
+                  <input type="text" class="box, card p-fluid font-content" id="tripTitleInput" v-model.trim="tripTitle" placeholder="여행 이름을 알려주세요">
+                  
+                  <h3>여행 일정 선택</h3>
+                  <Calendar 
                     v-model="selectedDates" 
                     dataFormat="yy/mm/dd"
                     selectionMode="range" 
@@ -22,37 +26,45 @@
                     class="field box card p-fluid"
                     id="selectDateCalendar"
                     />
-                
-                <h2>친구 선택 ({{ selectedFriends.length }})</h2>
-                <div class="box, card p-fluid" id="selectFriendsDiv">
-                  <div style="width: 150px; ;">
-                    <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" class="font-content" id="selectedFriend" @click="removeFriend(selectedFriend)">
-                      <p style="margin: 0;">{{ selectedFriend.name }}</p>
-                      <!-- <i class="pi pi-times"></i> -->
-                    </v-chip>
+                </div>
+              
+                <div style="width: 295px;">
+                  <h3>친구 선택 ({{ selectedFriends.length }})</h3>
+                  <div class="box, card p-fluid" id="selectFriendsDiv">
+                    <div style="width: 150px; ;">
+                      <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" class="font-content" id="selectedFriend" @click="removeFriend(selectedFriend)">
+                        <p style="margin: 0;">{{ selectedFriend.name }}</p>
+                        <!-- <i class="pi pi-times"></i> -->
+                      </v-chip>
+                    </div>
+                  </div>
+                  <input class="box, card p-fluid font-content" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="친구 및 이메일 검색">
+                  <div class="box, card p-fluid" id="FriendsDiv">
+                    <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
+                      <p class=" font-content"
+                          style="
+                          font-weight: bold;
+                          font-size: medium;
+                          color: #3498DB;
+                          margin-right: 10px;
+                          margin-bottom: 7px;">{{ friend.name }}</p>
+                      <p 
+                      class=" font-content"
+                      style="
+                      font-size: small;
+                      color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
+                    </div>
                   </div>
                 </div>
-                <input class="box, card p-fluid" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="친구 및 이메일 검색">
-                <div class="box, card p-fluid" id="FriendsDiv">
-                    <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
-                        <p style="
-                        font-size: medium;
-                        color: #3498DB;
-                        margin-right: 10px;
-                        margin-bottom: 7px;">{{ friend.name }}</p>
-                        <p style="
-                        font-size: small;
-                        color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
-                    </div>
-                </div>
-            
+              </div>
+                
                 <div>
-                    <input class="card p-fluid" type="submit" id="createSubmit" value = 시작하기>
+                  <input class="card p-fluid" type="submit" id="createSubmit" value = 시작하기>
                 </div>
                 <div style="margin-top: 10px;">
-                    <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
-                      닫기
-                    </v-btn>
+                  <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
+                    닫기
+                  </v-btn>
                 </div>
 
             </form>
@@ -161,10 +173,10 @@
 
 
 <style scoped>
-  h1 {
+  h2 {
     /* font-weight: bold; */
   }
-  h2 {
+  h3 {
     color: #3498db;
     /* font-weight: bold; */
   }
@@ -176,20 +188,22 @@
 
   #tripTitleInput {
     background-color: rgba(245, 245, 245, 0.1);
-    width: 100%;
+    width: 90%;
     display: flex;
     align-items: center;
     border: 1px solid rgba(52, 152, 219, 0.5);
-    height: 40px;
+    height: 30px;
+    padding: 15px;
     margin-bottom: 10px;
   }
   #selectDateCalendar {
     background-color: rgba(245, 245, 245, 0.1);
-    width: 100%;
+    width: 90%;
     display: flex;
     align-items: center;
     border: 1px solid rgba(52, 152, 219, 0.5);
-    height: 40px;
+    height: 30px;
+    padding: 15px;
     margin-bottom: 10px;
     justify-content: center;
   }
@@ -202,7 +216,8 @@
     width: 100%;
     align-items: center;
     border: 1px solid rgba(52, 152, 219, 0.5);
-    height: 40px;
+    height: 30px;
+    padding: 15px;
     margin-bottom: 10px;
   }
 
@@ -233,7 +248,7 @@
     margin: 0;
     margin-right: 10px;
     padding: 10%;
-    /* font-weight: bold; */
+    font-weight: bold;
     border-radius: 5cm;
     white-space: nowrap;
     justify-content: space-between;
@@ -244,8 +259,10 @@
     background-color: rgba(245, 245, 245, 0.1);
     width: 100%;
     border: 1px solid rgba(52, 152, 219, 0.5);
-    height: 300px;
+    height: 170px;
     margin-bottom: 10px;
+    padding: 20px;
+    padding-top: 10px;
 
     overflow-y: auto;
   }
