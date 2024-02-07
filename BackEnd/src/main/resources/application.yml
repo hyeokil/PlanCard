@@ -16,9 +16,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # DB 드라이버
-    url: jdbc:mysql://localhost:3306/plancard?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true       # 데이터베이스 URL
-    username: ssafy                     # 데이터베이스 계정명
-    password: ssafy                       # 데이터베이스 계정 비밀번호
+    url: jdbc:mysql://plancard-db.cts0808eovz6.ap-northeast-2.rds.amazonaws.com:3306/plancard_db       # RDS mysql
+    username: admin                     # 데이터베이스 계정명
+    password: ssafy1234                       # 데이터베이스 계정 비밀번호
 
 
 #    open-in-view: false

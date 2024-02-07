@@ -14,15 +14,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AlarmCreateRequestDto {
+    private static final String FRIEND_ALARM_CONTENT = " 님이 친구 요청을 보냈습니다.";
+    private static final String CONFERENCE_ALARM_CONTENT = " 님이 회의를 시작하였습니다.";
+
     private Long toMemberId;    // 알람을 받는 멤버의 ID
     private AlarmType type; // 알람 유형
     private String content; // 알랑 내용
 
     public Alarm toEntity(Member fromMember, Member toMember) {
         if (type.equals(AlarmType.FRIEND)) {
-            content = fromMember.getName() + " 님이 친구 요청을 보냈습니다.";
+            content = FRIEND_ALARM_CONTENT;
         } else {
-            content = fromMember.getName() + " 님이 회의를 시작하였습니다.";
+            content = CONFERENCE_ALARM_CONTENT;
         }
 
         return Alarm.builder()

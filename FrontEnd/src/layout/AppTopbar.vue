@@ -36,7 +36,7 @@
         <span>Profile</span>
       </button>
       <p id="userName" @click="onTopBarMenuProfileButton()" :class="{ 'userName-hover': !accountsStore.isLogin }">
-        {{ accountsStore.isLogin ? accountsStore.memberInfo.nickname : '로그인' }}
+        {{ accountsStore.isLogin ? accountsStore.memberInfo?.nickname : '로그인' }}
       </p>
       <p style="padding-top: 10px;" v-show="accountsStore.isLogin">님</p>
     </div>

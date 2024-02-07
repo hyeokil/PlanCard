@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
 import com.ssafy.backend.domain.alarm.entity.QAlarm;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
+import com.ssafy.backend.domain.member.entity.QMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -59,13 +60,17 @@ public class AlarmRepositoryCustomImpl implements AlarmRepositoryCustom {
                         Projections.bean(
                                 AlarmDto.class,
                                 alarm.id.as("alarmId"),
-                                alarm.fromMember.id.as("fromMemberId"),
+//                                alarm.fromMember.id.as("fromMemberId"),
+//                                alarm.fromMember.nickname.as("fromMemberNickname"),
+                                member.id.as("fromMemberId"),
+                                member.nickname.as("fromMemberNickname"),
                                 alarm.toMember.id.as("toMemberId"),
                                 alarm.type,
                                 alarm.content,
                                 alarm.status
                         ))
                 .from(alarm)
+                .join(alarm.fromMember, member)
                 .where(wherePredicate)
                 .orderBy(alarm.id.desc())
                 .limit(limit)
