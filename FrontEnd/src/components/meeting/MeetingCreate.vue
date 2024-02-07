@@ -27,7 +27,7 @@
                 <div class="box, card p-fluid" id="selectFriendsDiv">
                   <div style="width: 150px; ;">
                     <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" class="font-content" id="selectedFriend" @click="removeFriend(selectedFriend)">
-                      <p style="margin: 0;">{{ truncateName(selectedFriend.name) }}</p>
+                      <p style="margin: 0;">{{ selectedFriend.name }}</p>
                       <!-- <i class="pi pi-times"></i> -->
                     </v-chip>
                   </div>
@@ -90,6 +90,7 @@
 
     // 유저 리스트 dummy
     const users = ref([
+        { id: 11, name: '이름이긴유저에요1', email: "user1@ssafy.com" },
         { id: 12, name: '유저에요1', email: "user1@ssafy.com" },
         { id: 13, name: '유저에요2', email: "user2@ssafy.com" },
         { id: 14, name: '유저에요3', email: "user3@ssafy.com" },
@@ -120,20 +121,20 @@
     if (!searchText.value) {
         return friends.value;
     } else {
-        // return friends.value.filter(friend =>
-        // friend.name.toLowerCase().includes(searchText.value.toLowerCase())
-        // );
-
-      // 친구 목록 중 이름이 맞는 친구 필터링 (친구는 이메일 안먹음)
-      const filteredFriendsList = friends.value.filter(friend =>
+      // 친구 목록 중 이름이 맞는 친구 필터링
+      const filteredFriendsList1 = friends.value.filter(friend =>
         friend.name.toLowerCase().includes(searchText.value.toLowerCase())
       );
-      // 유저 목록 중 이메일이 맞는 친구 필터링 (유저는 이메일 안먹음)
+      // 친구 목록 중 이메일이 맞는 친구 필터링
+      const filteredFriendsList2 = friends.value.filter(friend =>
+        friend.email.toLowerCase().includes(searchText.value.toLowerCase())
+      );
+      // 유저 목록 중 이메일이 맞는 친구 필터링 (동명이인 이슈로 유저는 이름으로 서치 x)
       const filteredUsersList = users.value.filter(user =>
         user.email.toLowerCase().includes(searchText.value.toLowerCase())
       );
       // 합치기
-      const combinedList = [...filteredFriendsList, ...filteredUsersList];
+      const combinedList = [...filteredFriendsList1, ...filteredFriendsList2, ...filteredUsersList];
       return combinedList;
     }
     });
@@ -153,14 +154,7 @@
 
       }
     }
-    // 이름이 3글자를 넘어가면 자르기
-    const truncateName = (name) => {
-        if (name.length > 3) {
-            return name.slice(0, 3);
-        } else {
-            return name;
-        }
-    }
+
 
 </script>
 
@@ -238,8 +232,7 @@
     position: relative;
     margin: 0;
     margin-right: 10px;
-    width: 50%;
-    padding: 2%;
+    padding: 10%;
     /* font-weight: bold; */
     border-radius: 5cm;
     white-space: nowrap;
@@ -293,4 +286,6 @@
     cursor: pointer;
     display: flex;
   }
+
+
 </style>

@@ -54,7 +54,14 @@
           <div id="notificationDivider1"></div>
           <div v-for="notification in notifications" :key="notification.index" style="width: 95%;">
             <div style="display: flex;">
-              <p id="notification">{{ notification.content }}</p>
+              <p id="notification">
+                <span style="color: #3498DB;">
+                  {{ notification.fromMemberNickname }}
+                </span>
+                <span>
+                  {{ notification.content }}
+                </span>
+              </p>
               <div style="display: flex; align-items: center;">
                 <i class="pi pi-check"
                   id="acceptBtn"
@@ -271,30 +278,33 @@ const onTopBarMenuNotificationButton = () => {
 };
 
 const notifications = [
-{
-                          "alarmId": 11,
-                          "fromMemberId": 5,
-                          "toMemberId": 1,
-                          "type": "CONFERENCE",
-                          "status": "UNREAD",
-                          "content": "신동근1234 님."
-                        },
-                        {
-                          "alarmId": 11,
-                          "fromMemberId": 5,
-                          "toMemberId": 1,
-                          "type": "CONFERENCE",
-                          "status": "UNREAD",
-                          "content": "신동근1234 님이 회의를 시작하였습니다."
-                        },
-                        {
-                          "alarmId": 11,
-                          "fromMemberId": 5,
-                          "toMemberId": 1,
-                          "type": "CONFERENCE",
-                          "status": "UNREAD",
-                          "content": "니노막시무스카이저쏘제쏘냐도르앤스파르타죽지않아나는죽지않아오오오오옹ㅇ나는죽지않아키가작은꼬마동훈이예이예에"
-                        },
+                      {
+                        "alarmId": 1,
+                        "fromMemberId": 6,
+                        "fromMemberNickname": "박정인닉네임1",
+                        "toMemberId": 5,
+                        "type": "FRIEND",
+                        "status": "UNREAD",
+                        "content": " 님이 친구 요청을 보냈습니다."
+                      },
+                      {
+                        "alarmId": 2,
+                        "fromMemberId": 6,
+                        "fromMemberNickname": "박정인닉네임1",
+                        "toMemberId": 5,
+                        "type": "FRIEND",
+                        "status": "UNREAD",
+                        "content": " 님이 친구 요청을 보냈습니다."
+                      },
+                      {
+                        "alarmId": 3,
+                        "fromMemberId": 6,
+                        "fromMemberNickname": "박정인닉네임1",
+                        "toMemberId": 5,
+                        "type": "FRIEND",
+                        "status": "UNREAD",
+                        "content": " 님이 친구 요청을 보냈습니다."
+                      }
                       ]
 // 알림 팝업 부분 코드 끝
 
@@ -406,10 +416,8 @@ const showCreateMeeting = () => {
 
 .router-link-active {
   /* router-link의 글자 색이 변하지 않게 하는 css */
-  background-color: transparent !important;
-  /* 배경색을 투명으로 설정 */
-  color: inherit !important;
-  /* 글자색을 상속 받음 */
+  background-color: transparent !important;  /* 배경색을 투명으로 설정 */
+  color: inherit !important;  /* 글자색을 상속 받음 */
 }
 
 .myPlanBtn {
@@ -437,11 +445,12 @@ const showCreateMeeting = () => {
   color: #FFFFFF;
   background-color: #3498DB;
   width: 30%;
-  height: 20px;
+  height: 25px;
   /* font-weight: bold; */
   border-radius: 5cm;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-right: 15px;
   font-size: 13px;
 }
 #clearBtn:hover {
@@ -752,68 +761,6 @@ const showCreateMeeting = () => {
     position: absolute;
     right: 1.8%;
     top: 80%;
-  }
-  .profileHidden{
-    display: none;
-  }
-  .notificationActive{
-    display: block;
-    position: absolute;
-    right: 1.8%;
-    top: 80%;
-  }
-  .notificationHidden{
-    display: none;
-  }
-  .router-link-active { /* router-link의 글자 색이 변하지 않게 하는 css */
-    background-color: transparent !important; /* 배경색을 투명으로 설정 */
-    color: inherit !important; /* 글자색을 상속 받음 */
-  }
-
-  .myPlanBtn {
-    margin: 10px;
-  }
-
-  .startBtn {
-    margin: 10px;
-    background-color: #3498DB;
-    color: white;
-  }
-
-
-
-
-  #notificatonSet {
-    font-size: 25px;
-    /* font-weight: bold; */
-    color: #3498DB;
-    margin-left: 3px;
-  }
-  #clearBtn {
-    text-align: center;
-    color: #FFFFFF;
-    background-color: #3498DB;
-    width: 30%;
-    height: 100%;
-    /* font-weight: bold; */
-    border-radius: 5cm;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    width: 50%;
-    height: 30px;
-    border-radius: 5cm;
-    margin-bottom: 10px;
-  }
-
-  #moreBtn {
-    display: block;
-    margin: 0 auto;
-    color: #FFFFFF;
-    background-color: #3498DB;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    width: 50%;
-    height: 30px;
-    border-radius: 5cm;
-    margin-bottom: 10px;
   }
 
 

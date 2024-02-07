@@ -81,7 +81,7 @@
 </script>
 
 
-<style scoped>
+<style>
 .meeting-container{
     padding: 0rem;
     /* padding-left: 4rem; */
