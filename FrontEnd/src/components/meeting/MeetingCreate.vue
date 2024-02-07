@@ -232,6 +232,7 @@
   color: rgba(75, 85, 99, 0.8);
   margin-left: -4px;
 }
+
   #selectedFriend {
     color: white;
     background-color: #3498DB;
@@ -241,8 +242,6 @@
     width: 50%;
     padding: 2%;
     /* font-weight: bold; */
-    font-weight: bold;
-    
     border-radius: 5cm;
     white-space: nowrap;
     justify-content: space-between;
@@ -271,7 +270,6 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-
     font-size: medium;
     height: 20px;
     padding: 20px;
@@ -285,7 +283,7 @@
     border: 1px solid rgba(52, 152, 219, 0.5);
     background-color: #FFFFFF;
     color: rgba(0, 0, 0, 0.5);
-
+    font-weight: bold;
     font-size: medium;
     height: 20px;
     padding: 20px;
