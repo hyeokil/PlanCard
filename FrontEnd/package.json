@@ -14,7 +14,7 @@
     "axios": "^1.6.7",
     "chart.js": "3.3.2",
     "lodash": "^4.17.21",
-    "openvidu-browser": "^2.29.1",
+    "openvidu-browser": "^2.20.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "primeflex": "^3.3.1",
@@ -28,7 +28,9 @@
     "vue3-cookies": "^1.0.6",
     "vuedraggable": "^2.24.3",
     "vuetify": "^3.5.1",
-    "webstomp-client": "^1.2.6"
+    "webstomp-client": "^1.2.6",
+    "y-websocket": "^1.5.3",
+    "yjs": "^13.6.11"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^5.0.5",

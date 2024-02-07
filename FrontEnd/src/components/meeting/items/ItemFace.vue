@@ -241,13 +241,14 @@ function updateMainVideoStreamManager(stream) {
 // GETTING A TOKEN FROM YOUR APPLICATION SERVER
 async function getToken(mySessionId) {
   const sessionId = await createSession(mySessionId);
+  console.log(sessionId);
   return await createToken(sessionId);
 }
 async function createSession(sessionId) {
   const response = await axios.post(APPLICATION_SERVER_URL, { customSessionId: sessionId, userNo: 53, endHour: 1, endMinute: 30, quota: 16, isPrivacy: false }, {
     headers: { 'Content-Type': 'application/json', },
   });
-  return response.data; // The sessionId
+  return response.data.sessionId; // The sessionId
 }
 async function createToken(sessionId) {
   const response = await axios.post(APPLICATION_SERVER_URL + '/' + sessionId + '/connections', {}, {
