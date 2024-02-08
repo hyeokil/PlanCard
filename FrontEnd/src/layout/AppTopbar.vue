@@ -56,7 +56,7 @@
             <div style="display: flex;">
               <p id="notification">{{ notification.content }}</p>
               <div style="display: flex; align-items: center;">
-                <i class="pi pi-check" id="acceptBtn" style="font-size: 1.5rem; 
+                <i class="pi pi-check" id="acceptBtn" @click="handleAlarm(notification.alarmId, 'ACCEPT')" style="font-size: 1.5rem; 
               border: 1px solid rgba(255, 255, 255, 0.5);
               border-radius: 50%;
               padding: 5px;
@@ -65,9 +65,9 @@
               width: 35px;
               height: 35px;
               margin-right: 3px;"></i>
-                <i class="pi pi-times" id="rejectBtn" style="font-size: 1.5rem; 
+                <i class="pi pi-times" id="rejectBtn" @click="handleAlarm(notification.alarmId, 'REJECT')" style="font-size: 1.5rem; 
               border: 1px solid rgba(255, 255, 255, 0.5);
-              border-radius: 50%;
+            border-radius: 50%;
               padding: 5px;
               background-color: red;
               color: white;
@@ -168,7 +168,7 @@ import { useRouter } from 'vue-router';
 import { useAccountsStore } from '@/stores/accountsStore';
 import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
 import { memberLogoutApi } from "@/api/memberApi";
-import { alarmFriendRequestApi, alarmGetListApi } from "@/api/alarmApi";
+import { alarmFriendRequestApi, alarmGetListApi, alarmActionApi } from "@/api/alarmApi";
 import { usePlanStore } from "@/stores/planStore";
 const accountsStore = useAccountsStore()
 const planStore = usePlanStore()
@@ -186,7 +186,6 @@ let isMeeting = computed(() => planStore.isMeetingView)
 
 onMounted(() => {
   bindOutsideClickListener();
-  fetchAlarms(); // 컴포넌트가 마운트될 때 초기 알람 목록을 가져온다.
 });
 
 onBeforeUnmount(() => {
@@ -264,9 +263,16 @@ const logout = async () => {
 const onTopBarMenuNotificationButton = () => {
   if (accountsStore.isLogin) {
     topbarMenuActive.value = !topbarMenuActive.value;
+    // 알림 목록을 새로고침하고 팝업을 토글합니다.
+    if (!topbarNotificationActive.value) {
+      // 알람 목록을 비우고 새로고침하기 전에, 알람 목록이 열리지 않았을 때만 새로고침하도록 합니다.
+      notifications.value = []; // 기존 알람 목록을 비우고
+      lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.
+      fetchAlarms(); // 알람 목록을 새로고침합니다.
+    }
     topbarNotificationActive.value = !topbarNotificationActive.value;
     topbarProfileActive.value = false;
-
+    
   } else if (!accountsStore.isLogin) {
     // router.push({name: "member-login"})
   }
@@ -398,7 +404,32 @@ const SendFriendRequest = async () => {
     alert('유효하지 않은 이메일 형식입니다.'); // 이메일 형식이 유효하지 않을 때의 메시지
   }
 
-}
+};
+
+
+// 알람 처리 메서드 (수락/거절)
+const handleAlarm = async (alarmId, action) => {
+  try {
+    // alarmApi.js에서 export한 함수를 사용하여 백엔드 API 호출
+    const response = await alarmActionApi({ alarmId, action });
+    if (response.data.dataHeader.successCode === 0) {
+      // 성공적으로 처리된 경우, 사용자에게 알림을 보내거나 목록을 업데이트
+      alert("알람 처리 성공");
+      // 알람 목록을 새로고침하거나 수정된 항목을 업데이트하는 로직을 추가할 수 있습니다.
+      
+      // 알람 목록을 비우고 새로고침
+      notifications.value = []; // 기존 알람 목록을 비웁니다.
+      lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.
+      await fetchAlarms();  // 다시 알람 목록 불러오기
+    } else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("알람 처리 중 오류가 발생했습니다.");
+  }
+};
+
 // 프로필 팝업 부분 코드 끝
 
 // topbar에서 미팅 생성
@@ -408,7 +439,9 @@ const closeMeetingCreate = () => {
 }
 const showCreateMeeting = () => {
   showCreateMeetingModal.value = !showCreateMeetingModal.value
-}
+};
+
+
 
 
 </script>

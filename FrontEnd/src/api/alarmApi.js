@@ -16,7 +16,12 @@ async function alarmFriendRequestApi(param) {
     return await local.post(`/alarm/friend/request`, param);
 }
 
+async function alarmActionApi({alarmId, action}) {
+    return await local.post(`/alarm/${alarmId}/${action}`);
+}
+
 export {
     alarmGetListApi,
     alarmFriendRequestApi,
+    alarmActionApi,
 };
