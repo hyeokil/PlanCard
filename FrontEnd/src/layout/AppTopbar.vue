@@ -245,8 +245,14 @@ const logout = async () => {
       }
     )
   } catch (error) {
-    console.error(error);
-    alert("로그아웃 과정 중 문제가 발생했습니다.");
+    if (error.response) {
+      console.error(error);
+      const errorResponse = error.response.data;
+      alert(errorResponse.dataHeader.resultMessage);
+    } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      // 네트워크 에러 처리
+      alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+    }
   }
 }
 
@@ -272,7 +278,7 @@ const onTopBarMenuNotificationButton = () => {
     }
     topbarNotificationActive.value = !topbarNotificationActive.value;
     topbarProfileActive.value = false;
-    
+
   } else if (!accountsStore.isLogin) {
     // router.push({name: "member-login"})
   }
@@ -416,7 +422,7 @@ const handleAlarm = async (alarmId, action) => {
       // 성공적으로 처리된 경우, 사용자에게 알림을 보내거나 목록을 업데이트
       alert("알람 처리 성공");
       // 알람 목록을 새로고침하거나 수정된 항목을 업데이트하는 로직을 추가할 수 있습니다.
-      
+
       // 알람 목록을 비우고 새로고침
       notifications.value = []; // 기존 알람 목록을 비웁니다.
       lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.
@@ -425,8 +431,14 @@ const handleAlarm = async (alarmId, action) => {
       alert(response.data.dataHeader.resultMessage);
     }
   } catch (error) {
-    console.error(error);
-    alert("알람 처리 중 오류가 발생했습니다.");
+    if (error.response) {
+      console.error(error);
+      const errorResponse = error.response.data;
+      alert(errorResponse.dataHeader.resultMessage);
+    } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      // 네트워크 에러 처리
+      alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+    }
   }
 };
 
