@@ -498,10 +498,8 @@ const showCreateMeeting = () => {
 
 .router-link-active {
   /* router-link의 글자 색이 변하지 않게 하는 css */
-  background-color: transparent !important;
-  /* 배경색을 투명으로 설정 */
-  color: inherit !important;
-  /* 글자색을 상속 받음 */
+  background-color: transparent !important;  /* 배경색을 투명으로 설정 */
+  color: inherit !important;  /* 글자색을 상속 받음 */
 }
 
 .myPlanBtn {
@@ -537,7 +535,6 @@ const showCreateMeeting = () => {
   margin-right: 15px;
   font-size: 13px;
 }
-
 #clearBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -556,11 +553,9 @@ const showCreateMeeting = () => {
   margin: 10px;
   width: 80%;
 }
-
 #acceptBtn:hover {
   transform: scale(1.1);
 }
-
 #rejectBtn:hover {
   transform: scale(1.1);
 }
@@ -641,10 +636,9 @@ const showCreateMeeting = () => {
   border: 1px solid rgba(52, 152, 219, 0.5);
   font-size: 15px;
 }
-
 #myPageBtn:hover {
   transform: scale(1.05);
-  border-color: #3498db;
+    border-color: #3498db;
 }
 
 #logOutBtn {
@@ -661,7 +655,6 @@ const showCreateMeeting = () => {
   /* border: 1px solid rgba(52, 152, 219, 0.5); */
   font-size: 15px;
 }
-
 #logOutBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -694,7 +687,6 @@ const showCreateMeeting = () => {
   margin-top: 5px;
   padding: 3px 10px 3px 10px;
 }
-
 #requestBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -740,7 +732,6 @@ const showCreateMeeting = () => {
   border: 1px solid rgba(0, 0, 0, 0.1);
   top: 15px;
 }
-
 #closeBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -799,7 +790,6 @@ const showCreateMeeting = () => {
   margin-top: 5px;
   line-height: 0px;
 }
-
 #friendRequestSubmit:hover {
   transform: scale(1.05);
   border-color: #3498db;
