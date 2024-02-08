@@ -14,7 +14,7 @@
         </div>
         <div class="box, card p-fluid" id="memberEmailCodeInput">
             <input type="text" id="memberEmailCode" v-model.trim="memberEmailCode" placeholder="이메일 인증 코드">
-            <v-btn id="emailBtn">확인</v-btn
+            <v-btn id="emailAuthBtn">확인</v-btn
 >
         </div>
         <div class="box, card p-fluid" id="memberNameInput">
@@ -69,6 +69,15 @@ const memberImage = ref('');
 
 const memberPreviewPhotoUrl = ref('');
 const fileInput = ref('');
+
+// 
+const memberEmailStatus = computed (() => {
+  if (memberEmail.value === '') {
+      return false
+    } else {
+      return true
+    }
+});
 
 // 이메일 유효성 검사
 const isValidEmail = computed(() => {
@@ -169,6 +178,9 @@ const imageUpload = async (file) => {
     alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
   }
 }
+
+
+
 </script>
 
 
@@ -293,9 +305,38 @@ const imageUpload = async (file) => {
     transform: scale(1.05); /* 이미지를 약간 확대 */
     border-color: #3498db; /* 테두리 색상 변경 */
   }
-
   #emailBtn {
     background-color: rgba(107, 114, 128, 0.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #emailBtn-ok {
+    background-color: rgba(52, 152, 2190.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #emailAuthBtn {
+    background-color: rgba(107, 114, 128, 0.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #emailAuthBtn-ok {
+    background-color: rgba(52, 152, 2190.5);
     color: white;
     padding: 0;
     margin: 0;
