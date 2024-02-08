@@ -203,10 +203,6 @@ h1 {
   /* 글자색을 상속 받음 */
 }
 
-
-
-
-
 #overlay {
   position: fixed;
   top: 0;
