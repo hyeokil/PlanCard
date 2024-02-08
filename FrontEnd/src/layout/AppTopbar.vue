@@ -50,7 +50,7 @@
           <p id="notificatonSet">알림 내역</p>
           <v-btn id="clearBtn">모두 지우기</v-btn>
         </div>
-        <div id="notificationsList">
+        <div id="notificationsList" ref="notificationsList" @scroll="onScroll">
           <div id="notificationDivider1"></div>
           <div v-for="notification in notifications" :key="notification.index" style="width: 95%;">
             <div style="display: flex;">
@@ -274,7 +274,7 @@ const onTopBarMenuNotificationButton = () => {
       // 알람 목록을 비우고 새로고침하기 전에, 알람 목록이 열리지 않았을 때만 새로고침하도록 합니다.
       notifications.value = []; // 기존 알람 목록을 비우고
       lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.
-      fetchAlarms(); // 알람 목록을 새로고침합니다.
+      fetchMoreAlarms(); // 알람 목록을 새로고침합니다.
     }
     topbarNotificationActive.value = !topbarNotificationActive.value;
     topbarProfileActive.value = false;
@@ -289,8 +289,20 @@ const onTopBarMenuNotificationButton = () => {
 const lastAlarmId = ref(null);
 const notifications = ref([]);
 
+const notificationsList = ref(null); // 알람 목록을 담는 DOM 요소의 ref
+
+// 스크롤 이벤트 핸들러
+const onScroll = () => {
+  const container = notificationsList.value;
+  // 스크롤 끝에 도달했는지 확인
+  if (container.scrollHeight - container.scrollTop === container.clientHeight) {
+    // 마지막 알람 ID로 API 호출
+    fetchMoreAlarms();
+  }
+};
+
 // 알람 가져오기 메서드
-const fetchAlarms = async () => {
+const fetchMoreAlarms = async () => {
   try {
     const response = await alarmGetListApi(lastAlarmId.value);
     if (response.data.dataHeader.successCode === 0) {
@@ -298,6 +310,8 @@ const fetchAlarms = async () => {
       if (fetchedNotifications.length) {
         notifications.value.push(...fetchedNotifications);
         lastAlarmId.value = fetchedNotifications[fetchedNotifications.length - 1].alarmId;
+      } else {  // 더이상 불러올 알람이 없는 경우
+
       }
     } else {
       alert(response.data.dataHeader.resultMessage);
@@ -425,7 +439,7 @@ const handleAlarm = async (alarmId, action) => {
       // 알람 목록을 비우고 새로고침
       notifications.value = []; // 기존 알람 목록을 비웁니다.
       lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.
-      await fetchAlarms();  // 다시 알람 목록 불러오기
+      await fetchMoreAlarms();  // 다시 알람 목록 불러오기
     } else {
       alert(response.data.dataHeader.resultMessage);
     }
@@ -484,8 +498,10 @@ const showCreateMeeting = () => {
 
 .router-link-active {
   /* router-link의 글자 색이 변하지 않게 하는 css */
-  background-color: transparent !important;  /* 배경색을 투명으로 설정 */
-  color: inherit !important;  /* 글자색을 상속 받음 */
+  background-color: transparent !important;
+  /* 배경색을 투명으로 설정 */
+  color: inherit !important;
+  /* 글자색을 상속 받음 */
 }
 
 .myPlanBtn {
@@ -521,6 +537,7 @@ const showCreateMeeting = () => {
   margin-right: 15px;
   font-size: 13px;
 }
+
 #clearBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -539,9 +556,11 @@ const showCreateMeeting = () => {
   margin: 10px;
   width: 80%;
 }
+
 #acceptBtn:hover {
   transform: scale(1.1);
 }
+
 #rejectBtn:hover {
   transform: scale(1.1);
 }
@@ -622,9 +641,10 @@ const showCreateMeeting = () => {
   border: 1px solid rgba(52, 152, 219, 0.5);
   font-size: 15px;
 }
+
 #myPageBtn:hover {
   transform: scale(1.05);
-    border-color: #3498db;
+  border-color: #3498db;
 }
 
 #logOutBtn {
@@ -641,6 +661,7 @@ const showCreateMeeting = () => {
   /* border: 1px solid rgba(52, 152, 219, 0.5); */
   font-size: 15px;
 }
+
 #logOutBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -673,6 +694,7 @@ const showCreateMeeting = () => {
   margin-top: 5px;
   padding: 3px 10px 3px 10px;
 }
+
 #requestBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -718,6 +740,7 @@ const showCreateMeeting = () => {
   border: 1px solid rgba(0, 0, 0, 0.1);
   top: 15px;
 }
+
 #closeBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -776,6 +799,7 @@ const showCreateMeeting = () => {
   margin-top: 5px;
   line-height: 0px;
 }
+
 #friendRequestSubmit:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -822,15 +846,15 @@ const showCreateMeeting = () => {
 }
 
 
-  #moreBtn {
-    display: block;
-    margin: 0 auto;
-    color: #FFFFFF;
-    background-color: #3498DB;
-    position: absolute;
-    right: 1.8%;
-    top: 80%;
-  }
+#moreBtn {
+  display: block;
+  margin: 0 auto;
+  color: #FFFFFF;
+  background-color: #3498DB;
+  position: absolute;
+  right: 1.8%;
+  top: 80%;
+}
 
 
 .onLine {
@@ -839,5 +863,4 @@ const showCreateMeeting = () => {
 
 .offLine {
   color: #808080;
-}
-</style>
+}</style>
