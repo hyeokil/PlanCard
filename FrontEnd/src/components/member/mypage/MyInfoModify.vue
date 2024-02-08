@@ -44,7 +44,7 @@
         <div id="overlay" v-if="withdrawalActive"></div>
         <div class="card p-fluid" v-if="withdrawalActive" id="withdrawalBox">
           <h3 id="withdrawalTitle">회원 탈퇴 확인</h3>
-            <p>진짜 탈퇴해?</p>
+            <p style="text-align: center;">진짜 탈퇴해?</p>
             <div style="display: flex;">
               <form class="box, card p-fluid" @submit.prevent="" id="withdrawalForm">
                 <input class="box card p-fluid" type="submit" id="withdrawalSubmit" value="탈퇴">
@@ -312,8 +312,8 @@ const withdrawalRequest = () => {
     padding: 20px;
   }
   #modifySubmit:hover {
-    background-color: rgb(41, 128, 185); /* 마우스를 올렸을 때 배경색 변경 */
-  }
+    transform: scale(1.05);
+    border-color: #3498db;  }
 
 
 
@@ -386,8 +386,9 @@ const withdrawalRequest = () => {
     line-height: 0px;
   }
   #withdrawalSubmit:hover {
-    background-color: rgb(244, 0, 0);
-  }
+    transform: scale(1.05);
+    border-color: #3498db;
+    }
 
   #withdrawalCloseBtn {
     width: 100px;
@@ -403,7 +404,7 @@ const withdrawalRequest = () => {
     top: 15px;
   }
   #withdrawalCloseBtn:hover {
-    background-color: rgb(41, 128, 185);
-  }
+    transform: scale(1.05);
+    border-color: #3498db;  }
 
 </style>

@@ -144,7 +144,8 @@
     padding: 20px;
   }
   #resettingSubmit:hover {
-    color: rgb(41, 128, 185);
+    transform: scale(1.05);
+    border-color: #3498db;
   }
 
 </style>

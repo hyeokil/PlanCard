@@ -57,7 +57,7 @@
     },
     {
         name: "텐텐 여행2",
-        people: 6,
+        people: 1231,
         startDate: "2024.02.23",
         EndDate: "2024.02.28"
     },
@@ -142,7 +142,6 @@
     padding: 2%;
     padding-top: 1%;
     padding-bottom: 1%;
-    width: 100px;
     height: 40px;
   }
   #planDate {

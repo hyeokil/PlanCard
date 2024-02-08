@@ -9,6 +9,13 @@
         <div v-else></div>
         <div class="box, card p-fluid" id="memberEmailInput">
             <input type="text" id="memberEmail" v-model.trim="memberEmail" placeholder="이메일">
+            <v-btn id="emailBtn">인증</v-btn
+>
+        </div>
+        <div class="box, card p-fluid" id="memberEmailCodeInput">
+            <input type="text" id="memberEmailCode" v-model.trim="memberEmailCode" placeholder="이메일 인증 코드">
+            <v-btn id="emailBtn">확인</v-btn
+>
         </div>
         <div class="box, card p-fluid" id="memberNameInput">
             <input type="text" id="memberName" v-model.trim="memberName" placeholder="이름">
@@ -53,6 +60,7 @@ import { fileUploadApi } from "@/api/commonApi";
 const router = useRouter();
 
 const memberEmail = ref('');
+const memberEmailCode = ref('');
 const memberName = ref('');
 const memberNickname = ref('');
 const memberPassword = ref('');
@@ -88,6 +96,7 @@ const signUp = async () => {
 
   const signUpData = {
     email: memberEmail.value,
+    emailCode: memberEmailCode.value,
     password: memberPassword.value,
     name: memberName.value,
     nickname: memberNickname.value,
@@ -159,8 +168,6 @@ const imageUpload = async (file) => {
     console.error(error);
     alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
   }
-  
-  
 }
 </script>
 
@@ -175,7 +182,7 @@ const imageUpload = async (file) => {
   #signUpBox {
     background-color: #FFFFFF;
     border: 1px solid rgba(52, 152, 219, 0.5);
-    width: 400px;
+    width: 430px;
     height: 50%;
     padding: 40px;
 
@@ -219,11 +226,16 @@ const imageUpload = async (file) => {
     left: 50%;
     transform: translate(-50%, -50%); /* 이미지를 수평 및 수직 가운데 정렬 */
   }
-  #memberEmail, #memberName, #memberNickname, #memberPassword, #memberPasswordCheck, #memberPhoto {
+  #memberEmail, #memberEmailCode {
     height: 35px;
-    width: 250px;
+    width: 200px;
+    margin-right: 5px;
   }
-  #memberEmailInput, #memberNameInput, #memberNicknameInput, #memberPasswordInput, #memberPasswordCheckInput {
+  #memberName, #memberNickname, #memberPassword, #memberPasswordCheck, #memberPhoto {
+    height: 35px;
+    width: 280px;
+  }
+  #memberEmailInput, #memberEmailCodeInput, #memberNameInput, #memberNicknameInput, #memberPasswordInput, #memberPasswordCheckInput {
     background-color: rgba(245, 245, 245, 0.1);
     width: 90%;
     display: flex;
@@ -280,6 +292,17 @@ const imageUpload = async (file) => {
   #signUpSubmit:hover {
     transform: scale(1.05); /* 이미지를 약간 확대 */
     border-color: #3498db; /* 테두리 색상 변경 */
+  }
+
+  #emailBtn {
+    background-color: rgba(107, 114, 128, 0.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
 </style>
