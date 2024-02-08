@@ -37,7 +37,7 @@
         </form>
 
         <div id="etc1">
-          <p id="withdrawalGuide">탈퇴하려고? </p>
+          <p id="withdrawalGuide">탈퇴하려구요????? </p>
           <button id="withdrawalBtn" @click="withdrawalRequest()">[회원탈퇴]</button>
         </div>
 
