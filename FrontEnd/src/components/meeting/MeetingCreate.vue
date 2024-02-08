@@ -102,44 +102,6 @@
                 </v-btn>
               </div>
 
-                      <div>
-                        <input class="box, card p-fluid font-content" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="이메일 검색">
-                        <div class="box, card p-fluid" id="FriendsDiv2">
-                          <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
-                            <p class=" font-content"
-                            style="
-                              font-weight: bold;
-                              font-size: medium;
-                              color: #3498DB;
-                              margin-right: 10px;
-                              margin-bottom: 7px;">{{ friend.name }}</p>
-                          <p 
-                            class=" font-content"
-                            style="
-                            font-size: small;
-                            color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-  
-
-                </div>
-
-
-              </div>
-            </div>
-              
-              <div>
-                <input class="card p-fluid" type="submit" id="createSubmit" value = 시작하기>
-              </div>
-              <div style="margin-top: 10px;">
-                <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
-                  닫기
-                </v-btn>
-              </div>
-
   
 
       </form>
