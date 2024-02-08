@@ -380,6 +380,7 @@ const SendFriendRequest = async () => {
       const response = await alarmFriendRequestApi(param);
       if (response.data.dataHeader.successCode === 0) {
         alert("친구 요청을 보냈습니다.");
+        friendRequestActive.value = false;
       } else {
         alert(response.data.dataHeader.resultMessage);
       }
