@@ -70,7 +70,7 @@ const memberImage = ref('');
 const memberPreviewPhotoUrl = ref('');
 const fileInput = ref('');
 
-// 
+// 이메일 입력 유무
 const memberEmailStatus = computed (() => {
   if (memberEmail.value === '') {
       return false
