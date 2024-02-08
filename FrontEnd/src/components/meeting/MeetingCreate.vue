@@ -1,43 +1,106 @@
 <template>
-  <div class="card p-fluid" style="width: 400px; justify-content: center;">
-    <div>
-      <h1>미팅 생성</h1>
-    </div>
-    <hr id="separator">
+  <div class="card p-fluid" style="
+  /* width: 400px; */
+   justify-content: center;">
+      <div>
+          <h2 style="color: black;">미팅 생성</h2>
+      </div>
+      <hr id="separator">
 
-    <div class="card p-fluid">
-      <form @submit.prevent="goMeeting" style="width: 300px;">
-        <h2>여행 이름</h2>
-        <input type="text" class="box, card p-fluid" id="tripTitleInput" v-model.trim="tripTitle"
-          placeholder="여행 이름을 알려주세요">
+      <div>    
+          <form @submit.prevent="goMeeting" style="width: 800px;">
+            <div style="display: flex;
+             /* justify-content: space-between; */
+             ">
+              <div style="width: 295px;">
+                <h3>여행 이름</h3>
+                <input type="text" class="box, card p-fluid font-content" id="tripTitleInput" v-model.trim="tripTitle" placeholder="여행 이름을 알려주세요">
+                
+                <h3>여행 일정 선택</h3>
+                <Calendar 
+                  v-model="selectedDates" 
+                  dataFormat="yy/mm/dd"
+                  selectionMode="range" 
+                  :manualInput="false"
+                  showButtonBar
+                  locale="ko-KR"
+                  placeholder="여행 일정을 선택하세요"
+                  class="field box card p-fluid"
+                  id="selectDateCalendar"
+                  />
+              </div>
+            
+              <div style="width: 295px;">
+                <h3>친구 선택 ({{ selectedFriends.length }})</h3>
+                
+                <div style="display: flex; justify-content: space-between;">
 
-        <h2>여행 일정 선택</h2>
-        <Calendar v-model="selectedDates" dataFormat="yy/mm/dd" selectionMode="range" :manualInput="false" showButtonBar
-          locale="ko-KR" placeholder="여행 일정을 선택하세요" class="field box card p-fluid" id="selectDateCalendar" />
+                  <div>
+                    <div class="box, card p-fluid" id="selectFriendsDiv">
+                      <div style="width: 150px; ;">
+                        <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" class="font-content" id="selectedFriend" @click="removeFriend(selectedFriend)">
+                          <p style="margin: 0;">{{ selectedFriend.name }}</p>
+                          <!-- <i class="pi pi-times"></i> -->
+                        </v-chip>
+                      </div>
+                    </div>
 
-        <h2>친구 선택 ({{ selectedFriends.length }})</h2>
-        <div class="box, card p-fluid" id="selectFriendsDiv">
-          <div style="width: 150px; ;">
-            <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" class="font-content"
-              id="selectedFriend" @click="removeFriend(selectedFriend)">
-              <p style="margin: 0;">{{ truncateName(selectedFriend.name) }}</p>
-              <!-- <i class="pi pi-times"></i> -->
-            </v-chip>
-          </div>
-        </div>
-        <input class="box, card p-fluid" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="친구 및 이메일 검색">
-        <div class="box, card p-fluid" id="FriendsDiv">
-          <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
-            <p style="
-                      font-size: medium;
-                      color: #3498DB;
-                      margin-right: 10px;
-                      margin-bottom: 7px;">{{ friend.name }}</p>
-            <p style="
-                      font-size: small;
-                      color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
-          </div>
-        </div>
+                    <div style="display: flex;">
+
+                      <div class="box, card p-fluid" id="FriendsDiv">
+                        <div v-for="friend in friends" :key="friend.id" @click="addFriend(friend)" id="friendList">
+                          <p class=" font-content"
+                          style="
+                            font-weight: bold;
+                            font-size: medium;
+                            color: #3498DB;
+                            margin-right: 10px;
+                            margin-bottom: 7px;">{{ friend.name }}</p>
+                        <p 
+                          class=" font-content"
+                          style="
+                          font-size: small;
+                          color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <input class="box, card p-fluid font-content" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="이메일 검색">
+                        <div class="box, card p-fluid" id="FriendsDiv2">
+                          <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
+                            <p class=" font-content"
+                            style="
+                              font-weight: bold;
+                              font-size: medium;
+                              color: #3498DB;
+                              margin-right: 10px;
+                              margin-bottom: 7px;">{{ friend.name }}</p>
+                          <p 
+                            class=" font-content"
+                            style="
+                            font-size: small;
+                            color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+  
+
+                </div>
+
+
+              </div>
+            </div>
+              
+              <div>
+                <input class="card p-fluid" type="submit" id="createSubmit" value = 시작하기>
+              </div>
+              <div style="margin-top: 10px;">
+                <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
+                  닫기
+                </v-btn>
+              </div>
 
         <div>
           <input class="card p-fluid" type="submit" id="createSubmit" value=시작하기>
@@ -144,60 +207,41 @@ const searchText = ref("");
 // 검색어를 기반으로 친구 필터링
 const filteredFriends = computed(() => {
   if (!searchText.value) {
-    return friends.value;
+      return;
   } else {
-    // return friends.value.filter(friend =>
-    // friend.name.toLowerCase().includes(searchText.value.toLowerCase())
-    // );
 
-    // 친구 목록 중 이름이 맞는 친구 필터링 (친구는 이메일 안먹음)
-    const filteredFriendsList = friends.value.filter(friend =>
-      friend.name.toLowerCase().includes(searchText.value.toLowerCase())
-    );
-    // 유저 목록 중 이메일이 맞는 친구 필터링 (유저는 이메일 안먹음)
+    // 유저 목록 중 이메일이 맞는 친구 필터링 (동명이인 이슈로 유저는 이름으로 서치 x)
     const filteredUsersList = users.value.filter(user =>
       user.email.toLowerCase().includes(searchText.value.toLowerCase())
     );
     // 합치기
-    const combinedList = [...filteredFriendsList, ...filteredUsersList];
+    const combinedList = [...filteredUsersList];
     return combinedList;
   }
 });
 
 // 친구를 선택하여 selectedFriends 배열에 추가
-const addFriend = (friend) => {
-  if (!selectedFriends.value.some(fr => fr.id === friend.id)) {
-    selectedFriends.value.unshift(friend);
+  const addFriend = (friend) => {
+    if (!selectedFriends.value.some(fr => fr.id === friend.id)) {
+      selectedFriends.value.unshift(friend);
+    }
   }
-}
-// 선택된 친구를 배열에서 삭제
-const removeFriend = (friend) => {
-  const index = selectedFriends.value.findIndex(fr => fr.id === friend.id);
-  if (index !== -1) {
-    selectedFriends.value.splice(index, 1);
-    console.log(selectedFriends.value)
+  // 선택된 친구를 selectedFriends 배열에서 삭제
+  const removeFriend = (friend) => {
+    const index = selectedFriends.value.findIndex(fr => fr.id === friend.id);
+    if (index !== -1) {
+      selectedFriends.value.splice(index, 1);
+    }
+  }
 
-  }
-}
-// 이름이 3글자를 넘어가면 자르기
-const truncateName = (name) => {
-  if (name.length > 3) {
-    return name.slice(0, 3);
-  } else {
-    return name;
-  }
-}
 
 </script>
 
 
 
 <style scoped>
-h1 {
-  /* font-weight: bold; */
-}
 
-h2 {
+h3 {
   color: #3498db;
   /* font-weight: bold; */
 }
@@ -210,21 +254,23 @@ h2 {
 
 #tripTitleInput {
   background-color: rgba(245, 245, 245, 0.1);
-  width: 100%;
+  width: 90%;
   display: flex;
   align-items: center;
   border: 1px solid rgba(52, 152, 219, 0.5);
-  height: 40px;
+  height: 30px;
+  padding: 15px;
   margin-bottom: 10px;
 }
 
 #selectDateCalendar {
   background-color: rgba(245, 245, 245, 0.1);
-  width: 100%;
+  width: 90%;
   display: flex;
   align-items: center;
   border: 1px solid rgba(52, 152, 219, 0.5);
-  height: 40px;
+  height: 30px;
+  padding: 15px;
   margin-bottom: 10px;
   justify-content: center;
 }
@@ -234,16 +280,18 @@ h2 {
 
 #searchFriendsDiv {
   background-color: rgba(245, 245, 245, 0.1);
-  width: 100%;
+  width: 245px;
   align-items: center;
   border: 1px solid rgba(52, 152, 219, 0.5);
-  height: 40px;
+  height: 30px;
+  padding: 15px;
   margin-bottom: 10px;
+  margin-left: 5px;
 }
 
 #selectFriendsDiv {
   background-color: rgba(245, 245, 245, 0.1);
-  width: 100%;
+  width: 500px;
   align-items: center;
   border: 5px solid rgba(52, 152, 219, 0.5);
   height: 40px;
@@ -269,9 +317,8 @@ h2 {
   position: relative;
   margin: 0;
   margin-right: 10px;
-  width: 50%;
-  padding: 2%;
-  /* font-weight: bold; */
+  padding: 10%;
+  font-weight: bold;
   border-radius: 5cm;
   white-space: nowrap;
   justify-content: space-between;
@@ -280,10 +327,25 @@ h2 {
 
 #FriendsDiv {
   background-color: rgba(245, 245, 245, 0.1);
-  width: 100%;
+  width: 245px;
   border: 1px solid rgba(52, 152, 219, 0.5);
-  height: 300px;
+  height: 170px;
   margin-bottom: 10px;
+  margin-right: 5px;
+  padding: 20px;
+  padding-top: 10px;
+
+  overflow-y: auto;
+}
+#FriendsDiv2 {
+  background-color: rgba(245, 245, 245, 0.1);
+  width: 245px;
+  border: 1px solid rgba(52, 152, 219, 0.5);
+  height: 128.67px;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  padding: 20px;
+  padding-top: 10px;
 
   overflow-y: auto;
 }
@@ -308,6 +370,10 @@ h2 {
   line-height: 0px;
 }
 
+#createSubmit:hover {
+  transform: scale(1.05);
+  border-color: #3498db;
+}
 #closeBtn {
   width: 100%;
   display: flex;
@@ -327,4 +393,6 @@ h2 {
   cursor: pointer;
   display: flex;
 }
+
+
 </style>

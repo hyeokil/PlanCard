@@ -15,11 +15,11 @@
 
     <!-- Button -->
     <v-btn class="myPlanBtn" v-show="accountsStore.isLogin">
-      <router-link :to="{ name: 'mypage-myplan' }" class="router-link-active"><b>My Plan</b></router-link>
+      <router-link :to="{ name: 'mypage-myplan' }" class="router-link-active"><b>나의 계획</b></router-link>
     </v-btn>
 
     <v-btn class="startBtn" v-show="accountsStore.isLogin">
-      <p class="router-link-active" @click="showCreateMeeting"><b>Start</b></p>
+      <p class="router-link-active" @click="showCreateMeeting"><b>시작</b></p>
     </v-btn>
 
 
@@ -439,10 +439,8 @@ const showCreateMeeting = () => {
 
 .router-link-active {
   /* router-link의 글자 색이 변하지 않게 하는 css */
-  background-color: transparent !important;
-  /* 배경색을 투명으로 설정 */
-  color: inherit !important;
-  /* 글자색을 상속 받음 */
+  background-color: transparent !important;  /* 배경색을 투명으로 설정 */
+  color: inherit !important;  /* 글자색을 상속 받음 */
 }
 
 .myPlanBtn {
@@ -470,14 +468,14 @@ const showCreateMeeting = () => {
   color: #FFFFFF;
   background-color: #3498DB;
   width: 30%;
-  height: 20px;
+  height: 25px;
   /* font-weight: bold; */
   border-radius: 5cm;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-right: 15px;
   font-size: 13px;
 }
-
 #clearBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -496,11 +494,9 @@ const showCreateMeeting = () => {
   margin: 10px;
   width: 80%;
 }
-
 #acceptBtn:hover {
   transform: scale(1.1);
 }
-
 #rejectBtn:hover {
   transform: scale(1.1);
 }
@@ -581,10 +577,9 @@ const showCreateMeeting = () => {
   border: 1px solid rgba(52, 152, 219, 0.5);
   font-size: 15px;
 }
-
 #myPageBtn:hover {
   transform: scale(1.05);
-  border-color: #3498db;
+    border-color: #3498db;
 }
 
 #logOutBtn {
@@ -601,7 +596,6 @@ const showCreateMeeting = () => {
   /* border: 1px solid rgba(52, 152, 219, 0.5); */
   font-size: 15px;
 }
-
 #logOutBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -634,7 +628,6 @@ const showCreateMeeting = () => {
   margin-top: 5px;
   padding: 3px 10px 3px 10px;
 }
-
 #requestBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -680,7 +673,6 @@ const showCreateMeeting = () => {
   border: 1px solid rgba(0, 0, 0, 0.1);
   top: 15px;
 }
-
 #closeBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -739,7 +731,6 @@ const showCreateMeeting = () => {
   margin-top: 5px;
   line-height: 0px;
 }
-
 #friendRequestSubmit:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -780,90 +771,21 @@ const showCreateMeeting = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 998;
-  max-height: 70vh;
+  max-height: 120vh;
+  max-width: 120vw;
   overflow-y: auto;
 }
 
 
-#moreBtn {
-  display: block;
-  margin: 0 auto;
-  color: #FFFFFF;
-  background-color: #3498DB;
-  position: absolute;
-  right: 1.8%;
-  top: 80%;
-}
-
-.profileHidden {
-  display: none;
-}
-
-.notificationActive {
-  display: block;
-  position: absolute;
-  right: 1.8%;
-  top: 80%;
-}
-
-.notificationHidden {
-  display: none;
-}
-
-.router-link-active {
-  /* router-link의 글자 색이 변하지 않게 하는 css */
-  background-color: transparent !important;
-  /* 배경색을 투명으로 설정 */
-  color: inherit !important;
-  /* 글자색을 상속 받음 */
-}
-
-.myPlanBtn {
-  margin: 10px;
-}
-
-.startBtn {
-  margin: 10px;
-  background-color: #3498DB;
-  color: white;
-}
-
-
-
-
-#notificatonSet {
-  font-size: 25px;
-  /* font-weight: bold; */
-  color: #3498DB;
-  margin-left: 3px;
-}
-
-#clearBtn {
-  text-align: center;
-  color: #FFFFFF;
-  background-color: #3498DB;
-  width: 30%;
-  height: 100%;
-  /* font-weight: bold; */
-  border-radius: 5cm;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  width: 50%;
-  height: 30px;
-  border-radius: 5cm;
-  margin-bottom: 10px;
-}
-
-#moreBtn {
-  display: block;
-  margin: 0 auto;
-  color: #FFFFFF;
-  background-color: #3498DB;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  width: 50%;
-  height: 30px;
-  border-radius: 5cm;
-  margin-bottom: 10px;
-}
+  #moreBtn {
+    display: block;
+    margin: 0 auto;
+    color: #FFFFFF;
+    background-color: #3498DB;
+    position: absolute;
+    right: 1.8%;
+    top: 80%;
+  }
 
 
 .onLine {
