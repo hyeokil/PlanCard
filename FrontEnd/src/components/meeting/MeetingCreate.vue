@@ -170,6 +170,7 @@ const goMeeting = async () => {
 }
 
 
+
 // 유저 리스트 dummy
 const users = ref([
   { id: 12, name: '유저에요1', email: "user1@ssafy.com" },
@@ -233,7 +234,6 @@ const filteredFriends = computed(() => {
 
 
 <style scoped>
-
 h3 {
   color: #3498db;
   /* font-weight: bold; */
