@@ -102,14 +102,7 @@
                 </v-btn>
               </div>
 
-        <div>
-          <input class="card p-fluid" type="submit" id="createSubmit" value=시작하기>
-        </div>
-        <div style="margin-top: 10px;">
-          <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
-            닫기
-          </v-btn>
-        </div>
+  
 
       </form>
     </div>
