@@ -1,4 +1,4 @@
-package com.ssafy.backend.domain.planmember.entity;
+package com.ssafy.backend.domain.plan.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.backend.domain.member.entity.Member;

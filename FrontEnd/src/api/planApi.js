@@ -4,11 +4,13 @@ const local = localAxios();
 
 // 여행 계획 생성
 async function planCreateApi(param, success, fail) {
-  console.log("param", param);
-  await local.post(`/plan`, param).then(success).catch(fail);
+  await local.post(`/plan/create`, param).then(success).catch(fail);
 }
 
-// 여행 계획 조회
+// 나의 여행 계획 조회
+async function planListGetApi() {
+  return await local.get(`/plan/list`);
+}
 
 // 여행 계획 수정 (계획명)
 async function planNameUpdateApi(planId, param, success, fail) {
@@ -47,4 +49,5 @@ export {
   planDetailCreateApi,
   planDetailGetApi,
   planDetailUpdateApi,
+  planListGetApi,
 };

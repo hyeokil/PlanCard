@@ -1,13 +1,17 @@
 package com.ssafy.backend.global.exception;
 
+import com.ssafy.backend.domain.member.exception.MemberException;
 import com.ssafy.backend.global.common.dto.Message;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.net.ConnectException;
 
 import static com.ssafy.backend.global.exception.GlobalError.*;
 
@@ -47,6 +51,13 @@ public class GlobalExceptionAdvice {
         return ResponseEntity.status(MAXIMUM_UPLOAD_SIZE.getHttpStatus())
                 .body(Message.fail(null, MAXIMUM_UPLOAD_SIZE.getErrorMessage()));
     }
+
+    @ExceptionHandler(GlobalException.class)
+    public ResponseEntity<Message<Void>> GlobalException(GlobalException e) {
+        log.error("커스텀 에러 ex : {}", e.getMessage());
+        return ResponseEntity.status(e.getStatus()).body(Message.fail(null, e.getErrorMessage()));
+    }
+
 
     /**
      * 기본 에러 처리

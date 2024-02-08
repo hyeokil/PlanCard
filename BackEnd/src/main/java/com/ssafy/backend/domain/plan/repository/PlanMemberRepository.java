@@ -1,7 +1,6 @@
-package com.ssafy.backend.domain.planmember.repository;
+package com.ssafy.backend.domain.plan.repository;
 
-import com.ssafy.backend.domain.plan.entity.Plan;
-import com.ssafy.backend.domain.planmember.entity.PlanMember;
+import com.ssafy.backend.domain.plan.entity.PlanMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

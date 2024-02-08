@@ -1,4 +1,4 @@
-package com.ssafy.backend.domain.plandetail.dto;
+package com.ssafy.backend.domain.plan.dto;
 
 
 import lombok.AllArgsConstructor;

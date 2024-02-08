@@ -1,0 +1,153 @@
+// def component = [
+//         front: false,
+//         nginx: true,
+//         redis: true,
+//         back: true
+// ]
+pipeline {
+    agent any
+    environment {
+        REPO = "s10-webmobile1-sub2/S10P12C110"
+        DOCKERHUB_REGISTRY = "pji0128/back"
+        DOCKERHUB_CREDENTIALS = credentials('Docker-credential')
+//         USERNAME = "${env.DB_USER}"
+//         DB_PASSWORD = "${env.DB_PASSWORD}"
+//         JWT_SECRET = "${env.JWT_SECRET}"
+//         REDIS_HOST = "${env.REDIS_HOST}"
+//         REDIS_PASSWORD = "${env.REDIS_PASSWORD}"
+//         REDIS_PORT = "${env.REDIS_PORT}"
+//         S3_ACCESS_KEY = "${env.S3_ACCESS_KEY}"
+//         S3_SECRET_KEY = "${env.S3_SECRET_KEY}"
+//         S3_BUCKET = "${env.S3_BUCKET}"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Setup Environment') {
+            steps {
+                dir("${env.WORKSPACE}/BackEnd"){
+                    script {
+                        sh "chmod +x ./gradlew"
+                    }
+                }
+            }
+        }
+//		stage('Junit Test') {
+//			steps {
+//				sh "./gradlew test"
+//			}
+//		}
+        stage("Build") {
+            steps {
+                script {
+                    sh "ls -al"
+
+//                     sh "docker build -t pji0128/back BackEnd"
+                    sh "docker build -t ${DOCKERHUB_REGISTRY} BackEnd"
+
+
+                }
+            }
+        }
+        stage("Login") {
+            steps {
+                 sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+            }
+        }
+        stage("Tag and Push") {
+            steps {
+                script {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+                        sh "docker push ${DOCKERHUB_REGISTRY}"
+                    }
+                }
+            }
+        }
+        stage('Prune old images'){
+            steps{
+                script{
+                    sh "docker ps"
+//                     sh "docker system prune --filter until=1h"
+                }
+            }
+        }
+        stage('Pull') {
+            steps {
+                script {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+                        sh "docker stop back || true"  // Ignore error ifgit  container doesn't exist
+                        sh "docker rm back || true"    // Ignore error if container doesn't exist
+                        sh "docker rmi ${DOCKERHUB_REGISTRY}|| true"     //images 날리기
+                        sh "docker pull ${DOCKERHUB_REGISTRY}"
+                    }
+                }
+            }
+        }
+//         stage('Up') {
+//             steps {
+//                 script {
+//                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+//                         try{
+//                         sh "docker stop back"
+//                         sh "docker rm back"
+//                         sh "docker run -d --name back -p 8082:8080 -e spring.datasource.username=${USERNAME} ${DB_PASSWORD} ${JWT_SECRET} ${DOCKER_USER_ID}/back"
+//                         } catch(Exception e){
+//                             sh "docker restart back"
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+        stage('Up') {
+            steps {
+                script {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+                        try {
+
+//                            sh "docker stop back || true"  // Ignore error ifgit  container doesn't exist
+//                            sh "docker rm back || true"    // Ignore error if container doesn't exist
+//                            sh "docker rmi xogns5/back"     //images 날리기
+
+
+                            sh "docker run -d --name back -p 8081:8080 \
+                                ${DOCKERHUB_REGISTRY}"
+
+
+//                             sh "docker run -d --name back -p 8081:8080 \
+//                                 -e spring.datasource.username=${USERNAME} \
+//                                 -e DB_PASSWORD=${DB_PASSWORD} \
+//                                 -e JWT_SECRET=${JWT_SECRET} \
+//                                 -e REDIS_HOST=${REDIS_HOST} \
+//                                 -e REDIS_PASSWORD=${REDIS_PASSWORD} \
+//                                 -e REDIS_PORT=${REDIS_PORT} \
+//                                 -e S3_ACCESS_KEY=${S3_ACCESS_KEY} \
+//                                 -e S3_SECRET_KEY=${S3_SECRET_KEY} \
+//                                 -e S3_BUCKET=${S3_BUCKET} \
+//                                 ${DOCKER_USER_ID}/back"
+                        } catch(Exception e) {
+                            sh "docker restart back || true"  // Ignore error if container doesn't exist
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+//     post {
+//         always {
+//             script {
+//                 def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+//                 def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+//                 mattermostSend (color: 'good',
+//                     message: "빌드 ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+//                     endpoint: 'https://meeting.ssafy.com/hooks/q4qjarpscbf9pme4f46yiojzfe',
+//                     channel: 'C204-Jenkins'
+//                 )
+//             }
+//         }
+//     }
+}

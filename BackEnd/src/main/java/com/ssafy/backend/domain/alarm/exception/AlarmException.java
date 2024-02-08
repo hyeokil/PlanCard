@@ -1,14 +1,14 @@
-package com.ssafy.backend.domain.member.exception;
+package com.ssafy.backend.domain.alarm.exception;
 
 import lombok.Getter;
 
 @Getter
-public class MemberException extends RuntimeException {
-    private final MemberError errorCode;
+public class AlarmException extends RuntimeException {
+    private final AlarmError errorCode;
     private final int status;
     private final String errorMessage;
 
-    public MemberException(MemberError errorCode) {
+    public AlarmException(AlarmError errorCode) {
         super(errorCode.getErrorMessage());
         this.errorCode = errorCode;
         this.status = errorCode.getHttpStatus().value();

@@ -60,12 +60,12 @@ const router = createRouter({
                 {
                   path: "myPasswordResetting",
                   name: "mypage-myPasswordResetting",
-                  component: () => import("@/components/member/mypage/myPasswordResetting.vue"),
+                  component: () => import("@/components/member/mypage/MyPasswordResetting.vue"),
                 },
                 {
                   path: "myInfoModify",
                   name: "mypage-myInfoModify",
-                  component: () => import("@/components/member/mypage/myInfoModify.vue"),
+                  component: () => import("@/components/member/mypage/MyInfoModify.vue"),
                 },
               ],
             },

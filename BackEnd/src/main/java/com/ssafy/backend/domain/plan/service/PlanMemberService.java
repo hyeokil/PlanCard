@@ -1,4 +1,4 @@
-package com.ssafy.backend.domain.planmember.service;
+package com.ssafy.backend.domain.plan.service;
 
 public interface PlanMemberService {
     //계획 초대 수락

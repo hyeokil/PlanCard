@@ -1,4 +1,4 @@
-package com.ssafy.backend.domain.plandetail.entity;
+package com.ssafy.backend.domain.plan.entity;
 
 import com.ssafy.backend.domain.card.entity.Card;
 import com.ssafy.backend.domain.plan.entity.Plan;

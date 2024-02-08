@@ -37,14 +37,14 @@
         </form>
 
         <div id="etc1">
-          <p id="withdrawalGuide">탈퇴하려고? </p>
+          <p id="withdrawalGuide">탈퇴하려구요????? </p>
           <button id="withdrawalBtn" @click="withdrawalRequest()">[회원탈퇴]</button>
         </div>
 
         <div id="overlay" v-if="withdrawalActive"></div>
         <div class="card p-fluid" v-if="withdrawalActive" id="withdrawalBox">
           <h3 id="withdrawalTitle">회원 탈퇴 확인</h3>
-            <p>진짜 탈퇴해?</p>
+            <p style="text-align: center;">진짜 탈퇴해?</p>
             <div style="display: flex;">
               <form class="box, card p-fluid" @submit.prevent="" id="withdrawalForm">
                 <input class="box card p-fluid" type="submit" id="withdrawalSubmit" value="탈퇴">
@@ -64,14 +64,20 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { memberGetApi } from '@/api/memberApi';
 import { memberUpdateApi } from '@/api/memberApi';
 import { fileUploadApi } from "@/api/commonApi";
+import { useAccountsStore } from '@/stores/accountsStore';
 
 const router = useRouter();
+const accountStore = useAccountsStore();
 
 const memberNickname = ref('');
+const existingNickname = accountStore.memberInfo?.nickname  // 기존 닉네임
+memberNickname.value = existingNickname;  // 기존 닉네임을 초기값으로 설정
+
 const memberImage = ref('');
 
 const memberPreviewPhotoUrl = ref('');
@@ -156,6 +162,26 @@ const modify = async () => {
   }
 }
 
+const fetchMemberInfo = async () => {
+  try {
+    const response = await memberGetApi();
+    if(response.data.dataHeader.successCode == 0) {
+      // 받아온 사용자 정보로 상태 업데이트
+      console.log(response.data.dataBody);
+      accountStore.setMemberInfo(response.data.dataBody);
+    } else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("회원불러오기 중 오류가 발생했습니다.");
+  }
+}
+
+onMounted(() => {
+  fetchMemberInfo();
+});
+
 const withdrawalActive = ref(false);
 // 회원탈퇴 팝업 on/off
 const withdrawalRequest = () => {
@@ -167,7 +193,7 @@ const withdrawalRequest = () => {
 
 <style scoped>
   h1 {
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #separator {
     border: none;
@@ -194,7 +220,7 @@ const withdrawalRequest = () => {
   }
   #modifyTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #modifyForm {
     display: flex;
@@ -237,7 +263,7 @@ const withdrawalRequest = () => {
     background-color: #FFFFFF;
     border: 1px solid rgba(52, 152, 219, 0.5);
     color: rgba(0, 0, 0, 0.5);
-    font-weight: bold;
+    /* font-weight: bold; */
     width: 100%;
     padding: 5px;
     margin-top: 20px;
@@ -280,11 +306,14 @@ const withdrawalRequest = () => {
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
     height: 20px;
     padding: 20px;
   }
+  #modifySubmit:hover {
+    transform: scale(1.05);
+    border-color: #3498db;  }
 
 
 
@@ -295,13 +324,16 @@ const withdrawalRequest = () => {
   }
   #withdrawalGuide {
     color: rgba(0, 0, 0, 0.3);
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
     margin-right: 10px;
   }
   #withdrawalBtn {
-    font-weight: bold;
-    color: rgba(255, 0, 0, 1);
+    /* font-weight: bold; */
+    color: rgba(255, 0, 0, 0.3);
+  }
+  #withdrawalBtn:hover {
+    color: rgb(255, 0, 0);
   }
 
   #overlay {
@@ -336,7 +368,7 @@ const withdrawalRequest = () => {
   }
   #withdrawalTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
   }
   #withdrawalSubmit {
@@ -344,29 +376,35 @@ const withdrawalRequest = () => {
     height: 30px;
     text-align: center;
     color: #FFFFFF;
-    background-color: #FF0000;
+    background-color: rgb(255, 0, 0);
     position: relative;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 10px;
     margin-top: 5px; /* 위쪽 여백 추가 */
     line-height: 0px;
-
   }
+  #withdrawalSubmit:hover {
+    transform: scale(1.05);
+    border-color: #3498db;
+    }
 
   #withdrawalCloseBtn {
     width: 100px;
     height: 30px;
     text-align: center;
     color: #FFFFFF;
-    background-color: #3498DB;
+    background-color: rgb(52, 152, 219);
     position: relative;
     line-height: 25px;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5cm;
     border: 1px solid rgba(0, 0, 0, 0.1);
     top: 15px;
   }
+  #withdrawalCloseBtn:hover {
+    transform: scale(1.05);
+    border-color: #3498db;  }
 
 </style>

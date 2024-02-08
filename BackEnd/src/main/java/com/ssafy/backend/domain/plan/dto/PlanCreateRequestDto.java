@@ -1,13 +1,11 @@
 package com.ssafy.backend.domain.plan.dto;
 
 import com.ssafy.backend.domain.plan.entity.Plan;
-import com.ssafy.backend.domain.planmember.entity.PlanMember;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor

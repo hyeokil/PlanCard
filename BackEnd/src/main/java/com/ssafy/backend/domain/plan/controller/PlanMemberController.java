@@ -1,10 +1,9 @@
-package com.ssafy.backend.domain.planmember.controller;
+package com.ssafy.backend.domain.plan.controller;
 
 import com.ssafy.backend.domain.member.dto.MemberLoginActiveDto;
-import com.ssafy.backend.domain.planmember.service.PlanMemberService;
+import com.ssafy.backend.domain.plan.service.PlanMemberService;
 import com.ssafy.backend.global.common.dto.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/planmember")
+@RequestMapping("/api/v1/plan/member")
 public class PlanMemberController {
 
     private final PlanMemberService planMemberService;

@@ -1,13 +1,14 @@
-package com.ssafy.backend.domain.plandetail.service;
+package com.ssafy.backend.domain.plan.service;
 
 import com.ssafy.backend.domain.card.entity.Card;
 import com.ssafy.backend.domain.card.repository.CardRepository;
 import com.ssafy.backend.domain.plan.entity.Plan;
 import com.ssafy.backend.domain.plan.repository.PlanRepository;
-import com.ssafy.backend.domain.plandetail.dto.PlanDetailCreateRequestDto;
-import com.ssafy.backend.domain.plandetail.dto.PlanDetailListResponseDto;
-import com.ssafy.backend.domain.plandetail.entity.PlanDetail;
-import com.ssafy.backend.domain.plandetail.repository.PlanDetailRepository;
+import com.ssafy.backend.domain.plan.dto.PlanDetailCreateRequestDto;
+import com.ssafy.backend.domain.plan.dto.PlanDetailListResponseDto;
+import com.ssafy.backend.domain.plan.entity.PlanDetail;
+import com.ssafy.backend.domain.plan.repository.PlanDetailRepository;
+import com.ssafy.backend.domain.plan.service.PlanDetailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PlanDetailServiceImpl implements PlanDetailService{
+public class PlanDetailServiceImpl implements PlanDetailService {
 
     private final PlanRepository planRepository;
     private final CardRepository cardRepository;

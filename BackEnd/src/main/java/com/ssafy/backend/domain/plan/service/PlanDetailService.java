@@ -1,7 +1,7 @@
-package com.ssafy.backend.domain.plandetail.service;
+package com.ssafy.backend.domain.plan.service;
 
-import com.ssafy.backend.domain.plandetail.dto.PlanDetailCreateRequestDto;
-import com.ssafy.backend.domain.plandetail.dto.PlanDetailListResponseDto;
+import com.ssafy.backend.domain.plan.dto.PlanDetailCreateRequestDto;
+import com.ssafy.backend.domain.plan.dto.PlanDetailListResponseDto;
 
 import java.util.List;
 

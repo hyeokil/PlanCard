@@ -1,8 +1,8 @@
-package com.ssafy.backend.domain.plandetail.controller;
+package com.ssafy.backend.domain.plan.controller;
 
-import com.ssafy.backend.domain.plandetail.dto.PlanDetailCreateRequestDto;
-import com.ssafy.backend.domain.plandetail.dto.PlanDetailListResponseDto;
-import com.ssafy.backend.domain.plandetail.service.PlanDetailService;
+import com.ssafy.backend.domain.plan.dto.PlanDetailCreateRequestDto;
+import com.ssafy.backend.domain.plan.dto.PlanDetailListResponseDto;
+import com.ssafy.backend.domain.plan.service.PlanDetailService;
 import com.ssafy.backend.global.common.dto.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

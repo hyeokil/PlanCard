@@ -1,9 +1,6 @@
 package com.ssafy.backend.domain.plan.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ssafy.backend.domain.planmember.entity.PlanMember;
 import com.ssafy.backend.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

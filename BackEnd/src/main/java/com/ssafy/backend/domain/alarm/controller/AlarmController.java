@@ -2,14 +2,12 @@ package com.ssafy.backend.domain.alarm.controller;
 
 import com.ssafy.backend.domain.alarm.dto.AlarmCreateRequestDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
+import com.ssafy.backend.domain.alarm.dto.AlarmFriendRequestDto;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.service.AlarmService;
 import com.ssafy.backend.domain.member.dto.MemberLoginActiveDto;
 import com.ssafy.backend.global.common.dto.Message;
-import com.ssafy.backend.global.common.dto.SliceResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +26,14 @@ public class AlarmController {
     public ResponseEntity<Message<Void>> createAlarm(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
                                                      @RequestBody AlarmCreateRequestDto createRequestDto) {
         alarmService.createAlarm(loginActiveDto.getId(), createRequestDto);
+        return ResponseEntity.ok().body(Message.success());
+    }
+
+    @PostMapping("/friend/request")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<Void>> friendRequestAlarm(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
+                                                     @RequestBody AlarmFriendRequestDto friendRequestDto) {
+        alarmService.friendRequestAlarm(loginActiveDto.getId(), friendRequestDto);
         return ResponseEntity.ok().body(Message.success());
     }
 

@@ -6,6 +6,8 @@ import com.ssafy.backend.global.component.jwt.JwtUtils;
 import com.ssafy.backend.global.component.jwt.dto.TokenDto;
 import com.ssafy.backend.global.component.jwt.dto.TokenMemberInfoDto;
 import com.ssafy.backend.global.component.jwt.repository.RefreshRepository;
+import com.ssafy.backend.global.exception.GlobalError;
+import com.ssafy.backend.global.exception.GlobalException;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,7 @@ public class JwtServiceImpl implements JwtService {
             refreshRepository.save(tokenMemberInfoDto.getEmail(), refreshToken, jwtUtils.getRefreshTokenExpiredMin());
         }
         catch (Exception e) {
-            throw new RuntimeException("Redis 연결에 실패했습니다.");
+            throw new GlobalException(GlobalError.REDIS_CONNECTION_FAILURE);
         }
 
         return TokenDto.builder()

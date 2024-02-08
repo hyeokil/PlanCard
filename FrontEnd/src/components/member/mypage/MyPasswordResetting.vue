@@ -143,5 +143,9 @@
     height: 20px;
     padding: 20px;
   }
+  #resettingSubmit:hover {
+    transform: scale(1.05);
+    border-color: #3498db;
+  }
 
 </style>

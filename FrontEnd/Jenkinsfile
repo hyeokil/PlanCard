@@ -1,0 +1,78 @@
+
+pipeline {
+    agent any
+    environment {
+        REPO = "s10-webmobile1-sub2/S10P12C110"
+        DOCKERHUB_CREDENTIALS = credentials('Docker-credential')
+
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage("Build") {
+            steps {
+                script {
+                    sh "ls -al"
+
+                    sh "docker build -t pji0128/front FrontEnd"
+                }
+            }
+        }
+
+        stage("Login") {
+            steps {
+                sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                
+            }
+        }
+        stage("Tag and Push") {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD')]) {
+                        sh "docker push pji0128/front"
+                    }
+                }
+            }
+        }
+
+        stage('Prune old images') {
+            steps {
+                script {
+                    sh "docker ps"
+                    // sh "docker system prune --filter until=1h"
+                }
+            }
+        }
+        stage('Pull') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD')]) {
+                        sh "docker pull pji0128/front"
+                        sh "docker rmi pji0128/front"     //images 날리기
+                        sh "docker stop -f front || true"
+                        sh "docker rm -f front || true"
+                    }
+                }
+            }
+        }
+
+        stage('Up') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD')]) {
+                        try{
+                            sh "docker run -d --name front -p 8083:4173 \
+                            pji0128/front"
+                        } catch (Exception e){
+                            sh "docker restart front || true"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

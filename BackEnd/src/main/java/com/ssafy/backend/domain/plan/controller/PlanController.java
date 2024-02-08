@@ -6,7 +6,7 @@ import com.ssafy.backend.domain.plan.dto.PlanCreateRequestDto;
 import com.ssafy.backend.domain.plan.dto.PlanDateUpdateRequestDto;
 import com.ssafy.backend.domain.plan.dto.PlanNameUpdateRequestDto;
 import com.ssafy.backend.domain.plan.service.PlanService;
-import com.ssafy.backend.domain.planmember.service.PlanMemberService;
+import com.ssafy.backend.domain.plan.service.PlanMemberService;
 import com.ssafy.backend.global.common.dto.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class PlanController {
         return ResponseEntity.ok().body(Message.success());
     }
 
-    @GetMapping("/myplanlist")
+    @GetMapping("/list")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<Message<List<MyPlanResponseDto>>> getMyPlanList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto) {
         List<MyPlanResponseDto> myPlanList = planService.getMyPlanList(loginActiveDto.getId());
