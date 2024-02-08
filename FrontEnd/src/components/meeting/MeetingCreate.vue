@@ -60,6 +60,7 @@
                           class=" font-content"
                           style="
                           font-size: small;
+                          margin-top: 2px;
                           color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
                         </div>
                       </div>
