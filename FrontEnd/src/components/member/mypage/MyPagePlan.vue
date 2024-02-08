@@ -47,6 +47,7 @@ const closeMeetingCreate = () => {
   showCreateMeetingModal.value = false;
 }
 
+
 const showCreateMeeting = () => {
   showCreateMeetingModal.value = !showCreateMeetingModal.value
 }
