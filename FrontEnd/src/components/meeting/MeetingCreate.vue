@@ -234,11 +234,10 @@ const filteredFriends = computed(() => {
 
 
 <style scoped>
-h1 {
+h2 {
   /* font-weight: bold; */
 }
-
-h2 {
+h3 {
   color: #3498db;
   /* font-weight: bold; */
 }
