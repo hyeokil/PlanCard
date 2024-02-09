@@ -29,24 +29,17 @@
         <div class="box, card p-fluid" id="memberPasswordCheckInput">
           <input type="password" id="memberPasswordCheck" v-model.trim="memberPasswordCheck" placeholder="비밀번호 재입력">
         </div>
-        <!--  -->
         <div class="card p-fluid" id="profilePhoto">
-          <p id="profilePhotoGuide">프로필 사진</p>
-          <hr id="separator">
-          <div class="box, card p-fluid" id="memberPhotoInput">
-            <input type="file" id="memberPhoto" accept="image/*" @change="handlePhotoUpload" ref="fileInput">
-          </div>
-        </div>
-        <!--  -->
-
-        <div class="box, card p-fluid" id="signUpSubmit" style=" text-align: center;">
-          <input type="submit" value="가입하기">
+        <p id="profilePhotoGuide">프로필 사진</p>
+        <hr id="separator">
+            <div class="box, card p-fluid" id="memberPhotoInput">
+                <input type="file" id="memberPhoto" accept="image/*" @change="handlePhotoUpload" ref="fileInput">
+            </div>
+      </div>
+        <div class="box, card p-fluid"  id="signUpSubmit" style=" text-align: center;">
+            <input type="submit" value="가입하기">
         </div>
       </form>
-
-
-
-
     </div>
   </div>
 </template>
@@ -57,43 +50,56 @@ import { useRouter } from 'vue-router';
 import { sendEmailCodeApi, verifyEmailCodeApi, memberSignUpApi } from "@/api/memberApi";
 import { fileUploadApi } from "@/api/commonApi";
 
-const router = useRouter();
+  const router = useRouter();
 
-const memberEmail = ref('');
-const memberEmailCode = ref('');
-const memberName = ref('');
-const memberNickname = ref('');
-const memberPassword = ref('');
-const memberPasswordCheck = ref('');
-const memberImage = ref('');
+  const memberEmail = ref('');
+  const memberEmailCode = ref('');
+  const memberName = ref('');
+  const memberNickname = ref('');
+  const memberPassword = ref('');
+  const memberPasswordCheck = ref('');
+  const memberImage = ref('');
 
-const memberPreviewPhotoUrl = ref('');
-const fileInput = ref('');
+  const memberPreviewPhotoUrl = ref('');
+  const fileInput = ref('');
 
 
-const countdownTime = ref(300); // 5분을 초 단위로 표현
-const countdown = ref('');
-const timerInterval = ref(null);
+  const countdownTime = ref(300); // 5분을 초 단위로 표현
+  const countdown = ref('');
+  const timerInterval = ref(null);
 
-// 이메일 인증 완료 여부를 추적하기 위한 변수
-const isEmailVerified = ref(false);
+  // 이메일 인증 완료 여부를 추적하기 위한 변수
+  const isEmailVerified = ref(false);
 
-// 이메일 유효성 검사
-const isValidEmail = computed(() => {
-  // 이메일 정규식
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return emailRegex.test(memberEmail.value);
-});
 
-// 비밀번호 일치 검사
-const doPasswordsMatch = computed(() => {
-  return memberPassword.value === memberPasswordCheck.value;
-});
 
-// 회원가입 폼 유효성 검사
-const isFormValid = computed(() => {
-  return isValidEmail.value && doPasswordsMatch.value && memberNickname.value.trim().length > 0;
-});
+
+  // 이메일 입력 유무 (이메일이 양식에 유효하면 true, 아니면 false)
+  const memberEmailStatus = computed(() => {
+    if (memberEmail.value === '') {
+      return false;
+    } else {
+      const emailStatus = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      return emailStatus.test(memberEmail.value);
+    }
+  });
+
+  // 이메일 유효성 검사
+  const isValidEmail = computed(() => {
+    // 이메일 정규식
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(memberEmail.value);
+  });
+
+  // 비밀번호 일치 검사
+  const doPasswordsMatch = computed(() => {
+    return memberPassword.value === memberPasswordCheck.value;
+  });
+
+  // 회원가입 폼 유효성 검사
+  const isFormValid = computed(() => {
+    return isValidEmail.value && doPasswordsMatch.value && memberNickname.value.trim().length > 0;
+  });
 
 // 타이머 시작 함수
 const startCountdown = () => {
@@ -193,16 +199,20 @@ const signUp = async () => {
     alert("폼을 올바르게 작성하고 이메일 인증을 완료해주세요.");
     return;
   }
+  const signUp = async () => {
+    if (!isFormValid.value) {
+      alert("폼을 올바르게 작성해주세요.");
+      return;
+    }
 
-  const signUpData = {
-    email: memberEmail.value,
-    emailCode: memberEmailCode.value,
-    password: memberPassword.value,
-    name: memberName.value,
-    nickname: memberNickname.value,
-    image: memberImage.value
-  };
-
+    const signUpData = {
+      email: memberEmail.value,
+      emailCode: memberEmailCode.value,
+      password: memberPassword.value,
+      name: memberName.value,
+      nickname: memberNickname.value,
+      image: memberImage.value
+    };
   try {
     await memberSignUpApi(signUpData,
       (response) => {
@@ -224,62 +234,60 @@ const signUp = async () => {
     }
   }
 };
+  // 파일 업로드를 위한 이벤트 핸들러
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    const maxFileSize = 1 * 1024 * 1024; // 1MB
 
-// 파일 업로드를 위한 이벤트 핸들러
-const handlePhotoUpload = (event) => {
-  const file = event.target.files[0];
-  const maxFileSize = 1 * 1024 * 1024; // 1MB
-
-  if (!file.type.includes("jpeg") && !file.type.includes("png")) {
-    alert("JPG 또는 PNG 이미지만 업로드 가능합니다.");
-    resetFileInput();
-    return;
-  }
-
-  if (file.size > maxFileSize) {
-    alert("이미지 파일 크기는 1MB 이하만 가능합니다.");
-    resetFileInput();
-    return;
-  }
-
-  // memberPhoto.value = file;
-  memberPreviewPhotoUrl.value = URL.createObjectURL(file);
-  imageUpload(file);
-}
-
-// 입력 필드 리셋
-const resetFileInput = () => {
-  if (fileInput.value) {
-    fileInput.value.value = ""; // Vue 3 Composition API에서 ref를 사용할 경우 .value 사용
-  }
-  memberPreviewPhotoUrl.value = "";
-};
-
-const imageUpload = async (file) => {
-  // 파일을 FormData에 추가하여 전송 가능
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('nameFile', file.name);
-
-  try {
-    const response = await fileUploadApi(formData);
-    if (response.data.dataHeader.successCode === 0) {
-      console.log("이미지가 이미지 서버에 업로드 되었습니다.");
-      memberImage.value = response.data.dataBody;
+    if (!file.type.includes("jpeg") && !file.type.includes("png")) {
+      alert("JPG 또는 PNG 이미지만 업로드 가능합니다.");
+      resetFileInput();
+      return;
     }
-    else {
-      alert(response.data.dataHeader.resultMessage);
+
+    if (file.size > maxFileSize) {
+      alert("이미지 파일 크기는 1MB 이하만 가능합니다.");
+      resetFileInput();
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
+
+    // memberPhoto.value = file;
+    memberPreviewPhotoUrl.value = URL.createObjectURL(file);
+    imageUpload(file);
   }
-}
 
 // 컴포넌트가 언마운트 될 때 타이머 정리
 onUnmounted(() => {
   stopCountdown();
 });
+  // 입력 필드 리셋
+  const resetFileInput = () => {
+    if (fileInput.value) {
+      fileInput.value.value = ""; // Vue 3 Composition API에서 ref를 사용할 경우 .value 사용
+    }
+    memberPreviewPhotoUrl.value = "";
+  };
+
+  const imageUpload = async (file) => {
+    // 파일을 FormData에 추가하여 전송 가능
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('nameFile', file.name);
+
+    try {
+      const response = await fileUploadApi(formData);
+      if (response.data.dataHeader.successCode === 0) {
+        console.log("이미지가 이미지 서버에 업로드 되었습니다.");
+        memberImage.value = response.data.dataBody;
+      }
+      else {
+        alert(response.data.dataHeader.resultMessage);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
+    }
+  }
 </script>
 
 
@@ -288,31 +296,164 @@ onUnmounted(() => {
 #box {
   display: flex;
   justify-content: center;
-}
+  }
+  #signUpBox {
+    background-color: #FFFFFF;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    width: 430px;
+    height: 50%;
+    padding: 40px;
 
-#signUpBox {
-  background-color: #FFFFFF;
-  border: 1px solid rgba(52, 152, 219, 0.5);
-  width: 430px;
-  height: 50%;
-  padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+  #signUpTitle {
+    color: #3498db;
+    /* font-weight: bold; */
+  }
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-}
+  #signUpForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #profileImg {
+    border-radius: 50%;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    background-color: #FFFFFF;
+    width: 250px;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* 상대 위치 지정 */
+    overflow: hidden; /* 원 밖으로 넘치는 부분 숨김 */
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  #profileImg img {
+    max-width: none; /* 이미지 너비를 원본 크기로 설정 */
+    max-height: none; /* 이미지 높이를 원본 크기로 설정 */
+    width: 100%; /* 이미지 너비를 자동으로 조정 */
+    height: auto; /* 이미지 높이를 자동으로 조정 */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 이미지를 수평 및 수직 가운데 정렬 */
+  }
+  #memberEmail, #memberEmailCode {
+    height: 35px;
+    width: 200px;
+    margin-right: 5px;
+    padding-left: 10px;
+  }
+  #memberName, #memberNickname, #memberPassword, #memberPasswordCheck, #memberPhoto {
+    height: 35px;
+    width: 280px;
+    padding-left: 10px;
+  }
+  #memberEmailInput, #memberEmailCodeInput, #memberNameInput, #memberNicknameInput, #memberPasswordInput, #memberPasswordCheckInput {
+    background-color: rgba(245, 245, 245, 0.1);
+    width: 90%;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    height: 40px;
+    margin-bottom: 10px;
+  }
+  #separator {
+    margin-top: 3px;
+    border: none;
+    border-top:  1px solid rgba(52, 152, 219, 0.5);
+    border-radius: 10px;
+  }
+  #profilePhoto {
+    background-color: #FFFFFF;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    color: rgba(0, 0, 0, 0.5);
+    /* font-weight: bold; */
+    width: 100%;
+    padding: 5px;
+    margin-top: 20px;
+  }
+  #profilePhotoGuide {
+    text-align: center;
+    padding-top: 5px;
+    margin: 0;
+  }
+  #userPhotoInput {
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center;
+    width: 90%; /* 현재 가로 너비 설정에 따라 조정 */
+    margin: 0 auto; /* 가운데 정렬을 위한 외부 여백 설정 */
+    margin-bottom: 10px;
+  }
+  #signUpSubmit {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #3498db;
+    color: #FFFFFF;
+    /* font-weight: bold; */
+    font-size: medium;
+    height: 20px;
+    padding: 20px;
+    transition: transform 0.2s, border-color 0.2s; /* 부드러운 전환 효과를 위한 설정 */
+    cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
+  }
+  #signUpSubmit:hover {
+    transform: scale(1.05); /* 이미지를 약간 확대 */
+    border-color: #3498db; /* 테두리 색상 변경 */
+  }
 
-#signUpTitle {
-  color: #3498db;
-  /* font-weight: bold; */
-}
 
-#signUpForm {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .emailBtn {
+    background-color: rgba(107, 114, 128, 0.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .emailBtn-ok {
+    background-color: rgba(52, 152, 2190.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .emailAuthBtn {
+    background-color: rgba(107, 114, 128, 0.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .emailAuthBtn-ok {
+    background-color: rgba(52, 152, 2190.5);
+    color: white;
+    padding: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
 #profileImg {
   border-radius: 50%;
