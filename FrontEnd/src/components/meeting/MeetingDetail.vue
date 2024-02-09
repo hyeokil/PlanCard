@@ -1,14 +1,14 @@
 <template>
     <div>
         <div class="mt-0 pt-0">
-            <ItemDrag />
+            <ItemDrag></ItemDrag>
             <div class="chat-tab">
                 <div class="chat-container">
-                    <button @click="activeTab = !activeTab" class="chat-btn">
-                        <i class="pi pi-comments" style="font-size: 27px;"></i> 채 팅
+                    <button @click="activeTab = !activeTab" class="chat-btn" id="chat-btn">
+                        <i class="pi pi-comments" style="font-size: 23px;"></i> 채 팅
                     </button>
                     <div :class="{ 'sidebar-active': activeTab, 'sidebar-hidden': !activeTab }">
-                        <ItemFace />
+                        <ItemFace style="display: none;"></ItemFace>
                         <!-- 조건부 렌더링으로 채팅 컴포넌트 표시 -->
                         <Chat class="chat" v-if="activeTab"></Chat>
                     </div>
@@ -37,16 +37,10 @@ onBeforeMount(() => {
 onBeforeUnmount(() => {
     planStore.isMeetingView = false
 })
-// // 탭 상태 추가
-// const activeTab = ref('');
-
-// // 탭 토글 기능
-// const toggleTab = (tabName) => {
-//     activeTab.value = activeTab.value === tabName ? '' : tabName;
-// };
 
 // 탭 상태 추가
 const activeTab = ref('');
+
 
 </script>
 
@@ -89,21 +83,27 @@ const activeTab = ref('');
 
 .chat-container {
     position: relative;
+    height: 100vh;
 }
 
 .chat-btn {
     position: absolute;
-    top: 5rem;
-    left: -40px;
+    top: 2rem;
+    left: -30px;
     z-index: 5;
     background-color: #3498DB;
-    width: 40px;
-    height: 110px;
+    width: 30px;
+    height: 100px;
     border-radius: 5px 0px 0px 5px;
-    font-size: 20px;
+    font-size: 15px;
     color: #fff;
 }
 
 .chat {
-    background-color: aqua;
+    position: absolute;
+    background-color: #dfecf7 ;
+    height: 80vh;
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
 }</style>

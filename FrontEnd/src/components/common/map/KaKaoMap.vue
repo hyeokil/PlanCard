@@ -172,7 +172,8 @@ const displayMarkersAndPolyline = () => {
         const markerLabel = new kakao.maps.CustomOverlay({
         content: markerLabelContent,
         map: map.value,
-        position: marker.getPosition(),
+        position: position,
+        // position: marker.getPosition(),
         yAnchor: 1, // 마커 이미지의 중앙 아래에 오버레이가 오도록 설정
         zIndex: index, // 순서대로 표시하기 위해 z-index 설정
         });
@@ -196,7 +197,9 @@ const displayMarkersAndPolyline = () => {
     });
     polyline.value.setMap(map.value);
 
+    console.log('detailplaces',detailPlaces.value)
     const pos = calculateCenter(detailPlaces.value)
+    console.log('pos', pos)
     const newCenter = new kakao.maps.LatLng(pos.lat, pos.lng) 
     if (pos !== undefined) {
         map.value.setCenter(newCenter)

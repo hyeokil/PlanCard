@@ -239,9 +239,7 @@ onMounted(() => {
                         </template>
                     </draggable>
                 </div>
-                <button class="quit-btn" @click="goMain">
-                    <i class="pi pi-times" style="font-size: 13px;"></i>끝내기
-                </button>
+
             </div>
             <div class="drag-list">
                 <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
@@ -251,43 +249,46 @@ onMounted(() => {
                         <div class="font-content" style="font-size: 15px;">개의 장소</div>
                     </div>
                 </div>
-                <div style="margin-top: 2rem;">
-                    <div class="drag-plan-list" v-for="(fixCard, index) in days" :key="index">
-                    <h6 style="cursor: pointer; margin-left: 6%;" @click="changeDate(index+1)">Day {{ index + 1 }}</h6>
-                    <div>
-                        <draggable
-                        class="DragArea list-group"
-                        :list="fixCard"
-                        :group="{name: 'card', put:true}"
-                        item-key="id"
-                        @change="onCardMove"
-                        >
-                            <template #item="{ element, index }">
-                                <div @click="setCenter(element)" class="list-group-item font-content">
-                                    <div class="d-flex align-items-center gap-3 justify-content-center" style="position: relative; margin-bottom: 10px;">
-                                        <div class="orderNumber">{{index+1}}</div> 
-                                        <div class="card-detail d-flex justify-content-start gap-3 align-items-center">
-                                            <img class="card-image" :src="element.image" alt="">
-                                            <div>{{ element.placeName }}</div>
+                <div>
+                    <div class="plan-list-margin">
+                        <div class="drag-plan-list" v-for="(fixCard, index) in days" :key="index">
+                        <h6 style="cursor: pointer; margin-left: 6%;" @click="changeDate(index+1)">Day {{ index + 1 }}</h6>
+                        <div>
+                            <draggable
+                            class="DragArea list-group"
+                            :list="fixCard"
+                            :group="{name: 'card', put:true}"
+                            item-key="id"
+                            @change="onCardMove"
+                            >
+                                <template #item="{ element, index }">
+                                    <div @click="setCenter(element)" class="list-group-item font-content">
+                                        <div class="d-flex align-items-center gap-3 justify-content-center" style="position: relative; margin-bottom: 10px;">
+                                            <div class="orderNumber">{{index+1}}</div> 
+                                            <div class="card-detail d-flex justify-content-start gap-3 align-items-center">
+                                                <img class="card-image" :src="element.image" alt="">
+                                                <div>{{ element.placeName }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </template>
-                        </draggable>
+                                </template>
+                            </draggable>
+                        </div>
                     </div>
                 </div>
-                <button class="save-btn" @click="saveCards">
-                    <i class="pi pi-check"></i> 저장
-                </button>
+                <div class="btns">
+                    <div class="btns-box">
+                        <button class="btn quit-btn" @click="goMain">
+                            <i class="pi pi-times"></i> 끝내기
+                        </button>
+                        <button class="btn save-btn" @click="saveCards">
+                            <i class="pi pi-check"></i> 저장
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-            <!-- 지도 사이드바 -->
-            <!-- <div class="tab d-flex align-items-start">
-                <button @click="visible=!visible">
-                    <i class="pi pi-map" style="font-size: 2rem;"></i>
-                </button> -->
-                <!-- <div :class="{'sidebar-active':visible, 'sidebar-hidden':!visible}"> -->
         <div class="map">
             <KaKaoMap
             :card-list="filteredCard"
@@ -300,36 +301,6 @@ onMounted(() => {
 </template>
     
 <style scoped>
-.quit-btn{
-    font-size: 13px;
-    position: absolute;
-    top: 75px;
-    left: 300px;
-    border: #3498DB 1px solid;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #3498DB;
-    width: 70px;
-    height: 30px;
-    text-align: start;
-    padding-left: 8px;
-    padding-top: 3px;
-    z-index: 999;
-}
-.save-btn{
-    position: absolute;
-    bottom: 2rem;
-    left: 670px;
-    border: #3498DB 1px solid;
-    border-radius: 5px;
-    background-color: #3498DB;
-    color: #fff;
-    width: 70px;
-    height: 40px;
-    text-align: start;
-    padding-left: 8px;
-    padding-top: 3px;
-}
 .map{
     position: relative;
 }
@@ -379,10 +350,55 @@ onMounted(() => {
 }
 .drag-list{
     height: 100vh;
-    overflow: auto;
     min-width: 380px;
     border-left: rgba(0,0,0,0.1) 1px solid;
     background-color: #fff;
+}
+.plan-list-margin{
+    position: absolute;
+    top: 80px;
+    overflow: auto;
+    width: 380px;
+    height: calc(100vh - 120px);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+.btns{
+    background-color: #fff;
+    position: absolute;
+    bottom: 0px;
+    width: 380px;
+    height: 50px;
+}
+.btns-box{
+    position: relative;
+}
+.btn{
+    position: absolute;
+    bottom: 2rem;
+    width: 70px;
+    height: 30px;
+    text-align: start;
+    padding-left: 8px;
+    padding-top: 3px;
+    z-index: 10;
+}
+.quit-btn{
+    top: 10px;
+    right: 10px;
+    border: red 1px solid;
+    border-radius: 5px;
+    background-color: #fff;
+    color: red;
+
+}
+.save-btn{
+    top: 10px;
+    right: 90px;
+    border: #3498DB 1px solid;
+    border-radius: 5px;
+    background-color: #3498DB;
+    color: #fff;
 }
 .drag-plan-list{
     margin-bottom: 15%;
