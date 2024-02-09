@@ -167,6 +167,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccountsStore } from '@/stores/accountsStore';
 import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
+import Notification from "@/layout/TopBarItems/Notification.vue"
 import { memberLogoutApi } from "@/api/memberApi";
 import { alarmFriendRequestApi, alarmGetListApi, alarmActionApi } from "@/api/alarmApi";
 import { usePlanStore } from "@/stores/planStore";
