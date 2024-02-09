@@ -453,9 +453,6 @@ const showCreateMeeting = () => {
   showCreateMeetingModal.value = !showCreateMeetingModal.value
 };
 
-
-
-
 </script>
 
 

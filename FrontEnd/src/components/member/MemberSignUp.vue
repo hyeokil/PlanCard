@@ -9,13 +9,11 @@
         <div v-else></div>
         <div class="box, card p-fluid" id="memberEmailInput">
             <input type="text" id="memberEmail" v-model.trim="memberEmail" placeholder="이메일">
-            <v-btn id="emailBtn">인증</v-btn
->
+            <v-btn :class="{'emailBtn': !memberEmailStatus, 'emailBtn-ok': memberEmailStatus}">인증</v-btn>
         </div>
         <div class="box, card p-fluid" id="memberEmailCodeInput">
             <input type="text" id="memberEmailCode" v-model.trim="memberEmailCode" placeholder="이메일 인증 코드">
-            <v-btn id="emailAuthBtn">확인</v-btn
->
+            <v-btn class="emailAuthBtn">확인</v-btn>
         </div>
         <div class="box, card p-fluid" id="memberNameInput">
             <input type="text" id="memberName" v-model.trim="memberName" placeholder="이름">
@@ -29,7 +27,6 @@
         <div class="box, card p-fluid" id="memberPasswordCheckInput">
             <input type="password" id="memberPasswordCheck" v-model.trim="memberPasswordCheck" placeholder="비밀번호 재입력">
         </div>
-<!--  -->
         <div class="card p-fluid" id="profilePhoto">
         <p id="profilePhotoGuide">프로필 사진</p>
         <hr id="separator">
@@ -37,150 +34,141 @@
                 <input type="file" id="memberPhoto" accept="image/*" @change="handlePhotoUpload" ref="fileInput">
             </div>
       </div>
-<!--  -->
-
         <div class="box, card p-fluid"  id="signUpSubmit" style=" text-align: center;">
             <input type="submit" value="가입하기">
         </div>
       </form>
-
-
-
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { memberSignUpApi } from "@/api/memberApi";
-import { fileUploadApi } from "@/api/commonApi";
+  import { ref, computed } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { memberSignUpApi } from "@/api/memberApi";
+  import { fileUploadApi } from "@/api/commonApi";
 
-const router = useRouter();
+  const router = useRouter();
 
-const memberEmail = ref('');
-const memberEmailCode = ref('');
-const memberName = ref('');
-const memberNickname = ref('');
-const memberPassword = ref('');
-const memberPasswordCheck = ref('');
-const memberImage = ref('');
+  const memberEmail = ref('');
+  const memberEmailCode = ref('');
+  const memberName = ref('');
+  const memberNickname = ref('');
+  const memberPassword = ref('');
+  const memberPasswordCheck = ref('');
+  const memberImage = ref('');
 
-const memberPreviewPhotoUrl = ref('');
-const fileInput = ref('');
+  const memberPreviewPhotoUrl = ref('');
+  const fileInput = ref('');
 
-// 이메일 입력 유무
-const memberEmailStatus = computed (() => {
-  if (memberEmail.value === '') {
-      return false
+  // 이메일 입력 유무 (이메일이 양식에 유효하면 true, 아니면 false)
+  const memberEmailStatus = computed(() => {
+    if (memberEmail.value === '') {
+      return false;
     } else {
-      return true
+      const emailStatus = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      return emailStatus.test(memberEmail.value);
     }
-});
+  });
 
-// 이메일 유효성 검사
-const isValidEmail = computed(() => {
-  // 이메일 정규식
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return emailRegex.test(memberEmail.value);
-});
+  // 이메일 유효성 검사
+  const isValidEmail = computed(() => {
+    // 이메일 정규식
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(memberEmail.value);
+  });
 
-// 비밀번호 일치 검사
-const doPasswordsMatch = computed(() => {
-  return memberPassword.value === memberPasswordCheck.value;
-});
+  // 비밀번호 일치 검사
+  const doPasswordsMatch = computed(() => {
+    return memberPassword.value === memberPasswordCheck.value;
+  });
 
-// 회원가입 폼 유효성 검사
-const isFormValid = computed(() => {
-  return isValidEmail.value && doPasswordsMatch.value && memberNickname.value.trim().length > 0;
-});
+  // 회원가입 폼 유효성 검사
+  const isFormValid = computed(() => {
+    return isValidEmail.value && doPasswordsMatch.value && memberNickname.value.trim().length > 0;
+  });
 
+  const signUp = async () => {
+    if (!isFormValid.value) {
+      alert("폼을 올바르게 작성해주세요.");
+      return;
+    }
 
-const signUp = async () => {
-  if (!isFormValid.value) {
-    alert("폼을 올바르게 작성해주세요.");
-    return;
-  }
+    const signUpData = {
+      email: memberEmail.value,
+      emailCode: memberEmailCode.value,
+      password: memberPassword.value,
+      name: memberName.value,
+      nickname: memberNickname.value,
+      image: memberImage.value
+    };
 
-  const signUpData = {
-    email: memberEmail.value,
-    emailCode: memberEmailCode.value,
-    password: memberPassword.value,
-    name: memberName.value,
-    nickname: memberNickname.value,
-    image: memberImage.value
+    try {
+      await memberSignUpApi(signUpData,
+        (response) => {
+          if (response.data.dataHeader.successCode === 0) {
+            alert("회원가입에 성공했습니다.");
+            router.push('/member/login');  // 로그인 페이지로 이동
+          } else {
+            alert(response.data.dataHeader.resultMessage);
+          }
+        });
+    } catch (error) {
+      console.error(error);
+      alert("회원가입 중 오류가 발생했습니다.");
+    }
   };
 
-  try {
-    await memberSignUpApi(signUpData,
-      (response) => {
-        if (response.data.dataHeader.successCode === 0) {
-          alert("회원가입에 성공했습니다.");
-          router.push('/member/login');  // 로그인 페이지로 이동
-        } else {
-          alert(response.data.dataHeader.resultMessage);
-        }
-      });
-  } catch (error) {
-    console.error(error);
-    alert("회원가입 중 오류가 발생했습니다.");
-  }
-};
+  // 파일 업로드를 위한 이벤트 핸들러
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    const maxFileSize = 1 * 1024 * 1024; // 1MB
 
-// 파일 업로드를 위한 이벤트 핸들러
-const handlePhotoUpload = (event) => {
-  const file = event.target.files[0];
-  const maxFileSize = 1 * 1024 * 1024; // 1MB
-
-  if (!file.type.includes("jpeg") && !file.type.includes("png")) {
-    alert("JPG 또는 PNG 이미지만 업로드 가능합니다.");
-    resetFileInput();
-    return;
-  }
-
-  if (file.size > maxFileSize) {
-    alert("이미지 파일 크기는 1MB 이하만 가능합니다.");
-    resetFileInput();
-    return;
-  }
-
-  // memberPhoto.value = file;
-  memberPreviewPhotoUrl.value = URL.createObjectURL(file);
-  imageUpload(file);
-}
-
-// 입력 필드 리셋
-const resetFileInput = () => {
-  if (fileInput.value) {
-    fileInput.value.value = ""; // Vue 3 Composition API에서 ref를 사용할 경우 .value 사용
-  }
-  memberPreviewPhotoUrl.value = "";
-};
-
-const imageUpload = async (file) => {
-  // 파일을 FormData에 추가하여 전송 가능
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('nameFile', file.name);
-
-  try {
-    const response = await fileUploadApi(formData);
-    if (response.data.dataHeader.successCode === 0) {
-      console.log("이미지가 이미지 서버에 업로드 되었습니다.");
-      memberImage.value = response.data.dataBody;
+    if (!file.type.includes("jpeg") && !file.type.includes("png")) {
+      alert("JPG 또는 PNG 이미지만 업로드 가능합니다.");
+      resetFileInput();
+      return;
     }
-    else {
-      alert(response.data.dataHeader.resultMessage);
+
+    if (file.size > maxFileSize) {
+      alert("이미지 파일 크기는 1MB 이하만 가능합니다.");
+      resetFileInput();
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
+
+    // memberPhoto.value = file;
+    memberPreviewPhotoUrl.value = URL.createObjectURL(file);
+    imageUpload(file);
   }
-}
 
+  // 입력 필드 리셋
+  const resetFileInput = () => {
+    if (fileInput.value) {
+      fileInput.value.value = ""; // Vue 3 Composition API에서 ref를 사용할 경우 .value 사용
+    }
+    memberPreviewPhotoUrl.value = "";
+  };
 
+  const imageUpload = async (file) => {
+    // 파일을 FormData에 추가하여 전송 가능
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('nameFile', file.name);
 
+    try {
+      const response = await fileUploadApi(formData);
+      if (response.data.dataHeader.successCode === 0) {
+        console.log("이미지가 이미지 서버에 업로드 되었습니다.");
+        memberImage.value = response.data.dataBody;
+      }
+      else {
+        alert(response.data.dataHeader.resultMessage);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
+    }
+  }
 </script>
 
 
@@ -190,7 +178,6 @@ const imageUpload = async (file) => {
   display: flex;
   justify-content: center;
   }
-
   #signUpBox {
     background-color: #FFFFFF;
     border: 1px solid rgba(52, 152, 219, 0.5);
@@ -207,6 +194,7 @@ const imageUpload = async (file) => {
     color: #3498db;
     /* font-weight: bold; */
   }
+
   #signUpForm {
     display: flex;
     flex-direction: column;
@@ -226,7 +214,6 @@ const imageUpload = async (file) => {
     margin-top: 10px;
     margin-bottom: 20px;
   }
-
   #profileImg img {
     max-width: none; /* 이미지 너비를 원본 크기로 설정 */
     max-height: none; /* 이미지 높이를 원본 크기로 설정 */
@@ -242,10 +229,12 @@ const imageUpload = async (file) => {
     height: 35px;
     width: 200px;
     margin-right: 5px;
+    padding-left: 10px;
   }
   #memberName, #memberNickname, #memberPassword, #memberPasswordCheck, #memberPhoto {
     height: 35px;
     width: 280px;
+    padding-left: 10px;
   }
   #memberEmailInput, #memberEmailCodeInput, #memberNameInput, #memberNicknameInput, #memberPasswordInput, #memberPasswordCheckInput {
     background-color: rgba(245, 245, 245, 0.1);
@@ -262,7 +251,6 @@ const imageUpload = async (file) => {
     border-top:  1px solid rgba(52, 152, 219, 0.5);
     border-radius: 10px;
   }
-
   #profilePhoto {
     background-color: #FFFFFF;
     border: 1px solid rgba(52, 152, 219, 0.5);
@@ -305,7 +293,9 @@ const imageUpload = async (file) => {
     transform: scale(1.05); /* 이미지를 약간 확대 */
     border-color: #3498db; /* 테두리 색상 변경 */
   }
-  #emailBtn {
+
+
+  .emailBtn {
     background-color: rgba(107, 114, 128, 0.5);
     color: white;
     padding: 0;
@@ -315,7 +305,7 @@ const imageUpload = async (file) => {
     justify-content: center;
     align-items: center;
   }
-  #emailBtn-ok {
+  .emailBtn-ok {
     background-color: rgba(52, 152, 2190.5);
     color: white;
     padding: 0;
@@ -325,7 +315,7 @@ const imageUpload = async (file) => {
     justify-content: center;
     align-items: center;
   }
-  #emailAuthBtn {
+  .emailAuthBtn {
     background-color: rgba(107, 114, 128, 0.5);
     color: white;
     padding: 0;
@@ -335,7 +325,7 @@ const imageUpload = async (file) => {
     justify-content: center;
     align-items: center;
   }
-  #emailAuthBtn-ok {
+  .emailAuthBtn-ok {
     background-color: rgba(52, 152, 2190.5);
     color: white;
     padding: 0;
