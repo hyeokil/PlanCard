@@ -1,7 +1,5 @@
 <template>
-  <div class="card p-fluid" style="
-  /* width: 400px; */
-   justify-content: center;">
+  <div class="card p-fluid" style="justify-content: center;">
       <div>
           <h2 style="color: black;">미팅 생성</h2>
       </div>
