@@ -266,7 +266,7 @@ const logout = async () => {
 
 
 // 알림 팝업 부분 코드 시작
-const onTopBarMenuNotificationButton = () => {
+const onTopBarMenuNotificationButton = async () => {
   if (accountsStore.isLogin) {
     topbarMenuActive.value = !topbarMenuActive.value;
     // 알림 목록을 새로고침하고 팝업을 토글합니다.
@@ -274,7 +274,8 @@ const onTopBarMenuNotificationButton = () => {
       // 알람 목록을 비우고 새로고침하기 전에, 알람 목록이 열리지 않았을 때만 새로고침하도록 합니다.
       notifications.value = []; // 기존 알람 목록을 비우고
       lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.
-      fetchMoreAlarms(); // 알람 목록을 새로고침합니다.
+
+      await fetchMoreAlarms(); // 알람 목록을 새로고침합니다.
     }
     topbarNotificationActive.value = !topbarNotificationActive.value;
     topbarProfileActive.value = false;
@@ -292,26 +293,27 @@ const notifications = ref([]);
 const notificationsList = ref(null); // 알람 목록을 담는 DOM 요소의 ref
 
 // 스크롤 이벤트 핸들러
-const onScroll = () => {
+const onScroll = async () => {
   const container = notificationsList.value;
   // 스크롤 끝에 도달했는지 확인
   if (container.scrollHeight - container.scrollTop === container.clientHeight) {
     // 마지막 알람 ID로 API 호출
-    fetchMoreAlarms();
+    await fetchMoreAlarms();
   }
 };
 
-// 알람 가져오기 메서드
+// 알람 더 가져오기 메서드
 const fetchMoreAlarms = async () => {
   try {
     const response = await alarmGetListApi(lastAlarmId.value);
     if (response.data.dataHeader.successCode === 0) {
       const fetchedNotifications = response.data.dataBody;
-      if (fetchedNotifications.length) {
-        notifications.value.push(...fetchedNotifications);
-        lastAlarmId.value = fetchedNotifications[fetchedNotifications.length - 1].alarmId;
-      } else {  // 더이상 불러올 알람이 없는 경우
-
+      // 중복 제거: 새로운 알람 목록에서 기존 목록에 없는 항목만 추가
+      const newNotifications = fetchedNotifications.filter(notification => 
+        !notifications.value.some(existing => existing.alarmId === notification.alarmId));
+      if (newNotifications.length) {
+        notifications.value.push(...newNotifications);
+        lastAlarmId.value = newNotifications[newNotifications.length - 1].alarmId;
       }
     } else {
       alert(response.data.dataHeader.resultMessage);
@@ -434,11 +436,9 @@ const handleAlarm = async (alarmId, action) => {
     if (response.data.dataHeader.successCode === 0) {
       // 성공적으로 처리된 경우, 사용자에게 알림을 보내거나 목록을 업데이트
       alert("알람 처리 성공");
-      // 알람 목록을 새로고침하거나 수정된 항목을 업데이트하는 로직을 추가할 수 있습니다.
-
-      // 알람 목록을 비우고 새로고침
-      notifications.value = []; // 기존 알람 목록을 비웁니다.
-      lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.
+      // 알람 처리 성공 후, 알람 목록을 초기화하고 다시 불러옵니다.
+      notifications.value = []; // 알람 목록 초기화
+      lastAlarmId.value = null; // 마지막 알람 ID 초기화
       await fetchMoreAlarms();  // 다시 알람 목록 불러오기
     } else {
       alert(response.data.dataHeader.resultMessage);

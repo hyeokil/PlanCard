@@ -2,19 +2,19 @@ package com.ssafy.backend.domain.place.service;
 
 import com.ssafy.backend.domain.place.dto.PlaceRegisterDto;
 import com.ssafy.backend.domain.place.repository.PlaceInfoRepository;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.geom.Point2D;
 
 
 @Slf4j
-@Service
 @Transactional
+@Service
 public class PlaceServiceImpl implements PlaceService {
 
     //공공데이터1

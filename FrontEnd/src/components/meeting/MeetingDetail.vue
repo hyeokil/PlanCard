@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mt-0 pt-0">
-            <ItemDrag></ItemDrag>
+            <ItemDrag2></ItemDrag2>
             <div class="chat-tab">
                 <div class="chat-container">
                     <button @click="activeTab = !activeTab" class="chat-btn" id="chat-btn">
@@ -23,7 +23,7 @@
 <script setup>
 import ItemFace from '@/components/meeting/items/ItemFace.vue'
 import Chat from '@/components/meeting/items/Chat.vue'
-import ItemDrag from "@/components/meeting/items/ItemDrag.vue"
+import ItemDrag2 from "@/components/meeting/items/ItemDrag2.vue"
 import { onBeforeMount, onBeforeUnmount, ref } from "vue"
 import { usePlanStore } from "@/stores/planStore";
 const planStore = usePlanStore()

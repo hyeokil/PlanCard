@@ -3,6 +3,7 @@ pipeline {
     agent any
     environment {
         REPO = "s10-webmobile1-sub2/S10P12C110"
+        DOCKERHUB_REGISTRY = "pji0128/front"
         DOCKERHUB_CREDENTIALS = credentials('Docker-credential')
 
     }
@@ -18,7 +19,7 @@ pipeline {
                 script {
                     sh "ls -al"
 
-                    sh "docker build -t pji0128/front FrontEnd"
+                    sh "docker build -t ${DOCKERHUB_REGISTRY} FrontEnd"
                 }
             }
         }
@@ -33,7 +34,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD')]) {
-                        sh "docker push pji0128/front"
+                        sh "docker push ${DOCKERHUB_REGISTRY}"
                     }
                 }
             }
@@ -51,10 +52,12 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD')]) {
-                        sh "docker pull pji0128/front"
-                        sh "docker rmi pji0128/front"     //images 날리기
-                        sh "docker stop -f front || true"
-                        sh "docker rm -f front || true"
+                        sh "docker stop front || true"
+                        sh "docker rm front || true"
+                        sh "docker rmi ${DOCKERHUB_REGISTRY}|| true"     //images 날리기
+                        sh "docker pull ${DOCKERHUB_REGISTRY}"
+
+                                               
                     }
                 }
             }
@@ -66,7 +69,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD')]) {
                         try{
                             sh "docker run -d --name front -p 8083:4173 \
-                            pji0128/front"
+                            ${DOCKERHUB_REGISTRY}"
                         } catch (Exception e){
                             sh "docker restart front || true"
                         }

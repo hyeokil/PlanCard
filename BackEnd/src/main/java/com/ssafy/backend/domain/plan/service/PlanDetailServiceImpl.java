@@ -8,10 +8,9 @@ import com.ssafy.backend.domain.plan.dto.PlanDetailCreateRequestDto;
 import com.ssafy.backend.domain.plan.dto.PlanDetailListResponseDto;
 import com.ssafy.backend.domain.plan.entity.PlanDetail;
 import com.ssafy.backend.domain.plan.repository.PlanDetailRepository;
-import com.ssafy.backend.domain.plan.service.PlanDetailService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;

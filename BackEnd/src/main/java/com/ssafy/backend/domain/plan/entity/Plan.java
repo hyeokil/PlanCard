@@ -1,6 +1,7 @@
 package com.ssafy.backend.domain.plan.entity;
 
 
+import com.ssafy.backend.domain.card.entity.Card;
 import com.ssafy.backend.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,9 @@ public class Plan extends BaseEntity {
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlanMember> planMembers;
+
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Card> cards;
 
     public void updateName(String name) {
         this.name = name;

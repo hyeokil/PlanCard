@@ -23,7 +23,6 @@ public class SttController {
     @PostMapping("/stt")
     public void startStt() throws LineUnavailableException, IOException {
         sttService.startStt();
-
     }
 
     @PostMapping("/stt/stop")

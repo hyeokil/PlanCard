@@ -1,22 +1,31 @@
 <template>
-    <div class="title">
+    <div class="title" v-if="planDetail">
         <div class="title-name font-title">
-            <div :class="[checkName=== '0' ? 'active' : 'hidden']" @click="goNameUpdate()">{{ planName }}</div>
-            <form :class="[checkName=== '0' ? 'hidden' : 'active']" @submit.prevent="goNameUpdate()">
-                <input type="text" v-model="planName" style="width: 250px; color: gray;">
+            <div :class="[checkName === '0' ? 'active' : 'hidden']" @click="fetchPlanNameUpdate()">{{ planDetail.name }}
+            </div>
+            <form :class="[checkName === '0' ? 'hidden' : 'active']" @submit.prevent="fetchPlanNameUpdate()">
+                <input type="text" v-model="planDetail.name" style="width: 250px; color: gray;">
                 <!-- <input class="primary" type="submit" value="확인"> -->
             </form>
         </div>
         <div class="title-date font-content" style="color:silver;">
-            <div :class="[checkDate=== '0' ? 'active' : 'hidden']"  @click="goDateUpdate()" >{{ startYear }}년 {{ startMonth }}월 {{ startDate }}일({{ startDay }}) ~ {{ endYear }}년 {{ endMonth }}월 {{ endDate }}일({{ endDay }})</div>
-            <form :class="[checkDate=== '0' ? 'hidden' : 'active']" @submit.prevent="goDateUpdate()">
-                <input type="number" step="1" v-model="startYear" id="startYear" style="width: 45px;">년 
-                <input type="number" step=1 v-model="startMonth" min="1" max="12" id="startMonth" style="width: 45px;">월
-                <input type="number" step=1 v-model="startDate" min="1" max="31"  id="startDate" style="width: 45px;">일
+            <div :class="[checkDate === '0' ? 'active' : 'hidden']" @click="fetchPlanDateUpdate()">{{ parsedStartDate.year
+            }}년 {{
+    parsedStartDate.month
+}}월 {{ parsedStartDate.date }}일({{ parsedStartDate.day }}) ~ {{ parsedEndDate.year }}년 {{
+    parsedEndDate.month }}월 {{ parsedEndDate.date }}일({{ parsedEndDate.day }})</div>
+            <form :class="[checkDate === '0' ? 'hidden' : 'active']" @submit.prevent="fetchPlanDateUpdate()">
+                <input type="number" step="1" v-model="parsedStartDate.year" id="startYear" style="width: 45px;">년
+                <input type="number" step=1 v-model="parsedStartDate.month" min="1" max="12" id="startMonth"
+                    style="width: 45px;">월
+                <input type="number" step=1 v-model="parsedStartDate.date" min="1" max="31" id="startDate"
+                    style="width: 45px;">일
                 ~
-                <input type="number" step="1" v-model="endYear" id="endYear" style="width: 45px;">년 
-                <input type="number" step=1 v-model="endMonth" min="1" max="12" id="endMonth" style="width: 45px;">월
-                <input type="number" step=1 v-model="endDate" min="1" max="31" id="endDate" style="width: 45px;">일
+                <input type="number" step="1" v-model="parsedEndDate.year" id="endYear" style="width: 45px;">년
+                <input type="number" step=1 v-model="parsedEndDate.month" min="1" max="12" id="endMonth"
+                    style="width: 45px;">월
+                <input type="number" step=1 v-model="parsedEndDate.date" min="1" max="31" id="endDate"
+                    style="width: 45px;">일
                 <input class="primary" type="submit" value="확인">
             </form>
         </div>
@@ -24,121 +33,169 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from "vue-router";
-import { planNameUpdateApi, planDateUpdateApi } from "@/api/planApi"
+import { planGetApi, planNameUpdateApi, planDateUpdateApi } from "@/api/planApi"
 import { usePlanStore } from "@/stores/planStore";
+import { defineEmits } from 'vue';
+
+const emit = defineEmits(['update-dates']);
 
 // 여행계획 단일조회 추가
 const planStore = usePlanStore()
 const checkName = ref('0') // 클래스 체크용
 const checkDate = ref('0')  // 클래스 체크용
-const planName = ref('텐텐여행1')
 
 const route = useRoute()
+const planId = route.params.id;
 
-// 시작날짜
-const startYear = ref(planStore.plan.startDate.getYear()+1900)
-const startMonth = ref(planStore.plan.startDate.getMonth()+1)
-const startDate = ref(planStore.plan.startDate.getDate())
-const startDay = computed(() => {
-    let startDayRaw = new Date(startYear.value, startMonth.value-1, startDate.value).getDay()
-    if (startDayRaw === 0){
-        return '일'
-    } else if (startDayRaw === 1){
-        return '월'
-    } else if (startDayRaw === 2){
-        return '화'
-    } else if (startDayRaw === 3){
-        return '수'
-    } else if (startDayRaw === 4){
-        return '목'
-    } else if (startDayRaw === 5){
-        return '금'
-    } else if (startDayRaw === 6){
-        return '토'
-    } else{
-        return 'error'
+const planDetail = ref(null);
+
+
+// 여행 계획을 가져오는 메서드
+const fetchPlanDetail = async () => {
+    try {
+        const response = await planGetApi(planId);
+        if (response.data.dataHeader.successCode === 0) {
+            const fetchedPlan = response.data.dataBody;
+            planDetail.value = fetchedPlan;
+
+            emit('update-dates', { startDate: fetchedPlan.startDate, endDate: fetchedPlan.endDate });
+            // console.log(planDetail.value);
+        } else {
+            alert(response.data.dataHeader.resultMessage);
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error(error);
+            const errorResponse = error.response.data;
+            alert(errorResponse.dataHeader.resultMessage);
+        } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+            // 네트워크 에러 처리
+            alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+        }
     }
-})
+};
 
-// 끝난날짜
-const endYear = ref(planStore.plan.endDate.getYear()+1900)
-// ref(planStore.plan.endDate.getYear())
-const endMonth = ref(planStore.plan.endDate.getMonth()+1)
-const endDate = ref(planStore.plan.endDate.getDate())
-const endDay = computed(() => {
-    let endDayRaw = new Date(endYear.value, endMonth.value-1, endDate.value).getDay()
-    if (endDayRaw === 0){
-        return '일'
-    } else if (endDayRaw === 1){
-        return '월'
-    } else if (endDayRaw === 2){
-        return '화'
-    } else if (endDayRaw === 3){
-        return '수'
-    } else if (endDayRaw === 4){
-        return '목'
-    } else if (endDayRaw === 5){
-        return '금'
-    } else if (endDayRaw === 6){
-        return '토'
-    } else{
-        return 'error'
+// startDate와 endDate의 요일을 계산하는 computed 속성
+const getDayOfWeek = (date) => {
+    const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+    return daysOfWeek[new Date(date).getDay()];
+};
+
+// 시작 날짜를 년, 월, 일로 파싱하는 computed 속성
+const parsedStartDate = computed(() => {
+    if (planDetail.value && planDetail.value.startDate) {
+        const date = new Date(planDetail.value.startDate);
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            date: date.getDate(),
+            day: getDayOfWeek(planDetail.value.startDate)
+        };
     }
-})
+    return { year: '', month: '', date: '', day: '' };
+});
 
+// 종료 날짜를 년, 월, 일로 파싱하는 computed 속성
+const parsedEndDate = computed(() => {
+    if (planDetail.value && planDetail.value.endDate) {
+        const date = new Date(planDetail.value.endDate);
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            date: date.getDate(),
+            day: getDayOfWeek(planDetail.value.endDate)
+        };
+    }
+    return { year: '', month: '', date: '', day: '' };
+});
 
-const goNameUpdate = () => {
+// 여행 계획명 수정 메서드
+const fetchPlanNameUpdate = async () => {
     if (checkName.value === '0') {
-        checkName.value = '1'
+        checkName.value = '1';
     } else {
-        checkName.value = '0'
-        const payload = {
-            name: planName.value,
-        }
-        planNameUpdateApi(route.params.id, payload, (response) => {
-            if (response.data.dataHeader.successCode === 1) {
-                let msg = "계획 이름 변경 중 문제가 발생했습니다.";
-                alert(msg);
-            } else {
-                console.log("계획 이름 변경 성공");
-            }
-        }, (error) => {
-            console.log(error)
-        }
-        )
-    }
-}
+        try {
+            const param = {
+                name: planDetail.value.name
+            };
+            const response = await planNameUpdateApi(planId, param);
+            if (response.data.dataHeader.successCode === 0) {
+                // 성공 시, UI 상에서 변경된 이름 반영
+                planDetail.value.name = param.name;
 
-const goDateUpdate = () => {
+                // planStore에 저장
+                planStore.plan.name = param.name;
+            } else {
+                alert(response.data.dataHeader.resultMessage);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error(error);
+                const errorResponse = error.response.data;
+                alert(errorResponse.dataHeader.resultMessage);
+            } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+                // 네트워크 에러 처리
+                alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+            }
+        }
+
+        checkName.value = '0';
+    }
+};
+
+// 날짜 포맷을 'YYYY-MM-DD' 형식으로 변경
+const formatDateString = (year, month, day) => {
+    const formattedMonth = month.toString().padStart(2, '0');
+    const formattedDay = day.toString().padStart(2, '0');
+    return `${year}-${formattedMonth}-${formattedDay}`;
+};
+
+// 여행 일자 수정 메서드
+const fetchPlanDateUpdate = async () => {
     if (checkDate.value === '0') {
-        checkDate.value = '1'
+        checkDate.value = '1';
     } else {
-        checkDate.value ='0'
-        const payload = {
-            "startDate": `${startYear.value}` + '-' + `${startMonth.value - 1}` - `${startDate.value}`,
-            "endDate":`${endYear.value}` + '-' + `${endMonth.value - 1}` - `${endDate.value}`
+        try {
+            const startDate = formatDateString(parsedStartDate.value.year, parsedStartDate.value.month, parsedStartDate.value.date);
+            const endDate = formatDateString(parsedEndDate.value.year, parsedEndDate.value.month, parsedEndDate.value.date);
+
+            const param = {
+                startDate: startDate,
+                endDate: endDate
+            };
+            const response = await planDateUpdateApi(planId, param);
+            if (response.data.dataHeader.successCode === 0) {
+                // 성공 시, UI 상에서 변경된 날짜 반영
+                planDetail.value.startDate = param.startDate;
+                planDetail.value.endDate = param.endDate;
+
+                emit('update-dates', { startDate: param.startDate, endDate: param.endDate });
+                // console.log(planDetail.value);
+            } else {
+                alert(response.data.dataHeader.resultMessage);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error(error);
+                const errorResponse = error.response.data;
+                alert(errorResponse.dataHeader.resultMessage);
+            } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+                // 네트워크 에러 처리
+                alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+            }
         }
 
-        planDateUpdateApi(route.params.id, payload, (response) => {
-            if (response.data.dataHeader.successCode === 1) {
-                let msg = "계획 날짜 변경 중 문제가 발생했습니다.";
-                alert(msg);
-            } else {
-                console.log("계획 날짜 변경 성공");
-            }
-        }, (error) => {
-            console.log(error)
-        }
-        )
+        checkDate.value = '0';
     }
 }
 
+onMounted(fetchPlanDetail);
 </script>
 
 <style scoped>
-.title{
+.title {
     display: flex;
     flex-direction: column;
     gap: 1%;
@@ -146,18 +203,20 @@ const goDateUpdate = () => {
     align-items: start;
     justify-content: end;
 }
-.title-name{
+
+.title-name {
     font-size: 20px;
 }
-.title-date{
+
+.title-date {
     font-size: 14px;
 }
-.active{
+
+.active {
     display: block;
 }
 
-.hidden{
+.hidden {
     display: none;
 }
-
 </style>

@@ -7,6 +7,7 @@ import com.ssafy.backend.domain.alarm.repository.AlarmRepository;
 import com.ssafy.backend.domain.member.entity.Member;
 import com.ssafy.backend.domain.member.entity.enums.MemberRole;
 import com.ssafy.backend.domain.member.repository.MemberRepository;
+import com.ssafy.backend.domain.place.service.PlaceService;
 import com.ssafy.backend.domain.plan.entity.Plan;
 import com.ssafy.backend.domain.plan.repository.PlanRepository;
 import com.ssafy.backend.domain.plan.entity.PlanMember;
@@ -15,7 +16,13 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
@@ -26,9 +33,10 @@ public class TestConfig {
     private final PlanRepository planRepository;
     private final PlanMemberRepository planMemberRepository;
     private final AlarmRepository alarmRepository;
+    private final PlaceService placeService;
 
     @PostConstruct
-    public void init() {
+    public void init() throws IOException {
         // 유저 데이터 집어넣기
         Member member1 = Member.builder()
                 .email("test1@test.com")
@@ -156,5 +164,8 @@ public class TestConfig {
         alarmRepository.save(alarm4);
         alarmRepository.save(alarm5);
         alarmRepository.save(alarm6);
+
     }
+
+
 }

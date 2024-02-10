@@ -2,8 +2,8 @@ import { localAxios } from "@/util/http-commons";
 
 const local = localAxios();
 // 카드 전체 조회 -> = 생성
-async function cardGetApi(planId, success, fail) {
-  await local.get(`/plan/${planId}/card`).then(success).catch(fail);
+async function cardListGetApi(planId) {
+  return await local.get(`/plan/${planId}/card`);
 }
 
 // 카드 카테고리별 조회
@@ -29,4 +29,4 @@ async function cardDeleteApi(cardId, success, fail) {
 //   await local.get(`/card/${attractionId}`).then(success).catch(fail);
 // }
 
-export { cardGetApi, cardMemoUpdateApi, cardDeleteApi };
+export { cardListGetApi, cardMemoUpdateApi, cardDeleteApi };

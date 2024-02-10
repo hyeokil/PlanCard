@@ -7,9 +7,9 @@ import com.ssafy.backend.domain.plan.repository.PlanRepository;
 import com.ssafy.backend.domain.plan.entity.PlanMember;
 import com.ssafy.backend.domain.plan.repository.PlanMemberRepository;
 import com.ssafy.backend.domain.plan.service.PlanMemberService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service

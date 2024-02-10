@@ -8,10 +8,10 @@ import com.ssafy.backend.domain.plan.dto.PlanDateUpdateRequestDto;
 import com.ssafy.backend.domain.plan.dto.PlanNameUpdateRequestDto;
 import com.ssafy.backend.domain.plan.entity.Plan;
 import com.ssafy.backend.domain.plan.repository.PlanRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
