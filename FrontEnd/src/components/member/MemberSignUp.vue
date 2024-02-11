@@ -9,13 +9,12 @@
         <div v-else></div>
         <div class="box, card p-fluid" id="memberEmailInput">
           <input type="text" id="memberEmail" v-model.trim="memberEmail" placeholder="이메일">
-          <v-btn id="emailBtn" @click="sendEmailCode">인증</v-btn>
+          <v-btn :class="{'emailBtn': !memberEmailStatus, 'emailBtn-ok': memberEmailStatus}" @click="sendEmailCode">인증</v-btn>
         </div>
         <div class="box, card p-fluid" id="memberEmailCodeInput">
           <input type="text" id="memberEmailCode" v-model.trim="memberEmailCode" placeholder="이메일 인증 코드">
-          <v-btn id="emailBtn" @click="verifyEmailCode">확인</v-btn>
-          <!-- 카운트다운 타이머 추가 -->
-          <div v-if="countdown" class="countdown">{{ countdown }}</div>
+          <v-btn v-if="isEmailVerified" class="emailAuthBtn-ok">완료</v-btn>
+          <v-btn v-else class="emailAuthBtn" @click="verifyEmailCode">{{ countdown ? countdown : "확인" }}</v-btn>
         </div>
         <div class="box, card p-fluid" id="memberNameInput">
           <input type="text" id="memberName" v-model.trim="memberName" placeholder="이름">
@@ -357,12 +356,21 @@ onUnmounted(() => {
     margin-right: 5px;
     padding-left: 10px;
   }
-  #memberName, #memberNickname, #memberPassword, #memberPasswordCheck, #memberPhoto {
+  #memberName,
+  #memberNickname,
+  #memberPassword,
+  #memberPasswordCheck,
+  #memberPhoto {
     height: 35px;
     width: 280px;
     padding-left: 10px;
   }
-  #memberEmailInput, #memberEmailCodeInput, #memberNameInput, #memberNicknameInput, #memberPasswordInput, #memberPasswordCheckInput {
+  #memberEmailInput,
+  #memberEmailCodeInput,
+  #memberNameInput,
+  #memberNicknameInput,
+  #memberPasswordInput,
+  #memberPasswordCheckInput {
     background-color: rgba(245, 245, 245, 0.1);
     width: 90%;
     display: flex;
@@ -462,143 +470,6 @@ onUnmounted(() => {
     justify-content: center;
     align-items: center;
   }
-
-#profileImg {
-  border-radius: 50%;
-  border: 1px solid rgba(52, 152, 219, 0.5);
-  background-color: #FFFFFF;
-  width: 250px;
-  height: 250px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  /* 상대 위치 지정 */
-  overflow: hidden;
-  /* 원 밖으로 넘치는 부분 숨김 */
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-#profileImg img {
-  max-width: none;
-  /* 이미지 너비를 원본 크기로 설정 */
-  max-height: none;
-  /* 이미지 높이를 원본 크기로 설정 */
-  width: 100%;
-  /* 이미지 너비를 자동으로 조정 */
-  height: auto;
-  /* 이미지 높이를 자동으로 조정 */
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  /* 이미지를 수평 및 수직 가운데 정렬 */
-}
-
-#memberEmail,
-#memberEmailCode {
-  height: 35px;
-  width: 200px;
-  margin-right: 5px;
-}
-
-#memberName,
-#memberNickname,
-#memberPassword,
-#memberPasswordCheck,
-#memberPhoto {
-  height: 35px;
-  width: 280px;
-}
-
-#memberEmailInput,
-#memberEmailCodeInput,
-#memberNameInput,
-#memberNicknameInput,
-#memberPasswordInput,
-#memberPasswordCheckInput {
-  background-color: rgba(245, 245, 245, 0.1);
-  width: 90%;
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(52, 152, 219, 0.5);
-  height: 40px;
-  margin-bottom: 10px;
-}
-
-#separator {
-  margin-top: 3px;
-  border: none;
-  border-top: 1px solid rgba(52, 152, 219, 0.5);
-  border-radius: 10px;
-}
-
-#profilePhoto {
-  background-color: #FFFFFF;
-  border: 1px solid rgba(52, 152, 219, 0.5);
-  color: rgba(0, 0, 0, 0.5);
-  /* font-weight: bold; */
-  width: 100%;
-  padding: 5px;
-  margin-top: 20px;
-}
-
-#profilePhotoGuide {
-  text-align: center;
-  padding-top: 5px;
-  margin: 0;
-}
-
-#userPhotoInput {
-  border: 1px solid rgba(52, 152, 219, 0.5);
-  display: flex;
-  justify-content: center;
-  /* 수평 가운데 정렬 */
-  align-items: center;
-  width: 90%;
-  /* 현재 가로 너비 설정에 따라 조정 */
-  margin: 0 auto;
-  /* 가운데 정렬을 위한 외부 여백 설정 */
-  margin-bottom: 10px;
-}
-
-#signUpSubmit {
-  width: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: #3498db;
-  color: #FFFFFF;
-  /* font-weight: bold; */
-  font-size: medium;
-  height: 20px;
-  padding: 20px;
-  transition: transform 0.2s, border-color 0.2s;
-  /* 부드러운 전환 효과를 위한 설정 */
-  cursor: pointer;
-  /* 마우스 포인터를 손가락 모양으로 변경 */
-}
-
-#signUpSubmit:hover {
-  transform: scale(1.05);
-  /* 이미지를 약간 확대 */
-  border-color: #3498db;
-  /* 테두리 색상 변경 */
-}
-
-#emailBtn {
-  background-color: rgba(107, 114, 128, 0.5);
-  color: white;
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .countdown {
   color: green;
