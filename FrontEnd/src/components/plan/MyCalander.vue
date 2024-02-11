@@ -1,8 +1,13 @@
 <template>
-    <div class="font-content card p-fluid">
-        <VCalendar expanded 
-        :attributes="attributes" 
-        ></VCalendar>
+    <div class="d-flex gap-5 container"> 
+        <div class="font-content calendar">
+            <VCalendar
+            style="width: 100%; height: 50vh; padding-top: 2rem ;"
+            :attributes="attributes" 
+            ></VCalendar>
+        </div>
+        <div class="font-content card p-fluid detail">
+        </div>
     </div>
 </template>
 
@@ -75,4 +80,16 @@ onMounted(fetchPlans)
 </script>
 
 <style scoped>
+.container{
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    justify-content: space-around;
+}
+.calendar{
+    width: 130%;
+}
+.detail{
+    width: 100%;
+}
 </style>
