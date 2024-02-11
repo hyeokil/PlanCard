@@ -248,13 +248,13 @@ async function createSession(sessionId) {
   const response = await axios.post(APPLICATION_SERVER_URL, { customSessionId: sessionId, userNo: 53, endHour: 1, endMinute: 30, quota: 16, isPrivacy: false }, {
     headers: { 'Content-Type': 'application/json', },
   });
-  return response.data.sessionId; // The sessionId
+  return response.data.dataBody.sessionId; // The sessionId
 }
 async function createToken(sessionId) {
   const response = await axios.post(APPLICATION_SERVER_URL + '/' + sessionId + '/connections', {}, {
     headers: { 'Content-Type': 'application/json', },
   });
-  return response.data; // The token
+  return response.data.dataBody.connectionToken; // The token
 }
 
 

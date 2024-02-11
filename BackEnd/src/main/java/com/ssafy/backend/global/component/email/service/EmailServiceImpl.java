@@ -1,11 +1,15 @@
 package com.ssafy.backend.global.component.email.service;
 
+import com.ssafy.backend.domain.member.exception.MemberError;
+import com.ssafy.backend.domain.member.exception.MemberException;
+import com.ssafy.backend.domain.member.repository.MemberRepository;
 import com.ssafy.backend.global.component.email.repository.EmailRepository;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,6 +25,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static final int EXPIRES_MIN = 5;	// 인증코드 인증 제한시간 5분
 
+    @Async("threadPoolTaskExecutor") // threadPoolTaskExecutor를 사용하여 비동기 처리
     @Override
     public void sendEmailCode(String toEmail) {
         String emailCode = createKey();

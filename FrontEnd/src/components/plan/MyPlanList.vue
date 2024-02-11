@@ -1,13 +1,30 @@
 <template>
     <div>
-        <h1>Plans</h1>
-        <MyPlanItem />
+        <div>친구, 연인, 가족, 나</div>와 함께 쓰는 여행 플래너
+        <div>플랜카드</div>
+        <div>플랜카드로 모두 함께 즐거운 여행을 만들어요.</div>
+    </div>
+    <div>
+        잠깐만, 방금 전에 어디 말했더라?
+        기억이 나지 않을 땐,
+        STT를 통해 말했던 장소를 바로 카드로 만들어줘요.
+    </div>
+    <div>
+        정리한 계획 보내줄게, 기다려봐. (1시간뒤)
+        기다리기 싫을 땐,
+        공동편집으로 여행계획을 곧바로 공유할 수 있어요.
+    </div>
+    <div>
+        예약 마감까지 10분 남았는데 다들 왜 답장이 없어? ㅠㅠ
+        바로 결정해야할 땐,
+        WebRTC를 통해 실시간 화상통화로 모두 함께 계획을 짤 수 있어요.
+    </div>
+    <div>
+        다같이 쓰는 플랜카드, 한번 시작해볼까요? 
     </div>
 </template>
 
 <script setup>
-import MyPlanItem from "./MyPlanItem.vue";
-
 </script>
 
 <style scoped>

@@ -58,7 +58,6 @@ public class GlobalExceptionAdvice {
         return ResponseEntity.status(e.getStatus()).body(Message.fail(null, e.getErrorMessage()));
     }
 
-
     /**
      * 기본 에러 처리
      * @param exception

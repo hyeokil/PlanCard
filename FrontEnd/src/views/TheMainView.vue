@@ -1,6 +1,6 @@
 <template>
-    <div class="card p-fluid">
-        <MyPlans class="card p-fluid"/>
+    <div>
+        <MyPlans></MyPlans>
     </div>
 </template>
 

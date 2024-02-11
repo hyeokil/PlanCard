@@ -2,21 +2,27 @@
 import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
 import draggable from "@/vuedraggable";
 import KaKaoMap from '@/components/common/map/KaKaoMap.vue'
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { useRoute } from 'vue-router';
-import { usePlanStore } from "@/stores/planStore";
+import { ref, computed, onMounted } from "vue";
+import { useRoute, useRouter } from 'vue-router';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
 import _ from 'lodash'
-import { debounce } from 'lodash';
 import { cardListGetApi } from '@/api/cardApi';
 
-const planStore = usePlanStore();
-
+const router = useRouter()
 const route = useRoute();
+
+
 const planId = route.params.id; // URL에서 planId를 추출합니다.
 const cardList = ref([]); // 카드 목록을 담을 반응형 변수를 선언합니다.
-
+const planList = ref([]);
+const days = ref([]);
+const checkDay = ref(0);
+const filteredPlan = computed(()=>planList.value.filter((item)=>item.day===checkDay.value).sort((a,b)=>a.orderNumber-b.orderNumber))
+const newC = ref({
+    lat: 37.5659316,
+    lng: 126.9744791
+})
 
 const roomId = route.params.id; // URL에서 roomId 추출
 const wsUrl = `ws://localhost:1234`; // WebSocket 서버 URL
@@ -30,67 +36,33 @@ const wsProvider = new WebsocketProvider(wsUrl, roomId, doc);
 const visible = ref(false);
 
 
-const planList = ref([]);
 
-const days = ref([]);
+// draggable js에 필요한 거////////////////////////////
+const controlOnStart = ref(true);                   //
+function clone({ name }) {                          //
+    return { name }                                 //
+}                                                   //
+function pullFunction() {                           //
+    return controlOnStart.value ? "clone" : false;  //
+}                                                   //
+//////////////////////////////////////////////////////
 
-const day = computed(() => planStore.dateDiff)
-
-const checkD = ref(1)
-
-const countP = computed(() => days.value.reduce((acc, r) => acc + r.length, 0))
-const filteredPlan = ref([])
-const filteredCard = ref([])
-const noneFixCards = ref(cardList.value)
-const FixCards = ref(days.value);
-const controlOnStart = ref(true);
-const loadCards = () => {
-    // const storedCards1 = JSON.parse(localStorage.getItem("noneFixCards"));
-    // const storedCards2 = JSON.parse(localStorage.getItem("FixCards"));
-    // if (storedCards1) {
-    //     noneFixCards.value = storedCards1;
-    //     days.value = storedCards2;
-    //     FixCards.value = _.flattenDeep(storedCards2)
-    // } else {
-    //     FixCards.value = planList.value
-
-    // }
-}
-
-function clone({ name }) {
-    return { name }
-}
-
-function pullFunction() {
-    return controlOnStart.value ? "clone" : false;
-}
 
 function saveCards() {
-    // 현재 카드 데이터를 로컬 스토리지에 저장
-    // localStorage.setItem("noneFixCards", JSON.stringify(noneFixCards.value));
-    // localStorage.setItem("FixCards", JSON.stringify(days.value));
-
-    // 나중에 axios연결
+    // axios 연결
 }
 
-function handleChange() {
-    // localStorage.setItem('noneFixCards', JSON.stringify(noneFixCards.value));
-    // localStorage.setItem("FixCards", JSON.stringify(days.value));
-    // for (let index = 0; index < days.value.length; index++) {
-    //     localStorage.setItem(`day${index + 1}`, JSON.stringify(days.value[index]));
-    // }
+function goMain() {
+    router.push({name:'mypage-myplan'})
 }
-function onCardMove(event) {
-    // console.log('days', days.value);
-    // handleChange()
-    // filteredPlan.value = JSON.parse(localStorage.getItem(`day${checkD.value}`));
-    // filteredCard.value = JSON.parse(localStorage.getItem('noneFixCards'));
 
-    // saveCards()
-    // loadCards()
+
+function onCardMove(event, index) {
+    console.log(event);
+    //planList에 day추가용
+    console.log(index);
 
     const { added } = event;
-
     if (added) {
         const cardId = added.element.cardId;
         // 여행 상세 계획에 카드를 추가한 경우, 카드 목록에서 해당 카드를 제거
@@ -105,14 +77,13 @@ function onCardMove(event) {
                 Lng: cardToAdd.longitude,
                 image: cardToAdd.placeImage,
                 orderNumber: added.newIndex + 1,
-                // day: ,
+                day: index, // 0부터 들어감
                 memo: cardToAdd.memo,
             };
             planList.value.push(newCard);
         }
     }
-
-    console.log(planList.value)
+    console.log('planList에 추가',planList.value)
 
 }
 
@@ -135,17 +106,13 @@ function onCardMove(event) {
 // };
 
 const changeDate = (day) => {
-    checkD.value = day
-    // filteredPlan.value = JSON.parse(localStorage.getItem(`day${day}`));
+    checkDay.value = day
 }
 
-// const newCenter = ref({ lat: 33.450701, lng: 126.570667 })
-// const setCenter = (element) => {
-//     console.log('클릭됨', element)
-//     newCenter.value.lat = element.Lat
-//     newCenter.value.lng = element.Lng
-//     console.log(newCenter.value)
-// };
+const moveCenter = (lat, lng) => {
+    newC.value.lat = lat
+    newC.value.lng = lng
+}
 
 
 // 카드 데이터를 가져오는 메서드
@@ -209,8 +176,7 @@ onMounted(() => {
                     <draggable class="DragArea list-group" :list="cardList"
                         :group="{ name: 'card', pull: 'clone', put: false }" item-key="id" @change="onCardMove">
                         <template #item="{ element }">
-                            <div
-                                :class="[FixCards.reduce((acc, item) => acc || (item.cardId === element.cardId), false) ? 'hidden' : 'active']">
+                            <div>
                                 <div class="list-group-item font-content">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
                                         <div class="card-card-list d-flex justify-content-start gap-3 align-items-center">
@@ -232,7 +198,8 @@ onMounted(() => {
                 <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
                     <div class="d-flex align-items-center">
                         <div style="font-size: 28px;">
-                            {{ countP }}</div>
+                            {{ planList.length }}
+                        </div>
                         <div class="font-content" style="font-size: 15px;">개의 장소</div>
                     </div>
                 </div>
@@ -240,19 +207,19 @@ onMounted(() => {
                     <!-- 여행 상세 계획 -->
                     <div class="plan-list-margin">
                         <div class="drag-plan-list" v-for="(fixCard, index) in days" :key="index">
-                            <h6 style="cursor: pointer; margin-left: 6%;" @click="changeDate(index + 1)">Day {{ index + 1 }}
+                            <h6 style="cursor: pointer; margin-left: 6%;" @click="changeDate(index)">Day {{ index + 1 }}
                             </h6>
                             <div>
                                 <draggable class="DragArea list-group" :list="fixCard" :group="{ name: 'card', put: true }"
-                                    item-key="id" @change="onCardMove">
+                                    item-key="id" @change="onCardMove($event, index)">
                                     <template #item="{ element, index }">
-                                        <div @click="setCenter(element)" class="list-group-item font-content">
+                                        <div @click="moveCenter(element.latitude, element.longitude)" class="list-group-item font-content">
                                             <div class="d-flex align-items-center gap-3 justify-content-center"
                                                 style="position: relative; margin-bottom: 10px;">
                                                 <div class="orderNumber">{{ index + 1 }}</div>
-                                                <div
+                                                <div 
                                                     class="card-detail d-flex justify-content-start gap-3 align-items-center">
-                                                    <img class="card-image" :src="element.image" alt="">
+                                                    <img class="card-image" :src="element.placeImage" alt="">
                                                     <div>{{ element.placeName }}</div>
                                                 </div>
                                             </div>
@@ -276,10 +243,10 @@ onMounted(() => {
             </div>
 
             <div class="map">
-                <KaKaoMap :card-list="filteredCard" :detail-list="filteredPlan" />
+                {{ newC }}
+                <KaKaoMap :new-center="newC" :detail-list="filteredPlan"></KaKaoMap>
             </div>
         </div>
-        <!-- </div> -->
     </div>
 </template>
     

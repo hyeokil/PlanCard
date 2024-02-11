@@ -1,6 +1,6 @@
 <template>
     <div >
-        <div id="map" style="width: 80vw; height: 100vh;border-radius: 5px;"></div>
+        <div id="map" style="width: 50vw; height: 100vh;border-radius: 5px;"></div>
     </div>
 </template>
 
@@ -15,24 +15,19 @@ const polyline = ref(null);
 
 
 const props = defineProps({
-    cardList: Array,
+    newCenter: Object,
     detailList: Array,
 });
 
 // props 변경 감지
-let cardPlaces = computed(() => {
-    return props.cardList
-})
 let detailPlaces = computed(() => {
     return props.detailList
 })
 
-watch(() => cardPlaces,
-    (newPlace) => {
-        console.log('변동감지')
-        displayMarkersAndPolyline()
-    }, { deep: true }
-)
+let newCenter = computed(() => {
+    console.log(newCenter.value)
+    return props.newCenter
+},{deep:true})
 
 watch(() => detailPlaces,
     (newPlace) => {
@@ -41,12 +36,25 @@ watch(() => detailPlaces,
     }, { deep: true }
 )
 
+watch(() => newCenter, (newc) => {
+    console.log('newCenter', newCenter.value)
+    setNewCenter(newCenter.value.lat, newCenter.value.lng)
+}, { deep: true })
+
+
+// 지도 위치 변경
+const setNewCenter = (lat, lng) => {
+    // console.log('이동해요')
+    map.value.setCenter(new kakao.maps.LatLng(lat, lng))
+}
+
+
 // 여행계획들의 평균 위치를 계산하는 함수
 const calculateCenter = (places) => {
     if (places.length === 0) {
         return {
-            lat: 33.450701,
-            lng: 126.570667
+            lat: newCenter.value.lat,
+            lng: newCenter.value.lng
         };   
     } else {
         const totalLat = places.reduce((acc, place) => acc + place.Lat,0);
@@ -107,37 +115,6 @@ const displayMarkersAndPolyline = () => {
     // 초기화
     clearMarkersAndOverlays();
 
-
-    // 1. 카드
-    // 카드 마커 만들기
-    // cardPlaces.value.forEach((cardPlace) => {
-    //     const position = new kakao.maps.LatLng(
-    //         cardPlace.Lat,
-    //         cardPlace.Lng
-    //     )
-
-    //     // 마커 이미지 
-    //     const imageSrc = '/image/icon/icon_pin_outline.png'
-    //     const imageSize = new kakao.maps.Size(40, 40)
-    //     const imageOption = { offset: new kakao.maps.Point(13, 35) }
-
-    //     const markerImage = new kakao.maps.MarkerImage(
-    //         imageSrc,
-    //         imageSize,
-    //         imageOption
-    //     )
-
-    //     const marker = new kakao.maps.Marker({
-    //         map: map.value,
-    //         position: position,
-    //         image: markerImage,
-    //     })
-
-    //     // markers.value.set(marker)
-    //     marker.setMap(map.value)
-    //     markers.push(marker)
-    // })
-    // 2. 계획
     let path = []
     
     // 계획 마커 만들기
@@ -200,9 +177,9 @@ const displayMarkersAndPolyline = () => {
     console.log('detailplaces',detailPlaces.value)
     const pos = calculateCenter(detailPlaces.value)
     console.log('pos', pos)
-    const newCenter = new kakao.maps.LatLng(pos.lat, pos.lng) 
+    const newC = new kakao.maps.LatLng(pos.lat, pos.lng) 
     if (pos !== undefined) {
-        map.value.setCenter(newCenter)
+        map.value.setCenter(newC)
     }
 }
 
@@ -210,25 +187,11 @@ const displayMarkersAndPolyline = () => {
 // 지도 초기화
 const initMap = () => {
     const container = document.getElementById('map');
-    let center = new kakao.maps.LatLng(33.450701, 126.570667);
-    // center = new kakao.maps.LatLng(cardPlaces.value[1].Lat, cardPlaces.value[1].Lng);
-
-    // console.log(cardPlaces.value[1])
+    let center = new kakao.maps.LatLng(37.5659316,126.9744791);
     const options = {
         center: center,
         level: 5
     }
-
-    // 새로 센터 찾기
-    // if (detailPlaces.value.length !== 0) {
-    //     const newCenter = calculateCenter(detailPlaces.value)
-    //     console.log('새로 센터찾기', newCenter)
-    //     center = newCenter
-
-    // } else if (cardPlaces.value.length !== 0) {
-    //     const newCenter = calculateCenter(cardPlaces.value)
-    //     center = newCenter
-    // }
 
     map.value = new kakao.maps.Map(container, options);
     console.log('로드됐니?')

@@ -122,7 +122,7 @@ public class PlaceServiceImpl implements PlaceService {
                             dto.setAddress(adds);
                             dto.setImg(image);
                             dto.setLatitude(location.getX());
-                            dto.setLongitude(location.getX());
+                            dto.setLongitude(location.getY());
 
                             placeInfoRepository.save(dto.toEntity());
                         }
