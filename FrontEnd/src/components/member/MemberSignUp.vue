@@ -84,6 +84,11 @@ import { fileUploadApi } from "@/api/commonApi";
     }
   });
 
+
+  // 이메일 인증코드 확인 유무 로직
+
+
+
   // 이메일 유효성 검사
   const isValidEmail = computed(() => {
     // 이메일 정규식
@@ -288,6 +293,7 @@ onUnmounted(() => {
       alert("이미지 파일 업로드 과정에서 문제가 발생했습니다.");
     }
   }
+
 </script>
 
 
@@ -366,6 +372,7 @@ onUnmounted(() => {
   }
   #separator {
     margin-top: 3px;
+    margin-bottom: 8px;
     border: none;
     border-top:  1px solid rgba(52, 152, 219, 0.5);
     border-radius: 10px;
