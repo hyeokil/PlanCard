@@ -6,17 +6,17 @@
     <div id="join" v-if="!session">
       <div id="join-dialog">
         <div>
-          <p>
+          <!-- <p>
             <label>이름 : </label>
             <input v-model="myUserName" type="text" required />
           </p>
           <p>
             <label>세션 이름 : </label>
             <input v-model="mySessionId" type="text" required />
-          </p>
+          </p> -->
           <p>
             <button @click="joinSession">
-              입장!
+              캠 켜기
             </button>
           </p>
         </div>
@@ -28,23 +28,23 @@
     <div id="session" v-if="session">
 
       <div id="session-header">
-        <h1 id="session-title">{{ mySessionId }}</h1>
+        <!-- <h1 id="session-title">{{ mySessionId }}</h1> -->
         <input
           type="button"
           id="buttonLeaveSession"
           @click="leaveSession"
-          value="Leave session"
+          value="캠 및 오디오 끄기"
         />
       </div>
 
       <!-- 내 캠 -->
-      <div id="main-video">
+      <!-- <div id="main-video">
         <UserVideo :stream-manager="mainStreamManagerComputed" />
-      </div>
+      </div> -->
 
       <!-- 모든 캠 -->
-      <div id="video-container">
-        <!-- <UserVideo :stream-manager="publisherComputed" @click.native="updateMainVideoStreamManager(publisher)" /> -->
+      <div id="video-container" >
+        <UserVideo :stream-manager="publisherComputed" @click.native="updateMainVideoStreamManager(publisher)" />
         
         <UserVideo
           v-for="sub in subscribersComputed"
@@ -94,6 +94,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import axios from 'axios'
+import { useRoute } from 'vue-router';
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "@/components/meeting/items/UserVideo.vue";
 
@@ -103,15 +104,22 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 // const OPENVIDU_SERVER_URL = import.meta.env.VITE_OPENVIDU_URL;
 const APPLICATION_SERVER_URL = `${import.meta.env.VITE_VUE_API_URL}/sessions`;
 
+
+
 // OpenVidu objects
 const OV = ref(undefined)
-const session = ref(undefined)
+const session = ref()
 let mainStreamManager = ref(undefined)
 const publisher = ref(undefined)
 const subscribers = ref([])
 
 // Join form
-const mySessionId = ref("SessionCrome")
+const mySessionId = ref('');
+// Vue Router를 이용하여 현재 라우트에 접근
+const route = useRoute();
+
+// 라우트 파라미터에서 세션 ID를 가져와서 mySessionId에 할당
+mySessionId.value = route.params.id;
 const myUserName = ref("Participant" + Math.floor(Math.random() * 100))
 
 // 채팅창을 위한 변수
@@ -134,8 +142,8 @@ const subscribersComputed = computed(() => subscribers.value);
 
 function joinSession() {
   // --- 1) Get an OpenVidu object ---
-  OV.value = new OpenVidu()
-
+  OV.value = new OpenVidu();
+  console.log(OV.value);
   // --- 2) Init a session ---
   session.value = OV.value.initSession()
 
@@ -241,19 +249,20 @@ function updateMainVideoStreamManager(stream) {
 // GETTING A TOKEN FROM YOUR APPLICATION SERVER
 async function getToken(mySessionId) {
   const sessionId = await createSession(mySessionId);
-  console.log(sessionId);
   return await createToken(sessionId);
 }
 async function createSession(sessionId) {
   const response = await axios.post(APPLICATION_SERVER_URL, { customSessionId: sessionId, userNo: 53, endHour: 1, endMinute: 30, quota: 16, isPrivacy: false }, {
     headers: { 'Content-Type': 'application/json', },
   });
+  mySessionId.value = response.data.dataBody.sessionId;
   return response.data.dataBody.sessionId; // The sessionId
 }
 async function createToken(sessionId) {
   const response = await axios.post(APPLICATION_SERVER_URL + '/' + sessionId + '/connections', {}, {
     headers: { 'Content-Type': 'application/json', },
   });
+  console.log(response.data.dataBody);
   return response.data.dataBody.connectionToken; // The token
 }
 
@@ -397,3 +406,11 @@ async function replaceAudioTrack(deviceId) {
 
 
 </script>
+
+<style scoped>
+#video-container {
+  max-width: 100%; /* 비디오의 최대 너비를 화면 너비에 맞춤 */
+  max-height: 500px; /* 최대 높이를 500px로 설정 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
+}
+</style>

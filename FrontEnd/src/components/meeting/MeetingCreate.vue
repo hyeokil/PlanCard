@@ -1,7 +1,5 @@
 <template>
-  <div class="card p-fluid" style="
-  /* width: 400px; */
-   justify-content: center;">
+  <div class="card p-fluid" style="justify-content: center;">
       <div>
           <h2 style="color: black;">미팅 생성</h2>
       </div>
@@ -60,6 +58,7 @@
                           class=" font-content"
                           style="
                           font-size: small;
+                          margin-top: 2px;
                           color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
                         </div>
                       </div>

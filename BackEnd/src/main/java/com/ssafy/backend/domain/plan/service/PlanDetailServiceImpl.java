@@ -41,7 +41,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             } else {
                 PlanDetail planDetail = planDetailRepository.findById(newplanDetail.getId()).orElseThrow();
                 planDetail.update(newplanDetail.getOrderNumber(), newplanDetail.getDay());
-                planDetailRepository.save(planDetail);
+//                planDetailRepository.save(planDetail);
                 existingPlanDetails.remove(newplanDetail.getId());
             }
         }

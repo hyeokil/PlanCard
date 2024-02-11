@@ -27,16 +27,14 @@ async function planDateUpdateApi(planId, param) {
   return await local.patch(`/plan/update/${planId}/date`, param);
 }
 
-// 여행 세부 계획 생성
-async function planDetailCreateApi(planId, success, fail) {
-  console.log("planId", planId);
-  await local.post(`/plan/${planId}/detail`, planId).then(success).catch(fail);
+// 여행 세부 계획 생성 OR 수정
+async function planDetailCreateApi(planId, param) {
+  return await local.post(`/plan/${planId}/detail/update`, param);
 }
 
-// 여행 세부 계획 조회
-async function planDetailGetApi(planId, success, fail) {
-  console.log("planId", planId);
-  await local.get(`/plan/${planId}/detail`, planId).then(success).catch(fail);
+// 여행 세부 계획 리스트 조회
+async function planDetailListGetApi(planId) {
+  return await local.get(`/plan/${planId}/detail`, planId);
 }
 
 // 여행 세부 계획 수정
@@ -52,6 +50,6 @@ export {
   planNameUpdateApi,
   planDateUpdateApi,
   planDetailCreateApi,
-  planDetailGetApi,
+  planDetailListGetApi,
   planDetailUpdateApi,
 };

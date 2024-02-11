@@ -6,27 +6,16 @@ async function cardListGetApi(planId) {
   return await local.get(`/plan/${planId}/card`);
 }
 
-// 카드 카테고리별 조회
-
-// // 카드 단일 조회
-// async function cardMemoDetailApi(cardId, success, fail) {
-//   await local.get(`/card/${cardId}`).then(success).catch(fail);
-// }
-
 // 카드 메모 작성
 async function cardMemoUpdateApi(param, success, fail) {
   console.log("param", param);
   await local.patch(`/plan/card/${param.cardId}`, param).then(success).catch(fail);
 }
 
-// 카드 삭제
-async function cardDeleteApi(cardId, success, fail) {
-  await local.delete(`/plan/card/${cardId}`).then(success).catch(fail);
+// 카드 사용한 것 삭제
+async function cardDeleteApi(cardId) {
+  return await local.delete(`/plan/card/${cardId}`)
 }
 
-// // 관광지 조회
-// async function attractionDetailApi(attractionId, success, fail) {
-//   await local.get(`/card/${attractionId}`).then(success).catch(fail);
-// }
 
 export { cardListGetApi, cardMemoUpdateApi, cardDeleteApi };
