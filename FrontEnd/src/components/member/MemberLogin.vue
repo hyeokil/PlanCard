@@ -9,32 +9,33 @@
                     <input type="text" id="memberEmail" v-model.trim="memberEmail" placeholder="EMAIL">
                 </div>
 
-        <div class="box, card p-fluid" id="pwInput">
-          <img src="/비밀번호 아이콘.png" alt="비밀번호" id="pwIcon">
-          <label for="memberPassword"></label>
-          <input type="password" id="memberPassword" v-model.trim="memberPassword" placeholder="PW">
+              <div class="box, card p-fluid" id="pwInput">
+                <img src="/비밀번호 아이콘.png" alt="비밀번호" id="pwIcon">
+                <label for="memberPassword"></label>
+                <input type="password" id="memberPassword" v-model.trim="memberPassword" placeholder="PW">
+              </div>
+              <div class="box, card p-fluid" id="loginSubmit">
+                <input type="submit" value="LogIn">
+              </div>
+            </form>
+            <div id="guide1">
+              <p id="signUpGuide">아직 회원이 아니신가요?</p>
+              <button id="signUpBtn" @click="goSignUp()">[회원가입]</button>
+            </div>
+            <div id="guide2">
+              <p id="pwSearchGuide">비밀번호를 잊어버렸나요?</p>
+              <button id="pwSearchBtn">[비밀번호 찾기]</button>
+            </div>
+            <div class="card p-fluid" id="socialLogin">
+              <p id="socialLoginGuide">다른 방법으로 로그인</p>
+              <hr id="separator">
+              <div id="socialLoginBtn">
+                <img src="/네이버 로그인 버튼.png" alt="네이버로그인" id="socialLoginLogoImg" @click="socialLogin('naver')">
+                <img src="/카카오 로그인 버튼.png" alt="카카오로그인" id="socialLoginLogoImg" @click="socialLogin('kakao')">
+              </div>
+            </div>
         </div>
-        <div class="box, card p-fluid" id="loginSubmit">
-          <input type="submit" value="LogIn">
-        </div>
-      </form>
-      <div id="guide1">
-        <p id="signUpGuide">아직 회원이 아니신가요?</p>
-        <button id="signUpBtn" @click="goSignUp()">[회원가입]</button>
       </div>
-      <div id="guide2">
-        <p id="pwSearchGuide">비밀번호를 잊어버렸나요?</p>
-        <button id="pwSearchBtn">[비밀번호 찾기]</button>
-      </div>
-      <div class="card p-fluid" id="socialLogin">
-        <p id="socialLoginGuide">다른 방법으로 로그인</p>
-        <hr id="separator">
-        <div id="socialLoginBtn">
-          <img src="/네이버 로그인 버튼.png" alt="네이버로그인" id="socialLoginLogoImg" @click="socialLogin('naver')">
-          <img src="/카카오 로그인 버튼.png" alt="카카오로그인" id="socialLoginLogoImg" @click="socialLogin('kakao')">
-        </div>
-      </div>
-    </div>
 </template>
   
   

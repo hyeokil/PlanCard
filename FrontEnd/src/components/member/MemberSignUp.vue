@@ -239,6 +239,7 @@ const signUp = async () => {
     }
   }
 };
+};
   // 파일 업로드를 위한 이벤트 핸들러
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];
