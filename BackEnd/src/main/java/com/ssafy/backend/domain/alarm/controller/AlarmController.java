@@ -61,4 +61,11 @@ public class AlarmController {
         alarmService.handleAlarm(loginActiveDto.getId(), alarmId, action);
         return ResponseEntity.ok().body(Message.success());
     }
+
+    @DeleteMapping("/delete/all")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<Void>> deleteAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto) {
+        alarmService.deleteAlarmList(loginActiveDto.getId());
+        return ResponseEntity.ok().body(Message.success());
+    }
 }

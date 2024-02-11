@@ -29,6 +29,7 @@
   // clientData는 computed로 진행됨
   const clientData = computed(() => {
     const { clientData } = getConnectionData();
+    // console.log(clientData);
     return clientData;
   });
 

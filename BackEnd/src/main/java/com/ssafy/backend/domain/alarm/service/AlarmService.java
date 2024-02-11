@@ -20,4 +20,6 @@ public interface AlarmService {
     List<AlarmDto> getAlarmList(Long memberId, Long lastAlarmId, int limit);
 
     void handleAlarm(Long memberId, Long alarmId, AlarmStatus action);
+
+    void deleteAlarmList(Long memberId);
 }

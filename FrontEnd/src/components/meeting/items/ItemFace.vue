@@ -1,7 +1,7 @@
 <template>
   <div id="main-container" class="card p-fluid">
 
-    
+
     <!-- session이 false일때! 즉, 방에 들어가지 않았을때 -->
     <div id="join" v-if="!session">
       <div id="join-dialog">
@@ -23,18 +23,13 @@
       </div>
     </div>
 
-  
+
     <!-- session이 true일 때! 즉, 입장했을 때 -->
     <div id="session" v-if="session">
 
       <div id="session-header">
         <!-- <h1 id="session-title">{{ mySessionId }}</h1> -->
-        <input
-          type="button"
-          id="buttonLeaveSession"
-          @click="leaveSession"
-          value="캠 및 오디오 끄기"
-        />
+        <input type="button" id="buttonLeaveSession" @click="leaveSession" value="캠 및 오디오 끄기" />
       </div>
 
       <!-- 내 캠 -->
@@ -43,23 +38,19 @@
       </div> -->
 
       <!-- 모든 캠 -->
-      <div id="video-container" >
+      <div id="video-container">
         <UserVideo :stream-manager="publisherComputed" @click.native="updateMainVideoStreamManager(publisher)" />
-        
-        <UserVideo
-          v-for="sub in subscribersComputed"
-          :key="sub.stream.connection.connectionId"
-          :stream-manager="sub"
-          @click.native="updateMainVideoStreamManager(sub)"
-        />
+
+        <UserVideo v-for="sub in subscribersComputed" :key="sub.stream.connection.connectionId" :stream-manager="sub"
+          @click.native="updateMainVideoStreamManager(sub)" />
       </div>
 
       <!-- 채팅창 -->
-      <div id="chat-container" style="border: 3px solid black;">
+      <!-- <div id="chat-container" style="border: 3px solid black;">
         <div id="chat-window">
           <ul id="chat-history">
             <li v-for="(message, index) in messages" :key="index">
-              <strong>{{message.username}}:</strong> {{message.message}}
+              <strong>{{ message.username }}:</strong> {{ message.message }}
             </li>
           </ul>
         </div>
@@ -67,12 +58,12 @@
           <input type="text" placeholder="전달할 내용을 입력하세요." v-model="inputMessage" style="border: 3px black solid;">
           <button @click="sendMessage" style="border: 3px black solid;">전송</button>
         </form>
-      </div>
+      </div> -->
 
       <!-- 캠활성화, 음소거 버튼 -->
       <button id="camera-activate" @click="handleCameraBtn" style="border: 3px black solid;">캠 비활성화</button>
       <button id="mute-activate" @click="handleMuteBtn" style="border: 3px black solid;">마이크 활성화</button>
-      
+
       <!-- 캠,오디오 선택 옵션 -->
       <div>
         <select name="cameras" @change="handleCameraChange" style="border: 3px black solid;">
@@ -93,18 +84,11 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import axios from 'axios'
 import { useRoute } from 'vue-router';
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "@/components/meeting/items/UserVideo.vue";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
-
-// 환경변수에서 OpenVidu 서버 URL과 백엔드 API URL을 불러옵니다.
-// const OPENVIDU_SERVER_URL = import.meta.env.VITE_OPENVIDU_URL;
-const APPLICATION_SERVER_URL = `${import.meta.env.VITE_VUE_API_URL}/sessions`;
-
-
+import { createSessionApi, connectionSessionApi } from "@/api/webrtcApi";
+import { useAccountsStore } from '@/stores/accountsStore'; // accountsStore 가져오기
 
 // OpenVidu objects
 const OV = ref(undefined)
@@ -112,15 +96,17 @@ const session = ref()
 let mainStreamManager = ref(undefined)
 const publisher = ref(undefined)
 const subscribers = ref([])
+const accountStore = useAccountsStore(); // accountsStore 사용
 
 // Join form
 const mySessionId = ref('');
+const connectionToken = ref('');
 // Vue Router를 이용하여 현재 라우트에 접근
 const route = useRoute();
 
 // 라우트 파라미터에서 세션 ID를 가져와서 mySessionId에 할당
 mySessionId.value = route.params.id;
-const myUserName = ref("Participant" + Math.floor(Math.random() * 100))
+const myUserName = accountStore.memberInfo.nickname;
 
 // 채팅창을 위한 변수
 const inputMessage = ref("")
@@ -140,7 +126,7 @@ const subscribersComputed = computed(() => subscribers.value);
 
 
 
-function joinSession() {
+async function joinSession() {
   // --- 1) Get an OpenVidu object ---
   OV.value = new OpenVidu();
   console.log(OV.value);
@@ -177,31 +163,20 @@ function joinSession() {
     messages.value.push(messageData);
   });
 
-  // --- 4) Connect to the session with a valid user token ---
-  // Get a token from the OpenVidu deployment
-  // getToken(mySessionId).then((token) => {
-  getToken(mySessionId.value).then((token) => {
-    // First param is the token. Second param can be retrieved by every user on event
-    // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-    // session.value.connect(token, {clientData: myUserName})
-    session.value.connect(token, { clientData: myUserName.value })
+  // 세션 생성
+  await createSession(mySessionId.value);
+  // 세션 아이디를 통한 연결 토큰 생성
+  await createToken(mySessionId.value);
+
+  // WebSocket 연결 시도
+  if (connectionToken.value) {
+    session.value.connect(connectionToken.value, { clientData: myUserName })
       .then(() => {
-        // --- 5) Get your own camera stream with the desired properties ---
-
-        // const cameraSelect = document.querySelector('select[name="cameras"]');
-        // const audioSelect = document.querySelector('select[name="audios"]');
-
-        // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-        // element: we will manage it on our own) and with the desired properties
         let publisher_tmp = OV.value.initPublisher(undefined, {
           audioSource: undefined, // The source of audio. If undefined default microphone
           videoSource: undefined, // The source of video. If undefined default webcam
-          // audioSource: audioSelect.value, // The source of audio. If undefined default microphone
-          // videoSource: cameraSelect.value, // The source of video. If undefined default webcam
-          // publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-          // publishVideo: true, // Whether you want to start publishing with your video enabled or not
-          publishAudio: !muted.value, // Whether you want to start publishing with your audio unmuted or not
-          publishVideo: !camerOff.value, // Whether you want to start publishing with your video enabled or not
+          publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+          publishVideo: true, // Whether you want to start publishing with your video enabled or not
           resolution: "640x480", // The resolution of your video
           frameRate: 30, // The frame rate of your video
           insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
@@ -209,18 +184,19 @@ function joinSession() {
         });
 
         // Set the main video in the page to display our webcam and store our Publisher
-        mainStreamManager.value = publisher_tmp
-        publisher.value = publisher_tmp
+        mainStreamManager.value = publisher_tmp;
+        publisher.value = publisher_tmp;
 
         // --- 6) Publish your stream ---
-        // session.publish(publisher)
-        session.value.publish(publisher.value)
-        getMedia()  // 세션이 만들어졌을때 미디어 불러옴
+
+        session.value.publish(publisher.value);
       })
       .catch((error) => {
-        console.log("There was an error connecting to the session:", error.code, error.message);
-      })
-  })
+        console.error("There was an error connecting to the session:", error);
+      });
+  }
+
+
 
   window.addEventListener("beforeunload", leaveSession)
 }
@@ -246,26 +222,49 @@ function updateMainVideoStreamManager(stream) {
   mainStreamManager.value = stream
 }
 
-// GETTING A TOKEN FROM YOUR APPLICATION SERVER
-async function getToken(mySessionId) {
-  const sessionId = await createSession(mySessionId);
-  return await createToken(sessionId);
-}
+
+
+// 세션 생성 메서드
 async function createSession(sessionId) {
-  const response = await axios.post(APPLICATION_SERVER_URL, { customSessionId: sessionId, userNo: 53, endHour: 1, endMinute: 30, quota: 16, isPrivacy: false }, {
-    headers: { 'Content-Type': 'application/json', },
-  });
-  mySessionId.value = response.data.dataBody.sessionId;
-  return response.data.dataBody.sessionId; // The sessionId
-}
-async function createToken(sessionId) {
-  const response = await axios.post(APPLICATION_SERVER_URL + '/' + sessionId + '/connections', {}, {
-    headers: { 'Content-Type': 'application/json', },
-  });
-  console.log(response.data.dataBody);
-  return response.data.dataBody.connectionToken; // The token
+  try {
+    const response = await createSessionApi(sessionId);
+    if (response.data.dataHeader.successCode === 0) {
+      mySessionId.value = response.data.dataBody.sessionId;
+    } else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    if (error.response) {
+      console.error(error);
+      const errorResponse = error.response.data;
+      alert(errorResponse.dataHeader.resultMessage);
+    } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      // 네트워크 에러 처리
+      alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+    }
+  }
 }
 
+async function createToken(sessionId) {
+  try {
+    const response = await connectionSessionApi(sessionId);
+    if (response.data.dataHeader.successCode === 0) {
+      connectionToken.value = response.data.dataBody.connectionToken;
+      console.log(connectionToken.value);
+    } else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    if (error.response) {
+      console.error(error);
+      const errorResponse = error.response.data;
+      alert(errorResponse.dataHeader.resultMessage);
+    } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      // 네트워크 에러 처리
+      alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+    }
+  }
+}
 
 // 채팅창 구현을 위한 함수
 function sendMessage(event) {
@@ -409,8 +408,15 @@ async function replaceAudioTrack(deviceId) {
 
 <style scoped>
 #video-container {
-  max-width: 100%; /* 비디오의 최대 너비를 화면 너비에 맞춤 */
-  max-height: 500px; /* 최대 높이를 500px로 설정 */
-  overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
+  width: 100%;         /* 컨테이너의 너비를 부모 요소의 100%로 설정 */
+  height: auto;        /* 높이를 자동으로 조정 */
+  overflow: hidden;    /* 내용이 넘칠 경우 숨김 처리 */
+  position: relative;  /* 비디오 포지셔닝을 위한 상대 위치 지정 */
+}
+
+.video {
+  width: 100%;         /* 비디오 너비를 컨테이너의 100%로 설정 */
+  height: auto;        /* 높이를 자동으로 조정 */
+  object-fit: cover;   /* 비디오를 컨테이너에 맞추어 확장 */
 }
 </style>

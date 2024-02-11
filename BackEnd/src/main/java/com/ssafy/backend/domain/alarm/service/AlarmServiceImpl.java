@@ -96,6 +96,12 @@ public class AlarmServiceImpl implements AlarmService {
         }
     }
 
+    @Override
+    public void deleteAlarmList(Long memberId) {
+        List<Alarm> alarmList = alarmRepository.findByToMemberId(memberId);
+        alarmRepository.deleteAll(alarmList);
+    }
+
     private void processAcceptAlarm(Alarm alarm, Long memberId) {
         alarm.accept();
         if (alarm.getType() == AlarmType.FRIEND) {
