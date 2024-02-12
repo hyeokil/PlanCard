@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+    command: rabbitmq-plugins enable rabbitmq_web_stomp 
+    # command: sh -c "rabbitmq-plugins enable rabbitmq_web_stomp && rabbitmq-server"
+
+  backend:
+    image: pji0128/back:latest
+    container_name: back
+    build:
+      context: ./BackEnd
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - rabbitmq
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    # 마운트
+    volumes:
+      - mongodb_data:/data/db 
+
+  openvidu:
+    image: openvidu/openvidu-dev:2.29.0
+    container_name: openvidu
+    ports:
+      - "4443:4443"
+    environment:
+      OPENVIDU_SECRET: MY_SECRET
+    restart: unless-stopped
+
+# Docker volume 정의
+volumes:
+  mongodb_data:
+
+  # # 서비스 명
+  # mongodb:
+  #   # 사용할 이미지
+  #   image: mongo
+  #   # 컨테이너 실행 시 재시작
+  #   restart: always
+  #   # 컨테이너명 설정
+  #   container_name: mongodb
+  #   # 접근 포트 설정 (컨테이너 외부:컨테이너 내부)
+  #   ports:
+  #     - "27017:27017"
+  #   # 환경 변수 설정
+  #   environment: 
+  #     # MongoDB 계정 및 패스워드 설정 옵션
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: password
+  #   # 볼륨 설정
+  #   volumes:
+  #     - ./data/mongodb:/data/db
+
+  # frontend:
+  #   image: pji0128/front:latest
+  #   container_name: front
+  #   build:
+  #     context: FrontEnd
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8083:4173"
+
+  # backend:
+  #   image: pji0128/back:latest
+  #   container_name: back
+  #   build:
+  #     context: backend
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8081:8080"
+  #   networks:
+  #     - app-network
+
+  # frontend:
+  #   image: pji0128/front:latest
+  #   container_name: front
+  #   ports:
+  #     - "8083:4173"
+  #   networks:
+  #     - app-network
+
+  # rabbitmq:
+  #   image: rabbitmq:management
+  #   container_name: rabbitmq
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: guest
+  #     RABBITMQ_DEFAULT_PASS: guest
+  #   networks:
+  #     - app-network
+
+# 별도의 네트워크 설정을 하지 않아도 default라는 네트워크를 통해 서로 통신 가능
+# 서비스 간 통신을 가능하게 하는 가상 네트워크 정의
+# 여러 컨테이너가 서로 통신할 수 있도록 해준다.
+# 이느 독립적인 컨테이너가 서로 격리되어 있기 때문에 필요
+# networks:
+#   app-network:
+#     driver: bridge

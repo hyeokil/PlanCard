@@ -4,7 +4,7 @@
       <p id="notificatonSet">알림 내역</p>
       <v-btn id="clearBtn" @click="deleteAlarmAll()">모두 지우기</v-btn>
     </div>
-    <div id="notificationsList">
+    <div id="notificationsList" ref="notificationsList" @scroll="onScroll">
       <div id="notificationDivider1"></div>
       <div v-for="notification in notifications" :key="notification.index" style="width: 95%;">
         <div style="display: flex;">
@@ -28,18 +28,36 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { alarmGetListApi, alarmActionApi, alarmDeleteAllApi } from "@/api/alarmApi";
 
+// props로 상태를 받습니다.
+const props = defineProps({
+  notificationActive: Boolean
+});
 
-
-onMounted(() => {
-  fetchAlarms(); // 알람 목록을 새로고침합니다.
-})
+// props.notificationActive의 변화를 감지합니다.
+watch(() => props.notificationActive, (newVal) => {
+  if (newVal) {
+    fetchAlarms(); // 알람 팝업이 활성화될 때마다 알람 목록을 새로고침합니다.
+  }
+});
 
 
 const lastAlarmId = ref(null);
 const notifications = ref([]);
+
+const notificationsList = ref(null); // 알람 목록을 담는 DOM 요소의 ref
+
+  // 스크롤 이벤트 핸들러
+  const onScroll = () => {
+    const container = notificationsList.value;
+    // 스크롤 끝에 도달했는지 확인
+    if (container.scrollHeight - container.scrollTop === container.clientHeight) {
+      // 마지막 알람 ID로 API 호출
+      fetchAlarms();
+    }
+  };
 
 // 알람 가져오기 메서드
 const fetchAlarms = async () => {
@@ -48,7 +66,11 @@ const fetchAlarms = async () => {
     if (response.data.dataHeader.successCode === 0) {
       const fetchedNotifications = response.data.dataBody;
       if (fetchedNotifications.length) {
-        notifications.value.push(...fetchedNotifications);
+         // 중복 제거
+         const uniqueNotifications = fetchedNotifications.filter(notification => 
+          !notifications.value.some(existing => existing.alarmId === notification.alarmId));
+        
+        notifications.value.push(...uniqueNotifications);
         lastAlarmId.value = fetchedNotifications[fetchedNotifications.length - 1].alarmId;
       }
     } else {
@@ -64,6 +86,8 @@ const fetchAlarms = async () => {
       alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
     }
   }
+
+  console.log(notifications.value);
 };
 
 // 알람 처리 메서드 (수락/거절)
@@ -72,10 +96,15 @@ const handleAlarm = async (alarmId, action) => {
     // alarmApi.js에서 export한 함수를 사용하여 백엔드 API 호출
     const response = await alarmActionApi({ alarmId, action });
     if (response.data.dataHeader.successCode === 0) {
-      // 성공적으로 처리된 경우, 사용자에게 알림을 보내거나 목록을 업데이트
-      // alert("알람 처리 성공");
-      // 알람 목록을 새로고침하거나 수정된 항목을 업데이트하는 로직을 추가할 수 있습니다.
 
+      // 알람 유형이 CONFERENCE인 경우, URL로 이동
+      const alarm = notifications.value.find(n => n.alarmId === alarmId);
+
+      // 화상 회의 알람을 수락한 경우
+      if (alarm && alarm.type === 'CONFERENCE' && action === 'ACCEPT') {
+        window.location.href = alarm.url; // 해당 화상회의 링크로 이동
+      } 
+    
       // 알람 목록을 비우고 새로고침
       notifications.value = []; // 기존 알람 목록을 비웁니다.
       lastAlarmId.value = null; // 마지막 알람 ID를 리셋합니다.

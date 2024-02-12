@@ -67,7 +67,8 @@ public class AlarmRepositoryCustomImpl implements AlarmRepositoryCustom {
                                 alarm.toMember.id.as("toMemberId"),
                                 alarm.type,
                                 alarm.content,
-                                alarm.status
+                                alarm.status,
+                                alarm.url
                         ))
                 .from(alarm)
                 .join(alarm.fromMember, member)

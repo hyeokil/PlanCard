@@ -4,6 +4,8 @@ import com.ssafy.backend.domain.alarm.entity.Alarm;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmType;
 import com.ssafy.backend.domain.alarm.repository.AlarmRepository;
+import com.ssafy.backend.domain.friend.entity.Friendship;
+import com.ssafy.backend.domain.friend.repository.FriendshipRepository;
 import com.ssafy.backend.domain.member.entity.Member;
 import com.ssafy.backend.domain.member.entity.enums.MemberRole;
 import com.ssafy.backend.domain.member.repository.MemberRepository;
@@ -33,7 +35,7 @@ public class TestConfig {
     private final PlanRepository planRepository;
     private final PlanMemberRepository planMemberRepository;
     private final AlarmRepository alarmRepository;
-    private final PlaceService placeService;
+    private final FriendshipRepository friendshipRepository;
 
     @PostConstruct
     public void init() throws IOException {
@@ -70,10 +72,66 @@ public class TestConfig {
                 .role(MemberRole.USER)
                 .build();
 
+        Member member5 = Member.builder()
+                .email("tlsehdrms95@ssafy.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("신동근")
+                .nickname("동근 닉네임")
+                .role(MemberRole.USER)
+                .build();
+
+        Member member6 = Member.builder()
+                .email("qkrwjddls96@ssafy.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("박정인")
+                .nickname("정인 닉네임")
+                .role(MemberRole.USER)
+                .build();
+
+        Member member7 = Member.builder()
+                .email("강지수96@ssafy.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("강지수")
+                .nickname("지수 닉네임")
+                .role(MemberRole.USER)
+                .build();
+
+        Member member8 = Member.builder()
+                .email("rlagurdlf97@ssafy.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("김혁일")
+                .nickname("혁일 닉네임")
+                .role(MemberRole.USER)
+                .build();
+
+        Member member9 = Member.builder()
+                .email("rlawogns98@ssafy.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("김재훈")
+                .nickname("재훈 닉네임")
+                .role(MemberRole.USER)
+                .build();
+
+        Member member10 = Member.builder()
+                .email("dltpdms99@ssafy.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("이세은")
+                .nickname("세은 닉네임")
+                .role(MemberRole.USER)
+                .build();
+
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);
         memberRepository.save(member4);
+
+        // 싸피 인원들 저장
+        memberRepository.save(member5);
+        memberRepository.save(member6);
+        memberRepository.save(member7);
+        memberRepository.save(member8);
+        memberRepository.save(member9);
+        memberRepository.save(member10);
 
         Plan plan1 = Plan.builder()
                 .name("테스트 여행계획 1")
@@ -116,6 +174,7 @@ public class TestConfig {
                 .type(AlarmType.CONFERENCE)
                 .content(member2.getNickname() + " 님이 화상 회의 요청을 보냈습니다.")
                 .status(AlarmStatus.UNREAD)
+                .url("http://localhost:5173/meeting/view/1")
                 .build();
 
         Alarm alarm2 = Alarm.builder()
@@ -165,6 +224,36 @@ public class TestConfig {
         alarmRepository.save(alarm5);
         alarmRepository.save(alarm6);
 
+        Friendship friendship1 = Friendship.builder()
+                .owner(member1)
+                .friend(member5)
+                .build();
+
+        Friendship friendship2 = Friendship.builder()
+                .owner(member1)
+                .friend(member6)
+                .build();
+
+        Friendship friendship3 = Friendship.builder()
+                .owner(member1)
+                .friend(member7)
+                .build();
+
+        Friendship friendship4 = Friendship.builder()
+                .owner(member1)
+                .friend(member8)
+                .build();
+
+        Friendship friendship5 = Friendship.builder()
+                .owner(member1)
+                .friend(member9)
+                .build();
+
+        friendshipRepository.save(friendship1);
+        friendshipRepository.save(friendship2);
+        friendshipRepository.save(friendship3);
+        friendshipRepository.save(friendship4);
+        friendshipRepository.save(friendship5);
     }
 
 

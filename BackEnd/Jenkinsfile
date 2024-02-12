@@ -30,6 +30,7 @@ pipeline {
             steps {
                 dir("${env.WORKSPACE}/BackEnd"){
                     script {
+                        sh "ls -al"
                         sh "chmod +x ./gradlew"
                     }
                 }
@@ -43,7 +44,9 @@ pipeline {
         stage("Build") {
             steps {
                 script {
-                    sh "ls -al"
+//                     sh "ls -al ${env.WORKSPACE}"
+//                     sh "ls -al ${env.WORKSPACE}/docker-compose.yml"
+
 
 //                     sh "docker build -t pji0128/back BackEnd"
                     sh "docker build -t ${DOCKERHUB_REGISTRY} BackEnd"
@@ -112,8 +115,16 @@ pipeline {
 //                            sh "docker rmi xogns5/back"     //images 날리기
 
 
-                            sh "docker run -d --name back -p 8081:8080 \
-                                ${DOCKERHUB_REGISTRY}"
+//                            docker compose 적용 이전 docker container 실행
+//                             sh "docker run -d --name back -p 8081:8080 \
+//                                 ${DOCKERHUB_REGISTRY}"
+
+//                            docker compose 적용 후
+
+//                             def topComposePath = "${env.WORKSPACE}/docker-compose.yml"
+//                             sh "sudo chmod +x /usr/local/bin/docker-compose"
+                            sh "docker-compose -f ${env.WORKSPACE}/docker-compose.yml up -d"
+//                             sh "docker-compose -f ../docker-compose.yml up -d"
 
 
 //                             sh "docker run -d --name back -p 8081:8080 \

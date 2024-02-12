@@ -37,12 +37,14 @@
 
     <!-- 알림 클릭 시 나오는 창 -->
     <div>
-      <Notification :class="[topbarNotificationActive ? 'notificationActive' : 'notificationHidden']" @close-notification="closeNotification"/>
+      <Notification :notificationActive="topbarNotificationActive"
+        :class="[topbarNotificationActive ? 'notificationActive' : 'notificationHidden']"
+        @close-notification="closeNotification" />
     </div>
 
     <!-- 프로필 클릭 시 나오는 창 -->
     <div>
-      <Profile :class="[topbarProfileActive ? 'profileActive' : 'profileHidden']" @close-profile="closeProfile"/>
+      <Profile :class="[topbarProfileActive ? 'profileActive' : 'profileHidden']" @close-profile="closeProfile" />
     </div>
 
     <!-- 미팅 생성 창 -->
@@ -138,7 +140,7 @@ const onTopBarMenuNotificationButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
     topbarNotificationActive.value = !topbarNotificationActive.value;
     topbarProfileActive.value = false;
-    
+
   } else if (!accountsStore.isLogin) {
     // router.push({name: "member-login"})
   }
@@ -171,15 +173,18 @@ const onTopBarMenuProfileButton = () => {
   right: 1.8%;
   top: 80%;
 }
+
 .profileHidden {
   display: none;
 }
+
 .notificationActive {
   display: block;
   position: absolute;
   right: 1.8%;
   top: 80%;
 }
+
 .notificationHidden {
   display: none;
 }
@@ -187,12 +192,16 @@ const onTopBarMenuProfileButton = () => {
 
 .router-link-active {
   /* router-link의 글자 색이 변하지 않게 하는 css */
-  background-color: transparent !important;  /* 배경색을 투명으로 설정 */
-  color: inherit !important;  /* 글자색을 상속 받음 */
+  background-color: transparent !important;
+  /* 배경색을 투명으로 설정 */
+  color: inherit !important;
+  /* 글자색을 상속 받음 */
 }
+
 .myPlanBtn {
   margin: 10px;
 }
+
 .startBtn {
   margin: 10px;
   background-color: #3498DB;
@@ -206,6 +215,7 @@ const onTopBarMenuProfileButton = () => {
   color: #3498DB;
   cursor: pointer;
 }
+
 .userName-hover {
   cursor: pointer;
   /* 마우스 커서를 포인터로 변경 */
@@ -214,6 +224,7 @@ const onTopBarMenuProfileButton = () => {
   text-decoration: underline;
   /* 밑줄 스타일 적용 */
 }
+
 .userName-hover:hover {
   background-color: rgba(52, 152, 219, 0.2);
   /* 호버 시 배경 색상 적용 */
@@ -245,8 +256,5 @@ const onTopBarMenuProfileButton = () => {
   max-height: 120vh;
   max-width: 120vw;
   overflow-y: auto;
-}
-
-
-</style>
+}</style>
 

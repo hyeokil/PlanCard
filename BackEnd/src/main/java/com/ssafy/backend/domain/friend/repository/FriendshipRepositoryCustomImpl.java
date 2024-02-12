@@ -22,9 +22,8 @@ public class FriendshipRepositoryCustomImpl implements FriendshipRepositoryCusto
     @Override
     public Slice<FriendshipDto> findFriends(Long ownerId, Pageable pageable) {
 
-        // TODO profileImage 추가
         List<FriendshipDto> friendShip = queryFactory
-                .select(Projections.bean(FriendshipDto.class, member.name, member.email, member.id.as("friendId")))
+                .select(Projections.bean(FriendshipDto.class, member.name, member.email, member.image, member.id.as("friendId")))
                 .from(friendship)
                 .join(friendship.friend, member)
                 .where(friendship.owner.id.eq(ownerId))

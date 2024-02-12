@@ -15,7 +15,9 @@
                 <img src="/question-two-color.png" alt="">
             </div>
             <div class="text-content">
-                <div class="bubble">잠깐만, 방금 전에 어디 말했더라?</div>
+                <div style="position: relative;">
+                    <div class="bubble">잠깐만, 방금 전에 어디 말했더라?</div>
+                </div>
                 <div class="main">기억이 나지 않을 땐,</div>
                 <div><span>STT</span>를 통해 말했던 장소를 바로 카드로 만들어줘요.</div>
             </div>
@@ -26,9 +28,9 @@
             </div>
             <div class="text-content-1">
                 <div>
-                    <div>정리한 계획 보내줄게, 기다려봐. </div>
-                    <div>(1시간뒤)</div>
-                    <div>언제 줘?</div>
+                    <div class="bubble">정리한 계획 보내줄게, 기다려봐. </div>
+                    <div class="bubble">(1시간뒤)</div>
+                    <div class="bubble">언제 줘?</div>
                 </div>
                 <div class="main">기다리기 싫을 땐,</div>
                 <div><span>공동편집</span>으로 여행계획을 곧바로 공유할 수 있어요.</div>
@@ -39,7 +41,7 @@
                 <img src="/manager-two-color.png" alt="">
             </div>
             <div class="text-content">
-                <div>예약 마감까지 10분 남았는데 다들 왜 답장이 없어? ㅠㅠ</div>
+                <div class="bubble">예약 마감까지 10분 남았는데 다들 왜 답장이 없어? ㅠㅠ</div>
                 <div class="main">바로 결정해야할 땐,</div>
                 <div><span>WebRTC</span>를 통해 실시간 화상통화로 모두 함께 계획을 짤 수 있어요.</div>
             </div>  
@@ -112,6 +114,47 @@ window.addEventListener('scroll', func);
 </script>
 
 <style scoped>
+.bubble{
+padding-top: 8px;
+padding-bottom: 3px;
+padding-left: 10px;
+padding-right: 10px;    
+background-color: #3498DB;
+border-radius: 5px;
+width: fit-content;
+z-index: 2;
+}
+.bubble::before{
+    content:'';
+    position: absolute;
+    width: 0px;
+    bottom: 0px;
+    left: -15px;
+    border-bottom: 8px solid #3498DB;
+    border-top: 8px solid transparent;
+    border-right: 10px solid #3498DB;
+    border-left: 10px solid transparent;
+    position: absolute;
+    z-index: 1;
+}
+.mine .message-content {
+    background-color: #3498DB;
+    color: #fff;
+    z-index: 2;
+    }
+.mine .message-content::after {
+    content: '';
+    position: absolute;
+    width: 0px;
+    right: -6px;
+    top: 0px;
+    border-bottom: 6px solid transparent;
+    border-top: 6px solid #3498DB;
+    border-right: 6px solid transparent;
+    border-left: 6px solid #3498DB;
+    position: absolute;
+    z-index: 1;
+}
 .background-image{
     background-color: #fff; 
     width: 100vw; 
