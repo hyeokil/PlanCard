@@ -55,7 +55,7 @@
 
 
 <script setup>
-import { ref, onMounted, onUnmounted, getCurrentInstance, nextTick } from 'vue';
+import { ref, onUnmounted, getCurrentInstance, nextTick, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccountsStore } from '@/stores/accountsStore';
 import { memberLogoutApi } from "@/api/memberApi";
@@ -69,6 +69,20 @@ const friends = ref([]); // 현재 페이지에 표시된 친구들의 목록
 const page = ref(0); // 현재 페이지 번호
 const size = ref(10); // 페이지당 아이템 수
 const isLastPage = ref(false); // 마지막 페이지 여부
+
+// props로 상태를 받습니다.
+const props = defineProps({
+  profileActive: Boolean
+});
+
+// props.profileActive 변화를 감지합니다.
+watch(() => props.profileActive, (newVal) => {
+  if (newVal) {
+    console.log(newVal);
+    fetchFriendList(); // 프로필 팝업이 활성화될 때마다 친구 목록을 새로고침합니다.
+  }
+});
+
 
 // MyPage로 이동
 const goMyPage = function () {
@@ -89,6 +103,7 @@ const logout = async () => {
         else {
           alert(response.data.dataHeader.resultMessage);
           accountsStore.setLogout();
+          router.push({ name: 'main' });  // 로그아웃 성공 후 메인 페이지로 이동
         }
       }
     )
@@ -97,6 +112,8 @@ const logout = async () => {
       console.error(error);
       const errorResponse = error.response.data;
       alert(errorResponse.dataHeader.resultMessage);
+      accountsStore.setLogout();
+      router.push({ name: 'main' });  // 로그아웃 성공 후 메인 페이지로 이동
     } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
       // 네트워크 에러 처리
       alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
@@ -138,47 +155,6 @@ const handleScroll = () => {
   }
 };
 
-// 친구 목록 배열 (test)
-// const friends = ref([
-// {
-//     name: "신동근",
-//     email: "tlsehdrms95@ssafy.com",
-//     profileImg: "/로고 3.png",
-//     status: true
-// },
-// {
-//     name: "박정인",
-//     email: "qkrwjddls96@ssafy.com",
-//     profileImg: "/로고 3.png",
-//     status: false
-// },
-// {
-//     name: "강지수",
-//     email: "rkdwltn96@ssafy.com",
-//     profileImg: "/로고 3.png",
-//     status: true
-// },
-// {
-//     name: "김혁일",
-//     email: "rlagurdlf97@ssafy.com",
-//     profileImg: "/로고 3.png",
-//     status: false
-// },
-// {
-//     name: "김재훈",
-//     email: "rlawogns98@ssafy.com",
-//     profileImg: "/로고 3.png",
-//     status: true
-// },
-// {
-//     name: "이세은",
-//     email: "dltpdms99@ssafy.com",
-//     profileImg: "/로고 3.png",
-//     status: true
-// }
-// ]);
-
-
 const friendRequestActive = ref(false);  // 친구요청창
 // 친구요청 팝업 on/off
 const goFriendRequest = () => {
@@ -188,9 +164,6 @@ const closeFriendRequest = () => {
   friendRequestActive.value = false;
 }
 
-onMounted(() => {
-  fetchFriendList(); // 컴포넌트 마운트 시 초기 친구 목록 불러옴
-});
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);

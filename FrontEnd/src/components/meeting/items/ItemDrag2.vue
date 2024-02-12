@@ -87,8 +87,8 @@ function onCardMove(event, index) {
                 cardId: cardToAdd.cardId, // 여기서는 예시로 cardId만 매핑했습니다. 실제로는 모든 필요한 필드를 매핑해야 합니다.
                 placeName: cardToAdd.placeName,
                 placeAddress: cardToAdd.placeAddress,
-                Lat: cardToAdd.latitude,
-                Lng: cardToAdd.longitude,
+                Lat: cardToAdd.Lat,
+                Lng: cardToAdd.Lng,
                 image: cardToAdd.placeImage,
                 orderNumber: added.newIndex + 1,
                 day: index + 1, // 0부터 들어감 (그러므로 1 더해줘야 함)

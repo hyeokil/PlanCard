@@ -44,7 +44,8 @@
 
     <!-- 프로필 클릭 시 나오는 창 -->
     <div>
-      <Profile :class="[topbarProfileActive ? 'profileActive' : 'profileHidden']" @close-profile="closeProfile" />
+      <Profile :profileActive="topbarProfileActive"
+      :class="[topbarProfileActive ? 'profileActive' : 'profileHidden']" @close-profile="closeProfile" />
     </div>
 
     <!-- 미팅 생성 창 -->
@@ -140,7 +141,6 @@ const onTopBarMenuNotificationButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
     topbarNotificationActive.value = !topbarNotificationActive.value;
     topbarProfileActive.value = false;
-
   } else if (!accountsStore.isLogin) {
     // router.push({name: "member-login"})
   }
