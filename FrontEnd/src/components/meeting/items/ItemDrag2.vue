@@ -2,7 +2,7 @@
 import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
 import draggable from "@/vuedraggable";
 import KaKaoMap from '@/components/common/map/KaKaoMap.vue'
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watch, onMounted, onBeforeMount } from "vue";
 import { useRoute, useRouter } from 'vue-router';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
@@ -15,11 +15,19 @@ const route = useRoute();
 
 
 const planId = route.params.id; // URL에서 planId를 추출합니다.
-const cardList = ref([]); // 카드 목록을 담을 반응형 변수를 선언합니다.
+const cardListRaw = ref([]); // 카드 목록을 담을 반응형 변수를 선언합니다.
+const cardList = ref([])
+const cardHidden = ref([])
+const cardToPlan = ref(false)
 const planList = ref([]);
+watch(() => planList,
+    (newplanList) => {
+    cardList.value = cardListRaw.value.filter(data => planList.value.reduce((acc, item) => acc && (item.cardId !== data.cardId), true))
+    cardHidden.value = cardListRaw.value.map(data => planList.value.reduce((acc, item) => acc || (item.cardId === data.cardId), false))
+}, {deep:true}, {immediate:true})
 const days = ref([]);
 const checkDay = ref(0);
-const filteredPlan = computed(() => planList.value.filter((item) => item.day === checkDay.value).sort((a, b) => a.orderNumber - b.orderNumber))
+const filteredPlan = computed(() => planList.value.filter((item) => item.day === checkDay.value+1).sort((a, b) => a.orderNumber - b.orderNumber))
 const newC = ref({
     lat: 37.5659316,
     lng: 126.9744791
@@ -49,6 +57,7 @@ function pullFunction() {                           //
 //////////////////////////////////////////////////////
 
 
+
 function saveCards() {
     // axios 연결
 }
@@ -59,15 +68,18 @@ function goMain() {
 
 
 function onCardMove(event, index) {
-    // console.log(event);
+    console.log(event);
     //planList에 day추가용
-    // console.log(index);
+    console.log('index',index);
 
-    const { added } = event;
+    const { added, removed, moved } = event;
     if (added) {
         const cardId = added.element.cardId;
         // 여행 상세 계획에 카드를 추가한 경우, 카드 목록에서 해당 카드를 제거
+        const indexToRemovePlan = planList.value.findIndex(plan => plan.cardId === cardId);
         const indexToRemove = cardList.value.findIndex(card => card.cardId === cardId);
+
+        console.log('indexToRemove',indexToRemove)
         if (indexToRemove !== -1) {
             const [cardToAdd] = cardList.value.splice(indexToRemove, 1);
             const newCard = {
@@ -83,8 +95,33 @@ function onCardMove(event, index) {
                 memo: cardToAdd.memo,
             };
             planList.value.push(newCard);
+            days.value[index].forEach((item, i) => {
+            const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
+            planList.value[changeIndex].orderNumber = i;
+        })
+        } else {
+            planList.value[indexToRemovePlan].day = index + 1;
+            days.value[index].forEach((item, i) => {
+                const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
+                planList.value[changeIndex].orderNumber = i;
+            })
         }
     }
+    else if(moved){
+        days.value[index].forEach((item, i) => {
+            const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
+            planList.value[changeIndex].orderNumber = i;
+        })
+        // moved된 날의 전체 order를 다시 덮어씀
+    }
+    else if (removed) {
+        days.value[index].forEach((item, i) => {
+            const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
+            planList.value[changeIndex].orderNumber = i;
+        })
+        // removed된 날의 전체 order를 다시 덮어씀
+    }
+    
     console.log('planList에 추가', planList.value)
 
 }
@@ -104,8 +141,19 @@ async function fetchCardList() {
     try {
         const response = await cardListGetApi(planId);
         if (response.data.dataHeader.successCode === 0) {
-            cardList.value = response.data.dataBody;
-            console.log(cardList.value);
+            const backendCardList = response.data.dataBody;
+            // 백엔드로부터 받아온 세부 계획을 기반으로 planList를 업데이트
+            cardListRaw.value = backendCardList.map(card => (
+                {
+                cardId: card.cardId,
+                Lat: card.latitude, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
+                Lng: card.longitude, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
+                placeImage: card.placeImage, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
+                memo: card.memo,
+                placeAddress: card.placeAddress,
+                placeName: card.placeName
+            }));
+            console.log('fetch후 cardListRaw 값', cardListRaw.value)
         } else {
             alert(response.data.dataHeader.resultMessage);
         }
@@ -133,6 +181,10 @@ const calculateDateDiff = (startDate, endDate) => {
 // days 배열을 초기화하는 함수
 const initializeDays = (dayCount) => {
     days.value = Array.from({ length: dayCount }, () => []);
+    days.value.forEach((d, index) => {
+        const filterday = computed(()=>planList.value.filter((item) => item.day === index+1).sort((a, b) => a.orderNumber - b.orderNumber))
+        d.push(...filterday.value)
+    })
 };
 
 
@@ -150,20 +202,27 @@ async function fetchPlanDetailList() {
         const response = await planDetailListGetApi(planId);
         if (response.data.dataHeader.successCode === 0) {
             const backendPlanDetails = response.data.dataBody;
-            console.log(backendPlanDetails);
+            console.log('backendPlanDetails',backendPlanDetails);
             // 백엔드로부터 받아온 세부 계획을 기반으로 planList를 업데이트
-            planList.value = backendPlanDetails.map(detail => ({
+            planList.value = backendPlanDetails.map(detail => (
+                {
                 id: detail.id,
                 cardId: detail.cardId,
-                Lat: detail.place.Lat, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
-                Lng: detail.place.Lng, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
-                image: detail.place.image, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
+                Lat: detail.latitude, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
+                Lng: detail.logitude, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
+                placeImage: detail.placeImage, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
                 memo: detail.cardMemo,
                 orderNumber: detail.orderNumber,
                 day: detail.day,
                 placeAddress: detail.placeAddress,
                 placeName: detail.placeName
             }));
+            console.log('fetch후 planList 값', planList.value)
+            days.value.forEach((d, index) => {
+                d.splice(0,d.length);
+                const filterday = computed(()=>planList.value.filter((item) => item.day === index+1).sort((a, b) => a.orderNumber - b.orderNumber))
+                d.push(...filterday.value)
+            })
         } else {
             alert(response.data.dataHeader.resultMessage);
         }
@@ -200,12 +259,13 @@ function getPlanDetailsConvert() {
 async function planDetailSave() {
     try {
         const param = getPlanDetailsConvert();
+        console.log('param',param)
         const response = await planDetailCreateApi(planId, param);
         if (response.data.dataHeader.successCode === 0) {
             alert("여행 계획이 저장되었습니다.");
             console.log("여행 세부 계획 생성 OR 수정", planList.value);
             await fetchPlanDetailList();
-            console.log(planList.value);
+            console.log('planList', planList.value);
         } else {
             alert(response.data.dataHeader.resultMessage);
         }
@@ -214,6 +274,7 @@ async function planDetailSave() {
             console.error(error);
             const errorResponse = error.response.data;
             alert(errorResponse.dataHeader.resultMessage);
+            console.log('planlist',planList.value)
         } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
             // 네트워크 에러 처리
             alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
@@ -222,7 +283,7 @@ async function planDetailSave() {
 }
 
 
-onMounted(async () => {
+onBeforeMount(async () => {
     await fetchCardList();
     await fetchPlanDetailList();
 });
@@ -235,11 +296,19 @@ onMounted(async () => {
             <div class="drag-list">
                 <ItemTitle class="title" @update-dates="handleUpdateDates"></ItemTitle>
                 <h6 style="margin-left: 11%;">카드 목록</h6>
+                <!-- {{ cardList }} -->
+                <!-- <div class="font-content">
+                    <div>카드정렬 {{ cardList }}</div>
+                    <div>카드원본 {{ cardListRaw.map(data=>data.cardId) }}</div>
+                    <div>{{ cardHidden }}</div>
+                    <div>{{ planList.map(item=>[item.day, item.orderNumber]) }}</div>
+                </div> -->
                 <div>
                     <draggable class="DragArea list-group" :list="cardList"
                         :group="{ name: 'card', pull: 'clone', put: false }" item-key="id" @change="onCardMove">
-                        <template #item="{ element }">
-                            <div>
+                        <template #item="{ element, index }">
+                            <div >
+                                <!-- :class="[cardHidden[index] ? 'hidden' : 'active']"> -->
                                 <div class="list-group-item font-content">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
                                         <div class="card-card-list d-flex justify-content-start gap-3 align-items-center">
@@ -258,6 +327,7 @@ onMounted(async () => {
 
             </div>
             <div class="drag-list">
+                <!-- {{ planList }} -->
                 <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
                     <div class="d-flex align-items-center">
                         <div style="font-size: 28px;">
@@ -276,7 +346,7 @@ onMounted(async () => {
                                 <draggable class="DragArea list-group" :list="fixCard" :group="{ name: 'card', put: true }"
                                     item-key="id" @change="onCardMove($event, index)">
                                     <template #item="{ element, index }">
-                                        <div @click="moveCenter(element.latitude, element.longitude)"
+                                        <div @click="moveCenter(element.Lat, element.Lng)"
                                             class="list-group-item font-content">
                                             <div class="d-flex align-items-center gap-3 justify-content-center"
                                                 style="position: relative; margin-bottom: 10px;">

@@ -113,7 +113,7 @@ window.addEventListener('scroll', func);
 
 <style scoped>
 .background-image{
-    background-color: #0f0; 
+    background-color: #fff; 
     width: 100vw; 
     height: 80vh;
     position: relative;

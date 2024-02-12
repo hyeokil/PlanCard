@@ -25,9 +25,8 @@ let detailPlaces = computed(() => {
 })
 
 let newCenter = computed(() => {
-    console.log(newCenter.value)
     return props.newCenter
-},{deep:true})
+})
 
 watch(() => detailPlaces,
     (newPlace) => {
@@ -39,7 +38,7 @@ watch(() => detailPlaces,
 watch(() => newCenter, (newc) => {
     console.log('newCenter', newCenter.value)
     setNewCenter(newCenter.value.lat, newCenter.value.lng)
-}, { deep: true })
+}, { deep: true },{immediate:true})
 
 
 // 지도 위치 변경
@@ -106,6 +105,7 @@ const clearMarkersAndOverlays = () => {
 // 마커, 오버레이, 폴리라인 표시
 const displayMarkersAndPolyline = () => {
     console.log('displayMarkersAndPolyLine 호출')
+    console.log('detailplaces',detailPlaces.value)
 
     if (!window.kakao || !window.kakao.maps) {
         console.error('카카오맵 api 호출 x');
@@ -174,7 +174,6 @@ const displayMarkersAndPolyline = () => {
     });
     polyline.value.setMap(map.value);
 
-    console.log('detailplaces',detailPlaces.value)
     const pos = calculateCenter(detailPlaces.value)
     console.log('pos', pos)
     const newC = new kakao.maps.LatLng(pos.lat, pos.lng) 
