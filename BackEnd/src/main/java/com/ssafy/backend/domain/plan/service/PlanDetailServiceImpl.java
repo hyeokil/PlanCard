@@ -41,7 +41,7 @@ public class PlanDetailServiceImpl implements PlanDetailService {
             } else {
                 PlanDetail planDetail = planDetailRepository.findById(newplanDetail.getId()).orElseThrow();
                 planDetail.update(newplanDetail.getOrderNumber(), newplanDetail.getDay());
-                planDetailRepository.save(planDetail);
+//                planDetailRepository.save(planDetail);
                 existingPlanDetails.remove(newplanDetail.getId());
             }
         }
@@ -60,6 +60,9 @@ public class PlanDetailServiceImpl implements PlanDetailService {
                         planDetail.getCard().getMemo(),
                         planDetail.getCard().getPlace().getName(),
                         planDetail.getCard().getPlace().getAddress(),
+                        planDetail.getCard().getPlace().getImage(),
+                        planDetail.getCard().getPlace().getLatitude(),
+                        planDetail.getCard().getPlace().getLogitude(),
                         planDetail.getOrderNumber(),
                         planDetail.getDay()))
                 .sorted() // Comparable에 따라 정렬

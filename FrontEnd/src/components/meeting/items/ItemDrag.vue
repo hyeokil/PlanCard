@@ -8,7 +8,6 @@ import { usePlanStore } from "@/stores/planStore";
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
 import _ from 'lodash'
-import { debounce } from 'lodash';
 import { cardListGetApi } from '@/api/cardApi';
 
 const planStore = usePlanStore();

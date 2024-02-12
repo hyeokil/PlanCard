@@ -8,6 +8,7 @@ import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
 import _ from 'lodash'
 import { cardListGetApi } from '@/api/cardApi';
+import { planDetailCreateApi, planDetailListGetApi } from '@/api/planApi';
 
 const router = useRouter()
 const route = useRoute();
@@ -18,7 +19,7 @@ const cardList = ref([]); // 카드 목록을 담을 반응형 변수를 선언�
 const planList = ref([]);
 const days = ref([]);
 const checkDay = ref(0);
-const filteredPlan = computed(()=>planList.value.filter((item)=>item.day===checkDay.value).sort((a,b)=>a.orderNumber-b.orderNumber))
+const filteredPlan = computed(() => planList.value.filter((item) => item.day === checkDay.value).sort((a, b) => a.orderNumber - b.orderNumber))
 const newC = ref({
     lat: 37.5659316,
     lng: 126.9744791
@@ -53,14 +54,14 @@ function saveCards() {
 }
 
 function goMain() {
-    router.push({name:'mypage-myplan'})
+    router.push({ name: 'mypage-myplan' })
 }
 
 
 function onCardMove(event, index) {
-    console.log(event);
+    // console.log(event);
     //planList에 day추가용
-    console.log(index);
+    // console.log(index);
 
     const { added } = event;
     if (added) {
@@ -70,6 +71,7 @@ function onCardMove(event, index) {
         if (indexToRemove !== -1) {
             const [cardToAdd] = cardList.value.splice(indexToRemove, 1);
             const newCard = {
+                id: null,
                 cardId: cardToAdd.cardId, // 여기서는 예시로 cardId만 매핑했습니다. 실제로는 모든 필요한 필드를 매핑해야 합니다.
                 placeName: cardToAdd.placeName,
                 placeAddress: cardToAdd.placeAddress,
@@ -83,27 +85,9 @@ function onCardMove(event, index) {
             planList.value.push(newCard);
         }
     }
-    console.log('planList에 추가',planList.value)
+    console.log('planList에 추가', planList.value)
 
 }
-
-// 카드 이동 로직 업데이트
-// const onCardMove = (element, fromDay) => {
-//   // `element`는 이동된 카드 객체, `fromDay`는 이 카드가 이동한 날짜(예: 1, 2 등)
-//   // 카드를 cardList에서 제거
-//   const indexToRemove = cardList.value.findIndex(card => card.cardId === element.cardId);
-//   if (indexToRemove !== -1) {
-//     cardList.value.splice(indexToRemove, 1);
-//   }
-//   // 카드를 적절한 'day' 배열에 추가
-//   if (!days.value[fromDay]) {
-//     days.value[fromDay] = [];
-//   }
-//   days.value[fromDay].push(element);
-//   // Vue 반응성을 유지하기 위해 새로운 배열 할당
-//   days.value = [...days.value];
-//   cardList.value = [...cardList.value];
-// };
 
 const changeDate = (day) => {
     checkDay.value = day
@@ -160,8 +144,87 @@ const handleUpdateDates = ({ startDate, endDate }) => {
     initializeDays(dayCount);
 };
 
-onMounted(() => {
-    fetchCardList();
+// 해당 여행 계획의 여행 세부 계획 리스트 가져오기 메서드
+async function fetchPlanDetailList() {
+    try {
+        const response = await planDetailListGetApi(planId);
+        if (response.data.dataHeader.successCode === 0) {
+            const backendPlanDetails = response.data.dataBody;
+            console.log(backendPlanDetails);
+            // 백엔드로부터 받아온 세부 계획을 기반으로 planList를 업데이트
+            planList.value = backendPlanDetails.map(detail => ({
+                id: detail.id,
+                cardId: detail.cardId,
+                Lat: detail.place.Lat, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
+                Lng: detail.place.Lng, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
+                image: detail.place.image, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
+                memo: detail.cardMemo,
+                orderNumber: detail.orderNumber,
+                day: detail.day,
+                placeAddress: detail.placeAddress,
+                placeName: detail.placeName
+            }));
+        } else {
+            alert(response.data.dataHeader.resultMessage);
+        }
+
+        console.log("planDetailList 받아오기: ", planList.value);
+    } catch (error) {
+        if (error.response) {
+            console.error(error);
+            const errorResponse = error.response.data;
+            alert(errorResponse.dataHeader.resultMessage);
+        } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+            // 네트워크 에러 처리
+            alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+        }
+    }
+}
+
+
+
+// 여행 세부 계획 생성 OR 수정 전 해당 API 요청값에 맞게끔 변경해주는 메서드
+function getPlanDetailsConvert() {
+    return planList.value.map((plan) => {
+        // id가 없는 경우에는 undefined로 설정하여, 서버측에서 새 엔티티로 인식하게 함
+        return {
+            id: plan.id,
+            cardId: plan.cardId,
+            orderNumber: plan.orderNumber,
+            day: plan.day
+        };
+    });
+}
+
+// 여행 세부 계획 생성 OR 수정
+async function planDetailSave() {
+    try {
+        const param = getPlanDetailsConvert();
+        const response = await planDetailCreateApi(planId, param);
+        if (response.data.dataHeader.successCode === 0) {
+            alert("여행 계획이 저장되었습니다.");
+            console.log("여행 세부 계획 생성 OR 수정", planList.value);
+            await fetchPlanDetailList();
+            console.log(planList.value);
+        } else {
+            alert(response.data.dataHeader.resultMessage);
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error(error);
+            const errorResponse = error.response.data;
+            alert(errorResponse.dataHeader.resultMessage);
+        } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+            // 네트워크 에러 처리
+            alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+        }
+    }
+}
+
+
+onMounted(async () => {
+    await fetchCardList();
+    await fetchPlanDetailList();
 });
 
 </script>
@@ -213,11 +276,12 @@ onMounted(() => {
                                 <draggable class="DragArea list-group" :list="fixCard" :group="{ name: 'card', put: true }"
                                     item-key="id" @change="onCardMove($event, index)">
                                     <template #item="{ element, index }">
-                                        <div @click="moveCenter(element.latitude, element.longitude)" class="list-group-item font-content">
+                                        <div @click="moveCenter(element.latitude, element.longitude)"
+                                            class="list-group-item font-content">
                                             <div class="d-flex align-items-center gap-3 justify-content-center"
                                                 style="position: relative; margin-bottom: 10px;">
                                                 <div class="orderNumber">{{ index + 1 }}</div>
-                                                <div 
+                                                <div
                                                     class="card-detail d-flex justify-content-start gap-3 align-items-center">
                                                     <img class="card-image" :src="element.placeImage" alt="">
                                                     <div>{{ element.placeName }}</div>
@@ -234,7 +298,7 @@ onMounted(() => {
                             <button class="btn quit-btn" @click="goMain">
                                 <i class="pi pi-times"></i> 끝내기
                             </button>
-                            <button class="btn save-btn" @click="saveCards">
+                            <button class="btn save-btn" @click="planDetailSave">
                                 <i class="pi pi-check"></i> 저장
                             </button>
                         </div>

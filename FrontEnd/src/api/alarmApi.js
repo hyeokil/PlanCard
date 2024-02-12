@@ -20,8 +20,13 @@ async function alarmActionApi({alarmId, action}) {
     return await local.post(`/alarm/${alarmId}/${action}`);
 }
 
+async function alarmDeleteAllApi() {
+    return await local.delete(`/alarm/delete/all`);
+}
+
 export {
     alarmGetListApi,
     alarmFriendRequestApi,
     alarmActionApi,
+    alarmDeleteAllApi
 };

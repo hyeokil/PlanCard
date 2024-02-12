@@ -25,6 +25,12 @@ public class PlanDetailListResponseDto implements Comparable<PlanDetailListRespo
 
     private String placeAddress;
 
+    private String placeImage;
+
+    private Double latitude;
+
+    private Double logitude;
+
     private int orderNumber;
 
     private int day;
