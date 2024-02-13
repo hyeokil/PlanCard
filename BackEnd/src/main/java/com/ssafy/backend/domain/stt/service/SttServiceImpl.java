@@ -10,9 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okio.ByteString;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 
 
 import java.util.HashMap;
@@ -41,10 +44,12 @@ public class SttServiceImpl implements SttService {
 
     @Value("${stt.secret}")
     String client_secret;
+
     @Override
     public void stopStt() {
         isSttRunning = false;
     }
+
     public String getAccessToken() throws IOException {
 
 
@@ -61,7 +66,7 @@ public class SttServiceImpl implements SttService {
 
         Response response = client.newCall(request).execute();
         ObjectMapper objectMapper = new ObjectMapper();
-        HashMap<String,String> map = objectMapper.readValue(response.body().string(), HashMap.class);
+        HashMap<String, String> map = objectMapper.readValue(response.body().string(), HashMap.class);
 
         return map.get("access_token");
 
@@ -77,17 +82,17 @@ public class SttServiceImpl implements SttService {
         OkHttpClient client = new OkHttpClient();
 
         HttpUrl.Builder httpBuilder = HttpUrl.get("https://openapi.vito.ai/v1/transcribe:streaming").newBuilder();
-        httpBuilder.addQueryParameter("sample_rate","8000");
-        httpBuilder.addQueryParameter("encoding","LINEAR16");
-        httpBuilder.addQueryParameter("use_itn","true");
-        httpBuilder.addQueryParameter("use_disfluency_filter","true");
-        httpBuilder.addQueryParameter("use_profanity_filter","true");
+        httpBuilder.addQueryParameter("sample_rate", "8000");
+        httpBuilder.addQueryParameter("encoding", "LINEAR16");
+        httpBuilder.addQueryParameter("use_itn", "true");
+        httpBuilder.addQueryParameter("use_disfluency_filter", "true");
+        httpBuilder.addQueryParameter("use_profanity_filter", "true");
 
         String url = httpBuilder.toString().replace("https://", "wss://");
 
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization","Bearer "+ accessToken)
+                .addHeader("Authorization", "Bearer " + accessToken)
                 .build();
 
         RTZRWebSocketListener webSocketListener = new RTZRWebSocketListener(cardService, placeInfoRepository);
@@ -136,6 +141,7 @@ class RTZRWebSocketListener extends WebSocketListener {
         this.cardService = cardService;
         this.placeInfoRepository = placeInfoRepository;
     }
+
     private static int i = 0;
 
     @Override
@@ -145,21 +151,42 @@ class RTZRWebSocketListener extends WebSocketListener {
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
-        System.out.println(i++);
-        List<Place> allPlaces = placeInfoRepository.findAll();
-        for (Place place : allPlaces) {
-            String placeName = place.getName().toLowerCase(); // 대소문자 구분을 피하기 위해 소문자로 변환
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(text);
+            JSONArray alterText = (JSONArray) jsonObject.get("alternatives");
 
 
-            if (text.toLowerCase().contains(placeName)) {
-                // 일치하는 name이 발견되면 해당 place의 id를 추출
-                Long placeId = place.getId();
-                cardService.createCard(1L,placeId,new CardCreateRequestDto(""));
-                System.out.println("Found place with ID: " + placeId);
+            for (Object obj : alterText) {
+                JSONObject object = (JSONObject) jsonParser.parse(obj.toString());
+                String data = (String) object.get("text");
+
+
+                System.out.println(i++);
+                List<Place> allPlaces = placeInfoRepository.findAll();
+                for (Place place : allPlaces) {
+                    String placeName = place.getName();
+
+                    //여행지 공백 제거
+                    placeName = placeName.replace(" ", "");
+
+                    if (text.contains(placeName)) {
+                        // 일치하는 name이 발견되면 해당 place의 id를 추출
+                        Long placeId = place.getId();
+                        cardService.createCard(1L, placeId, new CardCreateRequestDto(""));
+                        System.out.println("Found place with ID: " + placeId);
+                    }
+
+                }
             }
-        }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
 
+        }
     }
+
 
     @Override
     public void onMessage(WebSocket webSocket, ByteString bytes) {
