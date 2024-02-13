@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
 import _ from 'lodash'
+import { debounce } from "lodash";
 import { cardListGetApi } from '@/api/cardApi';
 import { planDetailCreateApi, planDetailListGetApi } from '@/api/planApi';
 
@@ -20,7 +21,7 @@ const cardList = ref([])
 const cardHidden = ref([])
 const cardToPlan = ref(false)
 const planList = ref([]);
-
+const changeCheck = ref(true);
 const dayCountRef = ref('');
 
 watch(() => planList,
@@ -56,6 +57,7 @@ yCardList.observe(debounce(() => {
 
 // yPlanList의 변화를 감지하여 planList 업데이트
 yPlanList.observe(debounce(() => {
+    console.log('yPlanList',yPlanList._first.content.arr)
     planList.value = yPlanList.toArray();
     console.log('이벤트 발생 및 planList 확인', planList.value);
 }, 500));
@@ -84,25 +86,35 @@ watch(planList, (newVal, oldVal) => {
     if (JSON.stringify(newVal) !== JSON.stringify(yPlanListArray)) {
         yPlanList.delete(0, yPlanList.length);
         yPlanList.push(newVal);
+        console.log('yPlanList', yPlanList)
     }
-
-    // planList의 변화에 따라 days 배열을 업데이트
+            // planList의 변화에 따라 days 배열을 업데이트
     days.value = Array.from({ length: dayCountRef.value }, () => []);
     days.value.forEach((d, index) => {
         const filterday = computed(() => planList.value.filter((item) => item.day === index + 1).sort((a, b) => a.orderNumber - b.orderNumber))
         d.push(...filterday.value)
     })
-    
 }, { deep: true });
 
-// watch(days, (newVal, oldVal) => {
-//     const yDaysArray = yDays.toArray();
-//     if (JSON.stringify(newVal) !== JSON.stringify(yDaysArray)) {
+// watch(changeCheck.value, (newVal, oldVal) => {
+//     const yPlanListArray = yPlanList.toArray();
+//     if (JSON.stringify(planList.value) !== JSON.stringify(yPlanListArray)) {
 //         yPlanList.delete(0, yPlanList.length);
-//         yPlanList.push(newVal);
+//         yPlanList.push(planList.value);
+//         console.log('yPlanList', yPlanList)
 //     }
 // }, { deep: true });
 
+// watch(
+//         // planList의 변화에 따라 days 배열을 업데이트
+//         days.value = Array.from({ length: dayCountRef.value }, () => []);
+//     days.value.forEach((d, index) => {
+//         const filterday = computed(() => planList.value.filter((item) => item.day === index + 1).sort((a, b) => a.orderNumber - b.orderNumber))
+//         d.push(...filterday.value)
+//     })
+//     console.log('days변경 확인',days.value)
+    
+// )
 
 // draggable js에 필요한 거////////////////////////////
 const controlOnStart = ref(true);                   //
@@ -147,7 +159,7 @@ function onCardMove(event, index) {
                 placeAddress: cardToAdd.placeAddress,
                 Lat: cardToAdd.Lat,
                 Lng: cardToAdd.Lng,
-                image: cardToAdd.placeImage,
+                placeImage: cardToAdd.placeImage,
                 orderNumber: added.newIndex + 1,
                 day: index + 1, // 0부터 들어감 (그러므로 1 더해줘야 함)
                 memo: cardToAdd.memo,
@@ -155,50 +167,86 @@ function onCardMove(event, index) {
             planList.value.push(newCard);
             days.value[index].forEach((item, i) => {
                 const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
-                planList.value[changeIndex].orderNumber = i;
-                yPlanList[changeIndex].orderNumber = i;
+
+                const newCard = { ...planList.value[changeIndex] }
+
+                planList.value[changeIndex] = {
+                id: newCard.id,
+                cardId: newCard.cardId, // 여기서는 예시로 cardId만 매핑했습니다. 실제로는 모든 필요한 필드를 매핑해야 합니다.
+                placeName: newCard.placeName,
+                placeAddress: newCard.placeAddress,
+                Lat: newCard.Lat,
+                Lng: newCard.Lng,
+                placeImage: newCard.placeImage,
+                orderNumber: i,
+                day: newCard.day, // 0부터 들어감 (그러므로 1 더해줘야 함)
+                memo: newCard.memo,
+            };
             })
-
-
-            // yDays[index].forEach((item, i) => {
-            //     const changeIndex = yPlanList.findIndex(plan => plan.cardId === item.cardId);
-                
-            // })
-
         } else {
             planList.value[indexToRemovePlan].day = index + 1;
             days.value[index].forEach((item, i) => {
                 const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
-                planList.value[changeIndex].orderNumber = i;
+                const newCard = { ...planList.value[changeIndex] }
+
+                planList.value[changeIndex] = {
+                id: newCard.id,
+                cardId: newCard.cardId, // 여기서는 예시로 cardId만 매핑했습니다. 실제로는 모든 필요한 필드를 매핑해야 합니다.
+                placeName: newCard.placeName,
+                placeAddress: newCard.placeAddress,
+                Lat: newCard.Lat,
+                Lng: newCard.Lng,
+                placeImage: newCard.placeImage,
+                orderNumber: i,
+                day: newCard.day, // 0부터 들어감 (그러므로 1 더해줘야 함)
+                memo: newCard.memo,
+            };
             })
-
-            // yDays[index].forEach((item, i) => {
-            //     const changeIndex = yPlanList.findIndex(plan => plan.cardId === item.cardId);
-            //     yPlanList[changeIndex].orderNumber = i;
-            // })
-
-
         }
     }
     else if(moved){
         days.value[index].forEach((item, i) => {
             const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
-            planList.value[changeIndex].orderNumber = i;
+            const newCard = { ...planList.value[changeIndex] }
+
+            planList.value[changeIndex] = {
+            id: newCard.id,
+            cardId: newCard.cardId, // 여기서는 예시로 cardId만 매핑했습니다. 실제로는 모든 필요한 필드를 매핑해야 합니다.
+            placeName: newCard.placeName,
+            placeAddress: newCard.placeAddress,
+            Lat: newCard.Lat,
+            Lng: newCard.Lng,
+            placeImage: newCard.placeImage,
+            orderNumber: i,
+            day: newCard.day, // 0부터 들어감 (그러므로 1 더해줘야 함)
+            memo: newCard.memo,
+            };
         })
-
-
         // moved된 날의 전체 order를 다시 덮어씀
     }
     else if (removed) {
         days.value[index].forEach((item, i) => {
             const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
-            planList.value[changeIndex].orderNumber = i;
+            const newCard = { ...planList.value[changeIndex] }
+
+            planList.value[changeIndex] = {
+            id: newCard.id,
+            cardId: newCard.cardId, // 여기서는 예시로 cardId만 매핑했습니다. 실제로는 모든 필요한 필드를 매핑해야 합니다.
+            placeName: newCard.placeName,
+            placeAddress: newCard.placeAddress,
+            Lat: newCard.Lat,
+            Lng: newCard.Lng,
+            placeImage: newCard.placeImage,
+            orderNumber: i,
+            day: newCard.day, // 0부터 들어감 (그러므로 1 더해줘야 함)
+            memo: newCard.memo,
+            };
         })
         // removed된 날의 전체 order를 다시 덮어씀
     }
     
     console.log('planList에 추가', planList.value)
-
+    changeCheck.value = !changeCheck.value
 }
 
 const changeDate = (day) => {
@@ -250,7 +298,7 @@ const calculateDateDiff = (startDate, endDate) => {
     const end = new Date(endDate);
     const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+    return diffDays+1;
 };
 
 // days 배열을 초기화하는 함수

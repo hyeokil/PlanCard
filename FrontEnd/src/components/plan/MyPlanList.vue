@@ -149,7 +149,7 @@ span{
 }
 .parent{
     width: 100vw;
-    height: 80vh;
+    height: calc(100vh - 105.73px);
     scroll-snap-type: y mandatory;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -210,7 +210,7 @@ margin-bottom: 1rem;
 .background-image{
     background-color: #fff; 
     width: 100vw; 
-    height: 90vh;
+    height: calc(100vh - 105.73px);
     position: relative;
     display: flex;
     justify-content: center;

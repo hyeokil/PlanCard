@@ -30,13 +30,13 @@ let newCenter = computed(() => {
 
 watch(() => detailPlaces,
     (newPlace) => {
-        console.log('변동감지')
+        // console.log('변동감지')
         displayMarkersAndPolyline()
     }, { deep: true }
 )
 
 watch(() => newCenter, (newc) => {
-    console.log('newCenter', newCenter.value)
+    // console.log('newCenter', newCenter.value)
     setNewCenter(newCenter.value.lat, newCenter.value.lng)
 }, { deep: true },{immediate:true})
 
@@ -68,7 +68,7 @@ const calculateCenter = (places) => {
 
 // 마커, 오버레이 초기화
 const clearMarkersAndOverlays = () => {
-    console.log('clearMarkerAndOverlays 호출')
+    // console.log('clearMarkerAndOverlays 호출')
 
     // markers = []
     // overlays = []
@@ -94,7 +94,7 @@ const clearMarkersAndOverlays = () => {
     
     // 폴리라인 제거
     if (polyline.value) {
-        console.log('폴리라인제거');
+        // console.log('폴리라인제거');
         polyline.value.setMap(null);
         polyline.value = null;
     }
@@ -104,8 +104,8 @@ const clearMarkersAndOverlays = () => {
 
 // 마커, 오버레이, 폴리라인 표시
 const displayMarkersAndPolyline = () => {
-    console.log('displayMarkersAndPolyLine 호출')
-    console.log('detailplaces',detailPlaces.value)
+    // console.log('displayMarkersAndPolyLine 호출')
+    // console.log('detailplaces',detailPlaces.value)
 
     if (!window.kakao || !window.kakao.maps) {
         console.error('카카오맵 api 호출 x');
@@ -119,7 +119,7 @@ const displayMarkersAndPolyline = () => {
     
     // 계획 마커 만들기
     detailPlaces.value.forEach((detailPlace, index) => {
-        console.log(detailPlace)
+        // console.log(detailPlace)
         const position = new kakao.maps.LatLng(
             detailPlace.Lat,
             detailPlace.Lng
@@ -175,7 +175,7 @@ const displayMarkersAndPolyline = () => {
     polyline.value.setMap(map.value);
 
     const pos = calculateCenter(detailPlaces.value)
-    console.log('pos', pos)
+    // console.log('pos', pos)
     const newC = new kakao.maps.LatLng(pos.lat, pos.lng) 
     if (pos !== undefined) {
         map.value.setCenter(newC)
@@ -193,7 +193,7 @@ const initMap = () => {
     }
 
     map.value = new kakao.maps.Map(container, options);
-    console.log('로드됐니?')
+    // console.log('로드됐니?')
     
     // 마커 표시
     displayMarkersAndPolyline();
