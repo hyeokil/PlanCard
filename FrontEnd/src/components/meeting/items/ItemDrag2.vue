@@ -20,6 +20,9 @@ const cardList = ref([])
 const cardHidden = ref([])
 const cardToPlan = ref(false)
 const planList = ref([]);
+
+const dayCountRef = ref('');
+
 watch(() => planList,
     (newplanList) => {
     cardList.value = cardListRaw.value.filter(data => planList.value.reduce((acc, item) => acc && (item.cardId !== data.cardId), true))
@@ -38,12 +41,67 @@ const wsUrl = `ws://localhost:1234`; // WebSocket 서버 URL
 
 const doc = new Y.Doc();// Yjs 배열 초기화
 
-const yArray = doc.getArray('travelPlan');
+const yCardList = doc.getArray('cardList');
+const yPlanList = doc.getArray('planList');
 
 // WebSocket 프로바이더 초기화
 const wsProvider = new WebsocketProvider(wsUrl, roomId, doc);
 const visible = ref(false);
 
+// yCardList의 변화를 감지하여 cardList 업데이트
+yCardList.observe(debounce(() => {
+    cardList.value = yCardList.toArray();
+    console.log('이벤트 발생 및 cardList 확인', cardList.value);
+}, 500));
+
+// yPlanList의 변화를 감지하여 planList 업데이트
+yPlanList.observe(debounce(() => {
+    planList.value = yPlanList.toArray();
+    console.log('이벤트 발생 및 planList 확인', planList.value);
+}, 500));
+
+
+
+
+
+// cardList의 변화 감지 및 처리
+watch(cardList, (newVal, oldVal) => {
+    // yCardList와 로컬 cardList가 서로 다를 때만 업데이트를 진행합니다.
+    // 배열을 비교하기 위해 간단한 JSON 문자열 비교를 사용합니다.
+    // 주의: 이 방법은 배열 내 객체 순서가 중요하며, 대규모 데이터에서는 성능 저하를 일으킬 수 있습니다.
+    const yCardListArray = yCardList.toArray();
+    if (JSON.stringify(newVal) !== JSON.stringify(yCardListArray)) {
+        // yCardList를 새로운 값으로 업데이트하기 전에 기존의 모든 항목을 삭제합니다.
+        yCardList.delete(0, yCardList.length);
+        // 새로운 값으로 yCardList를 업데이트합니다.
+        yCardList.push(newVal);
+    }
+}, { deep: true });
+
+
+watch(planList, (newVal, oldVal) => {
+    const yPlanListArray = yPlanList.toArray();
+    if (JSON.stringify(newVal) !== JSON.stringify(yPlanListArray)) {
+        yPlanList.delete(0, yPlanList.length);
+        yPlanList.push(newVal);
+    }
+
+    // planList의 변화에 따라 days 배열을 업데이트
+    days.value = Array.from({ length: dayCountRef.value }, () => []);
+    days.value.forEach((d, index) => {
+        const filterday = computed(() => planList.value.filter((item) => item.day === index + 1).sort((a, b) => a.orderNumber - b.orderNumber))
+        d.push(...filterday.value)
+    })
+    
+}, { deep: true });
+
+// watch(days, (newVal, oldVal) => {
+//     const yDaysArray = yDays.toArray();
+//     if (JSON.stringify(newVal) !== JSON.stringify(yDaysArray)) {
+//         yPlanList.delete(0, yPlanList.length);
+//         yPlanList.push(newVal);
+//     }
+// }, { deep: true });
 
 
 // draggable js에 필요한 거////////////////////////////
@@ -96,15 +154,30 @@ function onCardMove(event, index) {
             };
             planList.value.push(newCard);
             days.value[index].forEach((item, i) => {
-            const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
-            planList.value[changeIndex].orderNumber = i;
-        })
+                const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
+                planList.value[changeIndex].orderNumber = i;
+                yPlanList[changeIndex].orderNumber = i;
+            })
+
+
+            // yDays[index].forEach((item, i) => {
+            //     const changeIndex = yPlanList.findIndex(plan => plan.cardId === item.cardId);
+                
+            // })
+
         } else {
             planList.value[indexToRemovePlan].day = index + 1;
             days.value[index].forEach((item, i) => {
                 const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
                 planList.value[changeIndex].orderNumber = i;
             })
+
+            // yDays[index].forEach((item, i) => {
+            //     const changeIndex = yPlanList.findIndex(plan => plan.cardId === item.cardId);
+            //     yPlanList[changeIndex].orderNumber = i;
+            // })
+
+
         }
     }
     else if(moved){
@@ -112,6 +185,8 @@ function onCardMove(event, index) {
             const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
             planList.value[changeIndex].orderNumber = i;
         })
+
+
         // moved된 날의 전체 order를 다시 덮어씀
     }
     else if (removed) {
@@ -192,6 +267,7 @@ const initializeDays = (dayCount) => {
 const handleUpdateDates = ({ startDate, endDate }) => {
     // 여행 일수 계산
     const dayCount = calculateDateDiff(startDate, endDate);
+    dayCountRef.value = dayCount;
     // days 배열 초기화
     initializeDays(dayCount);
 };
