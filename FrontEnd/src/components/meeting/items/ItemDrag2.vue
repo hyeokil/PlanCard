@@ -5,11 +5,12 @@ import KaKaoMap from '@/components/common/map/KaKaoMap.vue'
 import { ref, computed, watch, onMounted, onBeforeMount } from "vue";
 import { useRoute, useRouter } from 'vue-router';
 import { WebsocketProvider } from 'y-websocket';
-import * as Y from 'yjs';
+// import * as Y from 'yjs';
 import _ from 'lodash'
 import { debounce } from "lodash";
 import { cardListGetApi } from '@/api/cardApi';
 import { planDetailCreateApi, planDetailListGetApi } from '@/api/planApi';
+import { doc, yCardList, yPlanList } from '@/api/yjs';
 
 const router = useRouter()
 const route = useRoute();
@@ -40,10 +41,10 @@ const newC = ref({
 const roomId = route.params.id; // URL에서 roomId 추출
 const wsUrl = `ws://localhost:1234`; // WebSocket 서버 URL
 
-const doc = new Y.Doc();// Yjs 배열 초기화
+// const doc = new Y.Doc();// Yjs 배열 초기화
 
-const yCardList = doc.getArray('cardList');
-const yPlanList = doc.getArray('planList');
+// const yCardList = doc.getArray('cardList');
+// const yPlanList = doc.getArray('planList');
 
 // WebSocket 프로바이더 초기화
 const wsProvider = new WebsocketProvider(wsUrl, roomId, doc);
@@ -51,13 +52,13 @@ const visible = ref(false);
 
 // yCardList의 변화를 감지하여 cardList 업데이트
 yCardList.observe(debounce(() => {
+    console.log('yCardList',yCardList._first.content.arr)
     cardList.value = yCardList.toArray();
     console.log('이벤트 발생 및 cardList 확인', cardList.value);
 }, 500));
 
 // yPlanList의 변화를 감지하여 planList 업데이트
 yPlanList.observe(debounce(() => {
-    console.log('yPlanList',yPlanList._first.content.arr)
     planList.value = yPlanList.toArray();
     console.log('이벤트 발생 및 planList 확인', planList.value);
 }, 500));
@@ -262,10 +263,11 @@ const moveCenter = (lat, lng) => {
 // 카드 데이터를 가져오는 메서드
 async function fetchCardList() {
     try {
+
         const response = await cardListGetApi(planId);
         if (response.data.dataHeader.successCode === 0) {
             const backendCardList = response.data.dataBody;
-            // 백엔드로부터 받아온 세부 계획을 기반으로 planList를 업데이트
+            // 백엔드로부터 받아온 세부 계획을 기반으로 card리스트를 업데이트
             cardListRaw.value = backendCardList.map(card => (
                 {
                 cardId: card.cardId,
@@ -276,6 +278,7 @@ async function fetchCardList() {
                 placeAddress: card.placeAddress,
                 placeName: card.placeName
             }));
+
             console.log('fetch후 cardListRaw 값', cardListRaw.value)
         } else {
             alert(response.data.dataHeader.resultMessage);
@@ -323,10 +326,15 @@ const handleUpdateDates = ({ startDate, endDate }) => {
 // 해당 여행 계획의 여행 세부 계획 리스트 가져오기 메서드
 async function fetchPlanDetailList() {
     try {
+        console.log(yPlanList)
+        const yPlanListArray = yPlanList.toArray();
         const response = await planDetailListGetApi(planId);
         if (response.data.dataHeader.successCode === 0) {
             const backendPlanDetails = response.data.dataBody;
-            console.log('backendPlanDetails',backendPlanDetails);
+            if (JSON.stringify(backendPlanDetails) !== JSON.stringify(yCardListArray)) {
+                planList.value = yPlanListArray
+            }
+            console.log('backendPlanDetails', backendPlanDetails);
             // 백엔드로부터 받아온 세부 계획을 기반으로 planList를 업데이트
             planList.value = backendPlanDetails.map(detail => (
                 {
