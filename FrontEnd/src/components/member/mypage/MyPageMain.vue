@@ -12,9 +12,9 @@
                 <img :src="accountStore.memberInfo?.image || '/로고 3.png'" alt="프로필 이미지">
             </div>
             <div id="userInfo">
-                <p style="font-size: 40pt; color: #3498db;">{{ accountStore.memberInfo?.nickname }}</p>
-                <p style="color: rgba(0, 0, 0, 0.5);"> {{ accountStore.memberInfo?.name }}</p>
-                <p style="color: rgba(0, 0, 0, 0.5);"> {{  accountStore.memberInfo?.email }}</p>
+                <p style="font-size: 30pt; color: #3498db;">{{ accountStore.memberInfo?.nickname }}</p>
+                <p style="color: rgba(0, 0, 0, 0.5);"> 이름 : {{ accountStore.memberInfo?.name }}</p>
+                <p style="color: rgba(0, 0, 0, 0.5);"> e-mail : {{  accountStore.memberInfo?.email }}</p>
             </div>
 
         </div>
@@ -99,7 +99,8 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center; /* 수직 가운데 정렬 */
-    width: 75%;
+    width: 50%;
+    height: 250px;
     margin: 0 auto; /* 좌우 마진을 auto로 설정하여 수평 가운데 정렬 */
     margin-bottom: 30px;
 
@@ -108,8 +109,8 @@ onMounted(() => {
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.3);
     background-color: #FFFFFF;
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -143,18 +144,20 @@ onMounted(() => {
   }
 
   img {
-    width: 270px;
-    height: 270px;
+    width: 100px;
+    height: 100px;
     opacity: 0.7; /* 이미지 투명도 설정 */
   }
 
   #myplanImg {
+    text-align: center;
     margin-bottom: 0;
     margin-right: 20px;
     border-radius: 15px; /* 라운드 모서리 적용 */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 적용 */
   }
   #infoModifyImg {
+    text-align: center;
     margin-bottom: 0;
     margin-left: 20px;
     margin-right: 20px;
@@ -162,6 +165,7 @@ onMounted(() => {
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 적용 */
   }
   #pwResettingImg {
+    text-align: center;
     margin-left: 20px;
     border-radius: 15px; /* 라운드 모서리 적용 */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 적용 */
@@ -169,7 +173,7 @@ onMounted(() => {
 
   p {
     /* font-weight: bold; */
-    font-size: xx-large;
+    font-size: large;
     display: flex;
     justify-content: center; /* 수평 가운데 정렬 */
     align-items: center; /* 수직 가운데 정렬 */

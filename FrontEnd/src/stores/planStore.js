@@ -3,12 +3,7 @@ import { defineStore } from "pinia";
 export const usePlanStore = defineStore(
   "planStore", //<-- 여기엔 파일의 이름을 써야함
   () => {
-    const plan = ref({
-      id: 1,
-      name: "첫번째 나들이",
-      startDate: new Date(2024, 1, 10),
-      endDate: new Date(2024, 1, 11),
-    });
+    const plan = ref({});
 
     const planMemberList = ref([]);
     const planDetailList = ref([]);

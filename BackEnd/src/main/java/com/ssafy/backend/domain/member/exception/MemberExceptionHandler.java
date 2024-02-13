@@ -12,6 +12,6 @@ public class MemberExceptionHandler {
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<Message<Void>> memberException(MemberException e) {
         log.error("{} is occurred", e.getMessage());
-        return ResponseEntity.ok().body(Message.fail(null, e.getErrorMessage()));
+        return ResponseEntity.status(e.getStatus()).body(Message.fail(null, e.getErrorMessage()));
     }
 }

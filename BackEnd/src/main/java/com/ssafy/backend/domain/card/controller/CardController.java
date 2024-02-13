@@ -34,24 +34,19 @@ public class CardController {
     @GetMapping("/{planId}/card")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<Message<List<CardResponseDto>>> getCards(@PathVariable Long planId) {
-        List<Card> cards = cardService.getCardsByPlanId(planId);
-
-        List<CardResponseDto> rslt = new ArrayList<>();
-        for (Card card : cards) {
-            rslt.add(new CardResponseDto(card.getId(), card.getPlace().getName(), card.getPlace().getAddress(), card.getMemo()));
-        }
-        return ResponseEntity.ok().body(Message.success(rslt));
+        List<CardResponseDto> cardList = cardService.getCardsByPlanId(planId);
+        return ResponseEntity.ok().body(Message.success(cardList));
     }
 
 
     //cardId로 카드 상세조회
-    @GetMapping("/card/{cardId}")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<CardResponseDto>> getCard(@PathVariable Long cardId) {
-        //카드 db에 저장된 카드 아이디에 해당하는 카드 조회
-        Card card = cardService.findById(cardId);
-        return ResponseEntity.ok().body(Message.success(new CardResponseDto(card.getId(), card.getPlace().getName(), card.getPlace().getAddress(), card.getMemo())));
-    }
+//    @GetMapping("/card/{cardId}")
+//    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+//    public ResponseEntity<Message<CardResponseDto>> getCard(@PathVariable Long cardId) {
+//        //카드 db에 저장된 카드 아이디에 해당하는 카드 조회
+//        Card card = cardService.findById(cardId);
+//        return ResponseEntity.ok().body(Message.success(new CardResponseDto(card.getId(), card.getPlace().getName(), card.getPlace().getAddress(), card.getMemo())));
+//    }
 
     //cardId로 카드 삭제
     @DeleteMapping("/card/{cardId}")

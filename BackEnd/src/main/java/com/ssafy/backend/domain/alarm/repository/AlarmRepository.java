@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AlarmRepository extends JpaRepository<Alarm, Long>, AlarmRepositoryCustom {
+    List<Alarm> findByToMemberId(Long memberId);
 }

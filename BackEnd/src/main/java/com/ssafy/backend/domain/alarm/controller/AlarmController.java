@@ -2,6 +2,7 @@ package com.ssafy.backend.domain.alarm.controller;
 
 import com.ssafy.backend.domain.alarm.dto.AlarmCreateRequestDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
+import com.ssafy.backend.domain.alarm.dto.AlarmFriendRequestDto;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.service.AlarmService;
 import com.ssafy.backend.domain.member.dto.MemberLoginActiveDto;
@@ -28,6 +29,14 @@ public class AlarmController {
         return ResponseEntity.ok().body(Message.success());
     }
 
+    @PostMapping("/friend/request")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<Void>> friendRequestAlarm(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
+                                                     @RequestBody AlarmFriendRequestDto friendRequestDto) {
+        alarmService.friendRequestAlarm(loginActiveDto.getId(), friendRequestDto);
+        return ResponseEntity.ok().body(Message.success());
+    }
+
 //    @GetMapping("/list")
 //    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
 //    public ResponseEntity<Message<SliceResponse>> getAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
@@ -50,6 +59,13 @@ public class AlarmController {
     public ResponseEntity<Message<Void>> acceptAlarm(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
                                                      @PathVariable Long alarmId, @PathVariable AlarmStatus action) {
         alarmService.handleAlarm(loginActiveDto.getId(), alarmId, action);
+        return ResponseEntity.ok().body(Message.success());
+    }
+
+    @DeleteMapping("/delete/all")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<Void>> deleteAlarmList(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto) {
+        alarmService.deleteAlarmList(loginActiveDto.getId());
         return ResponseEntity.ok().body(Message.success());
     }
 }

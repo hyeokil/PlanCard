@@ -2,9 +2,12 @@ package com.ssafy.backend.domain.alarm.service;
 
 import com.ssafy.backend.domain.alarm.dto.AlarmCreateRequestDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
+import com.ssafy.backend.domain.alarm.dto.AlarmFriendRequestDto;
 import com.ssafy.backend.domain.alarm.entity.Alarm;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmType;
+import com.ssafy.backend.domain.alarm.exception.AlarmError;
+import com.ssafy.backend.domain.alarm.exception.AlarmException;
 import com.ssafy.backend.domain.alarm.repository.AlarmRepository;
 import com.ssafy.backend.domain.fcm.service.FCMService;
 import com.ssafy.backend.domain.friend.repository.FriendshipRepository;
@@ -46,10 +49,28 @@ public class AlarmServiceImpl implements AlarmService {
     }
 
     @Override
-    public SliceResponse getAlarmList(Long memberId, Pageable pageable) {
-        Slice<AlarmDto> alarms = alarmRepository.findAlarmSliceByMemberId(memberId, pageable);
-        return SliceResponse.of(alarms);
+    public void friendRequestAlarm(Long fromMemberId, AlarmFriendRequestDto friendRequestDto) {
+        Member fromMember = memberRepository.findById(fromMemberId).orElseThrow(()
+        -> new MemberException(MemberError.NOT_FOUND_MEMBER));
+        Member toMember = memberRepository.findByEmail(friendRequestDto.getEmail()).orElseThrow(()
+        -> new MemberException(MemberError.NOT_FOUND_MEMBER));
+
+        if (fromMember.equals(toMember)) {
+            throw new AlarmException(AlarmError.CANNOT_FRIEND_REQUEST_SELF);
+        }
+
+        Alarm alarm = friendRequestDto.toEntity(fromMember, toMember);
+        alarmRepository.save(alarm);
+
+        fcmService.sendMessageTo(toMember.getId(), alarm.getContent());
     }
+
+
+//    @Override
+//    public SliceResponse getAlarmList(Long memberId, Pageable pageable) {
+//        Slice<AlarmDto> alarms = alarmRepository.findAlarmSliceByMemberId(memberId, pageable);
+//        return SliceResponse.of(alarms);
+//    }
 
     @Override
     public List<AlarmDto> getAlarmList(Long memberId, Long lastAlarmId, int limit) {
@@ -73,6 +94,12 @@ public class AlarmServiceImpl implements AlarmService {
             default:
                 throw new IllegalArgumentException("Invalid action: " + action);
         }
+    }
+
+    @Override
+    public void deleteAlarmList(Long memberId) {
+        List<Alarm> alarmList = alarmRepository.findByToMemberId(memberId);
+        alarmRepository.deleteAll(alarmList);
     }
 
     private void processAcceptAlarm(Alarm alarm, Long memberId) {

@@ -6,8 +6,8 @@
             <app-sidebar></app-sidebar>
         </div> -->
 
-        <div :class="{'layout-main-container':!planStore.isMeetingView, 'meeting-container':planStore.isMeetingView}">
-            <div :class="{'layout-main':!planStore.isMeetingView, 'meeting-container':planStore.isMeetingView}">
+        <div :class="{'layout-main-container':!planStore.isMeetingView&&accountsStore.isLogin, 'meeting-container':planStore.isMeetingView||!accountsStore.isLogin}">
+            <div :class="{'layout-main':!planStore.isMeetingView&&accountsStore.isLogin, 'meeting-container':planStore.isMeetingView||!accountsStore.isLogin}">
                 <router-view></router-view>
             </div>
             <div v-if="!planStore.isMeetingView">
@@ -27,10 +27,11 @@
     import AppTopbar from './AppTopbar.vue';
     import AppFooter from './AppFooter.vue';
     import { useLayout } from '@/layout/composables/layout';
+    import { useAccountsStore } from "@/stores/accountsStore";
     import { usePlanStore } from "@/stores/planStore";
-
     const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
+    const accountsStore = useAccountsStore()
     const planStore = usePlanStore()
     const outsideClickListener = ref(null);
     watch(isSidebarActive, (newVal) => {

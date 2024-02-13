@@ -34,6 +34,8 @@ public class Alarm extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AlarmStatus status;
 
+    private String url; // 화상 회의시 넘겨줄 url
+
     // status 관련 메서드들
     public void markAsRead() {
         if(this.status == AlarmStatus.UNREAD) {

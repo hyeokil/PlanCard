@@ -18,4 +18,5 @@ public class AlarmDto {
     private AlarmType type;
     private AlarmStatus status;
     private String content;
+    private String url;
 }
