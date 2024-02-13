@@ -23,18 +23,26 @@
           친구 목록</p>
         <v-btn id="requestBtn" @click="goFriendRequest()">친구 요청</v-btn>
       </div>
-      <div v-for="friend in friends" :key="friend.friendId" id="friendInfo">
-        <div>
-          <img :src="friend.image || '/로고 3.png'" alt="프로필 이미지" id="friendProfileImg">
-        </div>
-        <div>
-          <div style="display: flex;">
-            <p id="friendName">{{ friend.name }} </p>
-            <p :class="friend.status ? 'onLine' : 'offLine'">&nbsp;●</p>
+
+      <div v-if="friends.length > 0" >
+        <div v-for="friend in friends" :key="friend.friendId" id="friendInfo">
+          <div>
+            <img :src="friend.image || '/로고 3.png'" alt="프로필 이미지" id="friendProfileImg">
           </div>
-          <p id="friendEmail">{{ friend.email }}</p>
+          <div>
+            <div style="display: flex;">
+              <p id="friendName">{{ friend.name }} </p>
+              <p :class="friend.status ? 'onLine' : 'offLine'">&nbsp;●</p>
+            </div>
+            <p id="friendEmail">{{ friend.email }}</p>
+          </div>
         </div>
       </div>
+
+      <div v-else>
+        <p style="text-align: center; color: rgba(0, 0, 0, 0.5); padding: 10px;">친구가 없습니다.</p>
+      </div>
+
     </div>
     <v-divider></v-divider>
     <v-card-actions>

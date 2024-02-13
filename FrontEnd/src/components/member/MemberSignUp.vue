@@ -303,6 +303,16 @@ const imageUpload = async (file) => {
     width: 430px;
     height: 50%;
     padding: 40px;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+  #signUpTitle {
+    color: #3498db;
+    /* font-weight: bold; */
+    padding-bottom: 40px;
   }
   #signUpForm {
     display: flex;

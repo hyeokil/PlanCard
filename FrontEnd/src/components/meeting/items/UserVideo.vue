@@ -25,7 +25,10 @@
   // clientData는 computed로 진행됨
   const clientData = computed(() => {
     const { clientData } = getConnectionData();
-    // console.log(clientData);
+    // 5글자 이상이면 초과분을 '...'으로 축약
+    if (clientData.length > 5) {
+      return clientData.slice(0, 5) + '...';
+    }
     return clientData;
   });
 

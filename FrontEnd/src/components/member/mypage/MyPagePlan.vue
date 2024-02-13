@@ -167,7 +167,7 @@ h1 {
   padding: 2%;
   padding-top: 1%;
   padding-bottom: 1%;
-  width: 100px;
+  /* width: 100px; */
   height: 40px;
 }
 
@@ -183,7 +183,7 @@ h1 {
   padding: 2%;
   padding-top: 1%;
   padding-bottom: 1%;
-  width: 250px;
+  /* width: 250px; */
   height: 40px;
 }
 
@@ -222,7 +222,7 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 998;
-  max-height: 70vh;
+  max-height: 72vh;
   overflow-y: auto;
 }
 

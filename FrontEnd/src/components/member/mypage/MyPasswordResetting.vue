@@ -25,9 +25,7 @@
               <input type="password" id="changePassword2" v-model.trim="changePassword2" placeholder="새로운 비밀번호 확인">
             </div>
             
-            <div class="box, card p-fluid"  id="resettingSubmit" style=" text-align: center;">
-              <input type="submit" value="변경하기">
-            </div>
+            <input type="submit" value="변경하기" class="box, card p-fluid"  id="resettingSubmit" style=" text-align: center;">
           </form>
         </div>
       </div>
@@ -79,7 +77,7 @@
 
 <style scoped>
   h1 {
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #separator {
     border: none;
@@ -106,7 +104,7 @@
   }
   #passwordResettingTitle {
     color: #3498db;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   #passwordResettingForm {
     display: flex;
@@ -118,6 +116,7 @@
   #nowPassword, #changePassword1, #changePassword2 {
     height: 35px;
     width: 250px;
+    padding-left: 10px;
   }
   #nowPasswordInput, #changePassword1Input, #changePassword2Input {
     background-color: rgba(245, 245, 245, 0.1);
@@ -138,10 +137,15 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: medium;
-    height: 20px;
-    padding: 20px;
+    height: 40px;
+    padding: 0px;
+    transition: transform 0.2s, border-color 0.2s; /* 부드러운 전환 효과를 위한 설정 */
+    cursor: pointer;
+  }
+  #resettingSubmit input[type="submit"] {
+    height: 100%; /* 버튼의 높이를 기준으로 텍스트를 수직 정렬 */
   }
   #resettingSubmit:hover {
     transform: scale(1.05);

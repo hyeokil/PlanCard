@@ -48,10 +48,10 @@
           </button>
 
           <!-- 캠,오디오 선택 옵션 -->
-          <select name="cameras" @change="handleCameraChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;">
+          <select name="cameras" @change="handleCameraChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;" class="font-content">
             <option disabled>Camera Select</option>
           </select>
-          <select name="audios" @change="handleAudioChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;">
+          <select name="audios" @change="handleAudioChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;" class="font-content">
             <option disabled>MIC Select</option>
           </select>
         </div>
