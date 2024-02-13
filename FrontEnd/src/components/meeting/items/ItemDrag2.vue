@@ -332,7 +332,7 @@ async function fetchPlanDetailList() {
         const response = await planDetailListGetApi(planId);
         if (response.data.dataHeader.successCode === 0) {
             const backendPlanDetails = response.data.dataBody;
-            if (JSON.stringify(backendPlanDetails) !== JSON.stringify(yCardListArray)) {
+            if (JSON.stringify(backendPlanDetails) !== JSON.stringify(yPlanListArray)) {
                 planList.value = yPlanListArray
             }
             console.log('backendPlanDetails', backendPlanDetails);
