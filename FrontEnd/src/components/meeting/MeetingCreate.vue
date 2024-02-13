@@ -11,11 +11,22 @@
           <div style="width: 295px;">
             <h3>여행 이름</h3>
             <input type="text" class="box, card p-fluid font-content" id="tripTitleInput" v-model.trim="tripTitle" placeholder="여행 이름을 알려주세요">
-            <div>
+            <div class="font-content">
               <h3>여행 일정 선택</h3>
               <Calendar v-model="selectedDates" dataFormat="yy/mm/dd" selectionMode="range" :manualInput="false"
-                showButtonBar locale="ko-KR" placeholder="여행 일정을 선택하세요" class="field box card p-fluid"
-                id="selectDateCalendar" />
+                showButtonBar locale="ko-KR" placeholder="여행 일정을 선택하세요" class="field box font-content"
+                id="selectDateCalendar"
+                breakpoint="10px"
+                :inputStyle="{'border-radius':'5px', 'width':'500px'}"
+                :panelStyle="{
+                  'width':'300px', 
+                  'display':'flex', 
+                  'flex-direction':'column', 
+                  'align-items':'center', 
+                  'justify-content':'center', 
+                  'font-family':'sans-serif'
+                  }"
+              />
             </div>
           </div>
           <div style="width: 295px;">
@@ -294,6 +305,9 @@ h3 {
   padding: 15px;
   margin-bottom: 10px;
 }
+#tripTitleInput:focus {
+  outline: 2px solid #3498DB;
+}
 
 #selectDateCalendar {
   background-color: rgba(245, 245, 245, 0.1);
@@ -306,7 +320,6 @@ h3 {
   margin-bottom: 10px;
   justify-content: center;
 }
-
 
 
 

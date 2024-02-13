@@ -2,8 +2,10 @@
   <div class="layout-topbar" v-if="!isMeeting">
     <!-- 로고 -->
     <router-link :to="{ name: 'main' }" class="layout-topbar-logo">
-      <img src="/로고 3.png" alt="로고" style="height: 100%; width: 55px; border-radius: 50%;" />
-      <span>Plan Card</span>
+      <div class="d-flex align-items-end">
+        <img src="/로고 3.png" alt="로고" style="height: 100%; width: 45px; border-radius: 50%;" />
+        <span style="margin-left: 0.1rem;">Plan Card</span>
+      </div>
     </router-link>
 
     <v-spacer></v-spacer>
