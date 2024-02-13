@@ -180,7 +180,6 @@ onUnmounted(() => {
   padding: 7px;
   top: 60px;
 }
-
 #profileInfo {
   width: 100%;
   border-radius: 15px;
@@ -201,12 +200,10 @@ onUnmounted(() => {
   border: 1px solid rgba(52, 152, 219, 0.5);
   font-size: 15px;
 }
-
 #myPageBtn:hover {
   transform: scale(1.05);
-  border-color: #3498db;
+    border-color: #3498db;
 }
-
 #logOutBtn {
   text-align: center;
   color: rgba(0, 0, 0, 0.5);
@@ -221,7 +218,6 @@ onUnmounted(() => {
   /* border: 1px solid rgba(52, 152, 219, 0.5); */
   font-size: 15px;
 }
-
 #logOutBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -254,7 +250,6 @@ onUnmounted(() => {
   margin-top: 5px;
   padding: 3px 10px 3px 10px;
 }
-
 #requestBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -265,20 +260,17 @@ onUnmounted(() => {
   align-items: center;
   margin-bottom: -10px;
 }
-
 #friendProfileImg {
   border-radius: 50%;
   width: 50px;
   height: 50px;
 }
-
 #friendName {
   color: #3498DB;
   font-size: 18px;
   /* font-weight: bold; */
   margin-bottom: 0;
 }
-
 #friendEmail {
   color: rgba(0, 0, 0, 0.5);
   font-size: 13px;
@@ -286,11 +278,9 @@ onUnmounted(() => {
   margin-bottom: 5px;
   margin-left: 1px;
 }
-
 .onLine {
   color: #2ECC71;
 }
-
 .offLine {
   color: #808080;
 }
@@ -308,7 +298,6 @@ onUnmounted(() => {
   border: 1px solid rgba(0, 0, 0, 0.1);
   top: 15px;
 }
-
 #closeBtn:hover {
   transform: scale(1.05);
   border-color: #3498db;
@@ -328,7 +317,6 @@ onUnmounted(() => {
   z-index: 997;
   /* 모달보다 한 단계 낮은 z-index */
 }
-
 #friendRequestBox {
   position: fixed;
   top: 30%;
@@ -352,7 +340,6 @@ onUnmounted(() => {
   padding: 10px;
   padding-bottom: 0;
 }
-
 #friendRequestInput {
   background-color: rgba(245, 245, 245, 0.1);
   width: 300px;
@@ -363,7 +350,6 @@ onUnmounted(() => {
   padding: 8px;
   font-size: large;
 }
-
 #friendRequestSubmit {
   width: 100px;
   height: 30px;
@@ -378,12 +364,10 @@ onUnmounted(() => {
   margin-top: 5px;
   line-height: 0px;
 }
-
 #friendRequestSubmit:hover {
   transform: scale(1.05);
   border-color: #3498db;
 }
-
 #friendsRequestcloseBtn {
   text-align: center;
   color: #FFFFFF;

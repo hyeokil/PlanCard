@@ -103,8 +103,9 @@ const activeTab = ref('');
 .chat {
     position: absolute;
     background-color: #dfecf7 ;
-    height: 80vh;
+    height: 69.5vh;
     width: 100%;
     bottom: 0px;
     left: 0px;
-}</style>
+}
+</style>

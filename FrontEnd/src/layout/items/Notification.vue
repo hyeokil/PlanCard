@@ -4,7 +4,7 @@
       <p id="notificatonSet">알림 내역</p>
       <v-btn id="clearBtn" @click="deleteAlarmAll()">모두 지우기</v-btn>
     </div>
-    <div id="notificationsList" ref="notificationsList" @scroll="onScroll">
+    <div v-if="notifications.length > 0" id="notificationsList" ref="notificationsList" @scroll="onScroll">
       <div id="notificationDivider1"></div>
       <div v-for="notification in notifications" :key="notification.index" style="width: 95%;">
         <div style="display: flex;">
@@ -16,6 +16,9 @@
         </div>
         <div id="notificationDivider2"></div>
       </div>
+    </div>
+    <div v-else id="notificationsList">
+      <p style="text-align: center; color: rgba(0, 0, 0, 0.5); padding: 10px;">수신된 알림이 없습니다.</p>
     </div>
     <v-card-actions>
       <v-btn variant="text" @click="$emit('closeNotification')" id="closeBtn">

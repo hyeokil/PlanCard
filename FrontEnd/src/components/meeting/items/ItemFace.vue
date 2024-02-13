@@ -16,7 +16,8 @@
           </p> -->
           <p>
             <button @click="joinSession">
-              캠 켜기
+              <span>cam&nbsp;</span>
+              <span style="color: #3498DB;">ON</span>
             </button>
           </p>
         </div>
@@ -27,18 +28,55 @@
     <!-- session이 true일 때! 즉, 입장했을 때 -->
     <div id="session" v-if="session">
 
-      <div id="session-header">
+      <div id="session-header" style="display: flex;">
         <!-- <h1 id="session-title">{{ mySessionId }}</h1> -->
-        <input type="button" id="buttonLeaveSession" @click="leaveSession" value="캠 및 오디오 끄기" />
-      </div>
+        <button id="buttonLeaveSession" @click="leaveSession">
+          <span>cam&nbsp;</span>
+          <span style="color: red;">OFF</span>
+        </button>
+        <!-- <input type="button" id="buttonLeaveSession" @click="leaveSession" value="cam OFF" /> -->
+        
+        <v-spacer></v-spacer>
 
-      <!-- 내 캠 -->
-      <!-- <div id="main-video">
-        <UserVideo :stream-manager="mainStreamManagerComputed" />
+        <div style="display: flex; align-items: center;">
+          <!-- 캠활성화, 음소거 버튼 -->
+          <button id="camera-activate" @click="handleCameraBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.5) solid; margin-right: 3px;">
+            <img src="/녹화on.png" alt="녹화on" style="width: 100%; height: 100%; padding: 2px;">
+          </button>
+          <button id="mute-activate" @click="handleMuteBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.5) solid; margin-right: 3px;">
+            <img src="/녹음on.png" alt="녹음on" style="width: 100%; height: 100%; padding: 2px;">
+          </button>
+
+          <!-- 캠,오디오 선택 옵션 -->
+          <select name="cameras" @change="handleCameraChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;">
+            <option disabled>Camera Select</option>
+          </select>
+          <select name="audios" @change="handleAudioChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;">
+            <option disabled>MIC Select</option>
+          </select>
+        </div>
+
+
+
+        <!-- 내 캠 -->
+        <!-- <div id="main-video">
+          <UserVideo :stream-manager="mainStreamManagerComputed" />
       </div> -->
+    </div>
+    <hr>
 
+
+      
+      
+      
+    
+
+
+
+
+      
       <!-- 모든 캠 -->
-      <div id="video-container">
+      <div  class="card p-fluid" id="video-container">
         <UserVideo :stream-manager="publisherComputed" @click.native="updateMainVideoStreamManager(publisher)" />
 
         <UserVideo v-for="sub in subscribersComputed" :key="sub.stream.connection.connectionId" :stream-manager="sub"
@@ -60,19 +98,7 @@
         </form>
       </div> -->
 
-      <!-- 캠활성화, 음소거 버튼 -->
-      <button id="camera-activate" @click="handleCameraBtn" style="border: 3px black solid;">캠 비활성화</button>
-      <button id="mute-activate" @click="handleMuteBtn" style="border: 3px black solid;">마이크 활성화</button>
 
-      <!-- 캠,오디오 선택 옵션 -->
-      <div>
-        <select name="cameras" @change="handleCameraChange" style="border: 3px black solid;">
-          <option disabled>사용할 카메라를 선택하세요</option>
-        </select>
-        <select name="audios" @change="handleAudioChange" style="border: 3px black solid;">
-          <option disabled>사용할 마이크를 선택하세요</option>
-        </select>
-      </div>
 
     </div>
 
@@ -195,8 +221,8 @@ async function joinSession() {
         console.error("There was an error connecting to the session:", error);
       });
   }
-
-
+  
+  await getMedia();
 
   window.addEventListener("beforeunload", leaveSession)
 }
@@ -328,9 +354,9 @@ function handleCameraBtn() {
   camerOff.value = !camerOff.value;
   const cameraActivate = document.getElementById('camera-activate')
   if (camerOff.value) {   //카메라 비활성화상태
-    cameraActivate.innerText = '캠 활성화'
+    cameraActivate.innerHTML = '<img src="/녹화off.png" alt="녹화off" style="width: 100%; height: 100%; padding: 2px;">'
   } else {                //카메라 활성화상태
-    cameraActivate.innerText = '캠 비활성화'
+    cameraActivate.innerHTML = '<img src="/녹화on.png" alt="녹화on" style="width: 100%; height: 100%; padding: 2px;">'
   }
 
   // 카메라 작동 상태를 적용
@@ -345,9 +371,9 @@ function handleMuteBtn() {
   muted.value = !muted.value;
   const muteActivate = document.getElementById('mute-activate')
   if (muted.value) {   //마이크 활성화상태
-    muteActivate.innerText = '마이크 비활성화'
+    muteActivate.innerHTML = '<img src="/녹음off.png" alt="녹음off" style="width: 100%; height: 100%; padding: 2px;">'
   } else {                //마이크 비활성화상태
-    muteActivate.innerText = '마이크 활성화'
+    muteActivate.innerHTML = '<img src="/녹음on.png" alt="녹음on" style="width: 100%; height: 100%; padding: 2px;">'
   }
   // 음소거 설정을 적용
   publisher.value.publishAudio(!muted.value);
@@ -407,11 +433,21 @@ async function replaceAudioTrack(deviceId) {
 </script>
 
 <style scoped>
+#main-container {
+  margin: 0;
+}
 #video-container {
   width: 100%;         /* 컨테이너의 너비를 부모 요소의 100%로 설정 */
   height: auto;        /* 높이를 자동으로 조정 */
-  overflow: hidden;    /* 내용이 넘칠 경우 숨김 처리 */
+  overflow: auto;    /* 내용이 넘칠 경우 숨김 처리 */
   position: relative;  /* 비디오 포지셔닝을 위한 상대 위치 지정 */
+
+  display: flex;
+
+  padding: 5px;
+  padding-bottom: 0;
+
+  margin-bottom: 0;
 }
 
 .video {

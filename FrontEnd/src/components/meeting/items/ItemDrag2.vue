@@ -70,7 +70,7 @@ function goMain() {
 function onCardMove(event, index) {
     console.log(event);
     //planList에 day추가용
-    console.log('index',index);
+    // console.log('index',index);
 
     const { added, removed, moved } = event;
     if (added) {
