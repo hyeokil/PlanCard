@@ -1,107 +1,97 @@
 <template>
   <div class="card p-fluid" style="justify-content: center;">
-      <div>
-          <h2 style="color: black;">미팅 생성</h2>
-      </div>
-      <hr id="separator">
+    <div>
+      <h2 style="color: black;">미팅 생성</h2>
+    </div>
+    <hr id="separator">
 
-      <div>    
-          <form @submit.prevent="goMeeting" style="width: 800px;">
-            <div style="display: flex;
+    <div>
+      <form @submit.prevent="goMeeting" style="width: 800px;">
+        <div style="display: flex;
              /* justify-content: space-between; */
              ">
-              <div style="width: 295px;">
-                <h3>여행 이름</h3>
-                <input type="text" class="box, card p-fluid font-content" id="tripTitleInput" v-model.trim="tripTitle" placeholder="여행 이름을 알려주세요">
-                
-                <h3>여행 일정 선택</h3>
-                <Calendar 
-                  v-model="selectedDates" 
-                  dataFormat="yy/mm/dd"
-                  selectionMode="range" 
-                  :manualInput="false"
-                  showButtonBar
-                  locale="ko-KR"
-                  placeholder="여행 일정을 선택하세요"
-                  class="field box card p-fluid"
-                  id="selectDateCalendar"
-                  />
-              </div>
-            
-              <div style="width: 295px;">
-                <h3>친구 선택 ({{ selectedFriends.length }})</h3>
-                
-                <div style="display: flex; justify-content: space-between;">
+          <div style="width: 295px;">
+            <h3>여행 이름</h3>
+            <input type="text" class="box, card p-fluid font-content" id="tripTitleInput" v-model.trim="tripTitle"
+              placeholder="여행 이름을 알려주세요">
 
-                  <div>
-                    <div class="box, card p-fluid" id="selectFriendsDiv">
-                      <div style="width: 150px; ;">
-                        <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id" class="font-content" id="selectedFriend" @click="removeFriend(selectedFriend)">
-                          <p style="margin: 0;">{{ selectedFriend.name }}</p>
-                          <!-- <i class="pi pi-times"></i> -->
-                        </v-chip>
-                      </div>
-                    </div>
+            <h3>여행 일정 선택</h3>
+            <Calendar v-model="selectedDates" dataFormat="yy/mm/dd" selectionMode="range" :manualInput="false"
+              showButtonBar locale="ko-KR" placeholder="여행 일정을 선택하세요" class="field box card p-fluid"
+              id="selectDateCalendar" />
+          </div>
 
-                    <div style="display: flex;">
+          <div style="width: 295px;">
+            <h3>친구 선택 ({{ selectedFriends.length }})</h3>
 
-                      <div class="box, card p-fluid" id="FriendsDiv">
-                        <div v-for="friend in friends" :key="friend.id" @click="addFriend(friend)" id="friendList">
-                          <p class=" font-content"
-                          style="
+            <div style="display: flex; justify-content: space-between;">
+
+              <div>
+                <div class="box, card p-fluid" id="selectFriendsDiv">
+                  <div style="width: 150px; ;">
+                    <v-chip closable v-for="selectedFriend in selectedFriends" :key="selectedFriend.id"
+                      class="font-content" id="selectedFriend" @click="removeFriend(selectedFriend)">
+                      <p style="margin: 0;">{{ selectedFriend.name }}</p>
+                      <!-- <i class="pi pi-times"></i> -->
+                    </v-chip>
+                  </div>
+                </div>
+
+                <div style="display: flex;">
+
+                  <div class="box, card p-fluid" id="FriendsDiv" ref="FriendsDiv" @scroll="handleScroll">
+                    <div v-for="friend in friends" :key="friend.friendId" @click="addFriend(friend)" id="friendList">
+                      <p class=" font-content" style="
                             font-weight: bold;
                             font-size: medium;
                             color: #3498DB;
                             margin-right: 10px;
                             margin-bottom: 7px;">{{ friend.name }}</p>
-                        <p 
-                          class=" font-content"
-                          style="
+                      <p class=" font-content" style="
                           font-size: small;
                           margin-top: 2px;
                           color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
-                        </div>
-                      </div>
+                    </div>
+                  </div>
 
-                      <div>
-                        <input class="box, card p-fluid font-content" id="searchFriendsDiv" type="text" v-model="searchText" placeholder="이메일 검색">
-                        <div class="box, card p-fluid" id="FriendsDiv2">
-                          <div v-for="friend in filteredFriends" :key="friend.id" @click="addFriend(friend)" id="friendList">
-                            <p class=" font-content"
-                            style="
+                  <div>
+                    <input class="box, card p-fluid font-content" id="searchFriendsDiv" type="text" v-model="searchText"
+                      placeholder="이메일 검색">
+                    <div class="box, card p-fluid" id="FriendsDiv2">
+                      <div v-for="friend in filteredFriends" :key="friend.friendId" @click="addFriend(friend)"
+                        id="friendList">
+                        <p class=" font-content" style="
                               font-weight: bold;
                               font-size: medium;
                               color: #3498DB;
                               margin-right: 10px;
                               margin-bottom: 7px;">{{ friend.name }}</p>
-                          <p 
-                            class=" font-content"
-                            style="
+                        <p class=" font-content" style="
                             font-size: small;
                             color: rgba(0, 0, 0, 0.5);">{{ friend.email }}</p>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
-  
-
                 </div>
-
-
               </div>
+
+
             </div>
-              
-              <div>
-                <input class="card p-fluid" type="submit" id="createSubmit" value = 시작하기>
-              </div>
-              <div style="margin-top: 10px;">
-                <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
-                  닫기
-                </v-btn>
-              </div>
 
-  
+
+          </div>
+        </div>
+
+        <div>
+          <input class="card p-fluid" type="submit" id="createSubmit" value=시작하기>
+        </div>
+        <div style="margin-top: 10px;">
+          <v-btn class="card p-fluid" id="closeBtn" @click="$emit('closeMeetingCreate')">
+            닫기
+          </v-btn>
+        </div>
+
+
 
       </form>
     </div>
@@ -113,16 +103,22 @@
 
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
 import Calendar from 'primevue/calendar'
 import { useRouter } from "vue-router";
 import { planCreateApi } from "@/api/planApi"; // planApi.js에서 API 함수를 import
+import { friendListGetApi } from '@/api/friendApi';
 
 const router = useRouter();
 
 const tripTitle = ref("");  // 여행 이름
 const selectedDates = ref(null); // 선택된 여행 일정
 const selectedFriends = ref([]);  // 선택된 친구
+
+const friends = ref([]); // 현재 페이지에 표시된 친구들의 목록
+const page = ref(0); // 현재 페이지 번호
+const size = ref(10); // 페이지당 아이템 수
+const isLastPage = ref(false); // 마지막 페이지 여부
 
 
 const goMeeting = async () => {
@@ -183,16 +179,18 @@ const users = ref([
 ]);
 
 // 친구 리스트 dummy
-const friends = ref([
-  { id: 2, name: '김재훈1', email: "rlawogns1@ssafy.com" },
-  { id: 3, name: '김재훈2', email: "rlawogns2@ssafy.com" },
-  { id: 4, name: '김재훈3', email: "rlawogns3@ssafy.com" },
-  { id: 5, name: '김재훈4', email: "rlawogns4@ssafy.com" },
-  { id: 6, name: '김재훈5', email: "rlawogns5@ssafy.com" },
-  { id: 7, name: '김재훈6', email: "rlawogns6@ssafy.com" },
-  { id: 8, name: '김재훈7', email: "rlawogns7@ssafy.com" },
-  { id: 9, name: '김재훈8', email: "rlawogns8@ssafy.com" },
-]);
+// const friends = ref([
+//   { id: 2, name: '김재훈1', email: "rlawogns1@ssafy.com" },
+//   { id: 3, name: '김재훈2', email: "rlawogns2@ssafy.com" },
+//   { id: 4, name: '김재훈3', email: "rlawogns3@ssafy.com" },
+//   { id: 5, name: '김재훈4', email: "rlawogns4@ssafy.com" },
+//   { id: 6, name: '김재훈5', email: "rlawogns5@ssafy.com" },
+//   { id: 7, name: '김재훈6', email: "rlawogns6@ssafy.com" },
+//   { id: 8, name: '김재훈7', email: "rlawogns7@ssafy.com" },
+//   { id: 9, name: '김재훈8', email: "rlawogns8@ssafy.com" },
+// ]);
+
+
 // 친구 검색어
 const searchText = ref("");
 
@@ -200,7 +198,7 @@ const searchText = ref("");
 // 검색어를 기반으로 친구 필터링
 const filteredFriends = computed(() => {
   if (!searchText.value) {
-      return;
+    return;
   } else {
 
     // 유저 목록 중 이메일이 맞는 친구 필터링 (동명이인 이슈로 유저는 이름으로 서치 x)
@@ -214,20 +212,62 @@ const filteredFriends = computed(() => {
 });
 
 // 친구를 선택하여 selectedFriends 배열에 추가
-  const addFriend = (friend) => {
-    if (!selectedFriends.value.some(fr => fr.id === friend.id)) {
-      selectedFriends.value.unshift(friend);
-    }
+const addFriend = (friend) => {
+  if (!selectedFriends.value.some(fr => fr.friendId === friend.friendId)) {
+    selectedFriends.value.unshift(friend);
   }
-  // 선택된 친구를 selectedFriends 배열에서 삭제
-  const removeFriend = (friend) => {
-    const index = selectedFriends.value.findIndex(fr => fr.id === friend.id);
-    if (index !== -1) {
-      selectedFriends.value.splice(index, 1);
+}
+// 선택된 친구를 selectedFriends 배열에서 삭제
+const removeFriend = (friend) => {
+  const index = selectedFriends.value.findIndex(fr => fr.id === friend.id);
+  if (index !== -1) {
+    selectedFriends.value.splice(index, 1);
+  }
+}
+
+// 스크롤 이벤트 핸들러
+const handleScroll = () => {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  if (scrollTop + clientHeight >= scrollHeight - 5) { // 스크롤이 거의 끝에 도달하면
+    fetchFriendList(); // 다음 페이지의 친구 목록을 불러옴
+  }
+};
+
+// 친구 목록을 불러오는 메서드
+const fetchFriendList = async () => {
+  if (isLastPage.value) return; // 마지막 페이지이면 더 이상 불러오지 않음
+  try {
+    const response = await friendListGetApi(page.value, size.value);
+    if (response.data.dataHeader.successCode === 0) {
+      friends.value.push(...response.data.dataBody.contents); // 받아온 친구 목록을 추가
+      await nextTick(); // DOM 갱신을 기다립니다.
+      isLastPage.value = !response.data.dataBody.hasNext; // 다음 페이지 존재 유무 업데이트
+      page.value++; // 다음 페이지로 이동
+
+    } else {
+      alert(response.data.dataHeader.resultMessage);
+    }
+  } catch (error) {
+    if (error.response) {
+      console.error(error);
+      const errorResponse = error.response.data;
+      alert(errorResponse.dataHeader.resultMessage);
+    } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      // 네트워크 에러 처리
+      alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
     }
   }
 
+  console.log(friends.value);
+};
 
+onMounted(() => {
+  fetchFriendList();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
 
@@ -329,6 +369,7 @@ h3 {
 
   overflow-y: auto;
 }
+
 #FriendsDiv2 {
   background-color: rgba(245, 245, 245, 0.1);
   width: 245px;
@@ -361,10 +402,12 @@ h2 {
   padding: 20px;
   line-height: 0px;
 }
+
 #createSubmit:hover {
   transform: scale(1.05);
   border-color: #3498db;
 }
+
 #closeBtn {
   width: 100%;
   display: flex;
@@ -384,6 +427,4 @@ h2 {
   cursor: pointer;
   display: flex;
 }
-
-
 </style>

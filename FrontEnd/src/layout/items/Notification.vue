@@ -87,7 +87,7 @@ const fetchAlarms = async () => {
     }
   }
 
-  console.log(notifications.value);
+  // console.log(notifications.value);
 };
 
 // 알람 처리 메서드 (수락/거절)

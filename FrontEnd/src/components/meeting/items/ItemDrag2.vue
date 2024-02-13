@@ -2,11 +2,11 @@
 import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
 import draggable from "@/vuedraggable";
 import KaKaoMap from '@/components/common/map/KaKaoMap.vue'
-import { ref, computed, watch, onMounted, onBeforeMount } from "vue";
+import { ref, computed, watch, onBeforeMount, onUnmounted } from "vue";
 import { useRoute, useRouter } from 'vue-router';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
-import _ from 'lodash'
+import { debounce } from 'lodash';
 import { cardListGetApi } from '@/api/cardApi';
 import { planDetailCreateApi, planDetailListGetApi } from '@/api/planApi';
 
@@ -22,12 +22,12 @@ const cardToPlan = ref(false)
 const planList = ref([]);
 watch(() => planList,
     (newplanList) => {
-    cardList.value = cardListRaw.value.filter(data => planList.value.reduce((acc, item) => acc && (item.cardId !== data.cardId), true))
-    cardHidden.value = cardListRaw.value.map(data => planList.value.reduce((acc, item) => acc || (item.cardId === data.cardId), false))
-}, {deep:true}, {immediate:true})
+        cardList.value = cardListRaw.value.filter(data => planList.value.reduce((acc, item) => acc && (item.cardId !== data.cardId), true))
+        cardHidden.value = cardListRaw.value.map(data => planList.value.reduce((acc, item) => acc || (item.cardId === data.cardId), false))
+    }, { deep: true }, { immediate: true })
 const days = ref([]);
 const checkDay = ref(0);
-const filteredPlan = computed(() => planList.value.filter((item) => item.day === checkDay.value+1).sort((a, b) => a.orderNumber - b.orderNumber))
+const filteredPlan = computed(() => planList.value.filter((item) => item.day === checkDay.value + 1).sort((a, b) => a.orderNumber - b.orderNumber))
 const newC = ref({
     lat: 37.5659316,
     lng: 126.9744791
@@ -38,12 +38,49 @@ const wsUrl = `ws://localhost:1234`; // WebSocket 서버 URL
 
 const doc = new Y.Doc();// Yjs 배열 초기화
 
-const yArray = doc.getArray('travelPlan');
+const yCardList = doc.getArray('cardList');
+const yPlanList = doc.getArray('planList');
+
 
 // WebSocket 프로바이더 초기화
 const wsProvider = new WebsocketProvider(wsUrl, roomId, doc);
 const visible = ref(false);
 
+// yCardList의 변화를 감지하여 cardList 업데이트
+yCardList.observe(debounce(() => {
+    cardList.value = yCardList.toArray();
+    console.log('이벤트 발생 및 cardList 확인', cardList.value);
+}, 500));
+
+// yPlanList의 변화를 감지하여 planList 업데이트
+yPlanList.observe(debounce(() => {
+    planList.value = yPlanList.toArray();
+    console.log('이벤트 발생 및 planList 확인', planList.value);
+}, 500));
+
+
+// cardList의 변화 감지 및 처리
+watch(cardList, (newVal, oldVal) => {
+    // yCardList와 로컬 cardList가 서로 다를 때만 업데이트를 진행합니다.
+    // 배열을 비교하기 위해 간단한 JSON 문자열 비교를 사용합니다.
+    // 주의: 이 방법은 배열 내 객체 순서가 중요하며, 대규모 데이터에서는 성능 저하를 일으킬 수 있습니다.
+    const yCardListArray = yCardList.toArray();
+    if (JSON.stringify(newVal) !== JSON.stringify(yCardListArray)) {
+        // yCardList를 새로운 값으로 업데이트하기 전에 기존의 모든 항목을 삭제합니다.
+        yCardList.delete(0, yCardList.length);
+        // 새로운 값으로 yCardList를 업데이트합니다.
+        yCardList.push(newVal);
+    }
+}, { deep: true });
+
+
+watch(planList, (newVal, oldVal) => {
+    const yPlanListArray = yPlanList.toArray();
+    if (JSON.stringify(newVal) !== JSON.stringify(yPlanListArray)) {
+        yPlanList.delete(0, yPlanList.length);
+        yPlanList.push(newVal);
+    }
+}, { deep: true });
 
 
 // draggable js에 필요한 거////////////////////////////
@@ -58,19 +95,15 @@ function pullFunction() {                           //
 
 
 
-function saveCards() {
-    // axios 연결
-}
-
 function goMain() {
     router.push({ name: 'mypage-myplan' })
 }
 
 
 function onCardMove(event, index) {
-    console.log(event);
+    // console.log(event);
     //planList에 day추가용
-    console.log('index',index);
+    // console.log('index',index);
 
     const { added, removed, moved } = event;
     if (added) {
@@ -79,11 +112,11 @@ function onCardMove(event, index) {
         const indexToRemovePlan = planList.value.findIndex(plan => plan.cardId === cardId);
         const indexToRemove = cardList.value.findIndex(card => card.cardId === cardId);
 
-        console.log('indexToRemove',indexToRemove)
+        console.log('indexToRemove', indexToRemove)
         if (indexToRemove !== -1) {
             const [cardToAdd] = cardList.value.splice(indexToRemove, 1);
             const newCard = {
-                id: null,
+                id: null,   // 
                 cardId: cardToAdd.cardId, // 여기서는 예시로 cardId만 매핑했습니다. 실제로는 모든 필요한 필드를 매핑해야 합니다.
                 placeName: cardToAdd.placeName,
                 placeAddress: cardToAdd.placeAddress,
@@ -95,34 +128,52 @@ function onCardMove(event, index) {
                 memo: cardToAdd.memo,
             };
             planList.value.push(newCard);
-            days.value[index].forEach((item, i) => {
-            const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
-            planList.value[changeIndex].orderNumber = i;
-        })
-        } else {
-            planList.value[indexToRemovePlan].day = index + 1;
+
+            // Yjs 상태에도 동일한 카드 추가
+            yPlanList.push(newCard);
+
             days.value[index].forEach((item, i) => {
                 const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
                 planList.value[changeIndex].orderNumber = i;
             })
+
+        } else {
+            planList.value[indexToRemovePlan].day = index + 1;
+
+            yPlanList[indexToRemovePlan].day = index + 1;
+
+            days.value[index].forEach((item, i) => {
+                const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
+                planList.value[changeIndex].orderNumber = i;
+                yPlanList[changeIndex].orderNumber = i;
+            })
+
+
         }
     }
-    else if(moved){
+    else if (moved) {
         days.value[index].forEach((item, i) => {
             const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
             planList.value[changeIndex].orderNumber = i;
+            yPlanList[changeIndex].orderNumber = i;
         })
+
+
         // moved된 날의 전체 order를 다시 덮어씀
+
     }
     else if (removed) {
         days.value[index].forEach((item, i) => {
             const changeIndex = planList.value.findIndex(plan => plan.cardId === item.cardId);
             planList.value[changeIndex].orderNumber = i;
+            yPlanList[changeIndex].orderNumber = i;
         })
+
+
         // removed된 날의 전체 order를 다시 덮어씀
     }
-    
-    console.log('planList에 추가', planList.value)
+
+    // console.log('planList에 추가', planList.value)
 
 }
 
@@ -145,15 +196,25 @@ async function fetchCardList() {
             // 백엔드로부터 받아온 세부 계획을 기반으로 planList를 업데이트
             cardListRaw.value = backendCardList.map(card => (
                 {
-                cardId: card.cardId,
-                Lat: card.latitude, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
-                Lng: card.longitude, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
-                placeImage: card.placeImage, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
-                memo: card.memo,
-                placeAddress: card.placeAddress,
-                placeName: card.placeName
-            }));
-            console.log('fetch후 cardListRaw 값', cardListRaw.value)
+                    cardId: card.cardId,
+                    Lat: card.latitude, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
+                    Lng: card.longitude, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
+                    placeImage: card.placeImage, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
+                    memo: card.memo,
+                    placeAddress: card.placeAddress,
+                    placeName: card.placeName
+                }));
+            console.log('fetch후 cardListRaw 값', cardListRaw.value);
+
+            // Yjs의 현재 상태와 비교하여, 로컬 상태를 업데이트합니다.
+            // 이미 yCardList에 카드가 존재하는 경우, 로컬 카드리스트를 yCardList의 상태로 설정합니다.
+            if (yCardList.length > 0) {
+                cardList.value = yCardList.toArray();
+            } else {
+                // Yjs 배열에 백엔드로부터 가져온 카드리스트를 초기화합니다.
+                yCardList.push(backendCardList);
+            }
+
         } else {
             alert(response.data.dataHeader.resultMessage);
         }
@@ -182,7 +243,7 @@ const calculateDateDiff = (startDate, endDate) => {
 const initializeDays = (dayCount) => {
     days.value = Array.from({ length: dayCount }, () => []);
     days.value.forEach((d, index) => {
-        const filterday = computed(()=>planList.value.filter((item) => item.day === index+1).sort((a, b) => a.orderNumber - b.orderNumber))
+        const filterday = computed(() => planList.value.filter((item) => item.day === index + 1).sort((a, b) => a.orderNumber - b.orderNumber))
         d.push(...filterday.value)
     })
 };
@@ -202,27 +263,37 @@ async function fetchPlanDetailList() {
         const response = await planDetailListGetApi(planId);
         if (response.data.dataHeader.successCode === 0) {
             const backendPlanDetails = response.data.dataBody;
-            console.log('backendPlanDetails',backendPlanDetails);
+            console.log('backendPlanDetails', backendPlanDetails);
             // 백엔드로부터 받아온 세부 계획을 기반으로 planList를 업데이트
             planList.value = backendPlanDetails.map(detail => (
                 {
-                id: detail.id,
-                cardId: detail.cardId,
-                Lat: detail.latitude, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
-                Lng: detail.logitude, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
-                placeImage: detail.placeImage, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
-                memo: detail.cardMemo,
-                orderNumber: detail.orderNumber,
-                day: detail.day,
-                placeAddress: detail.placeAddress,
-                placeName: detail.placeName
-            }));
+                    id: detail.id,
+                    cardId: detail.cardId,
+                    Lat: detail.latitude, // 백엔드에서 제공하는 위도 정보 필드명에 맞게 수정
+                    Lng: detail.logitude, // 백엔드에서 제공하는 경도 정보 필드명에 맞게 수정
+                    placeImage: detail.placeImage, // 백엔드에서 제공하는 이미지 정보 필드명에 맞게 수정
+                    memo: detail.cardMemo,
+                    orderNumber: detail.orderNumber,
+                    day: detail.day,
+                    placeAddress: detail.placeAddress,
+                    placeName: detail.placeName
+                }));
             console.log('fetch후 planList 값', planList.value)
             days.value.forEach((d, index) => {
-                d.splice(0,d.length);
-                const filterday = computed(()=>planList.value.filter((item) => item.day === index+1).sort((a, b) => a.orderNumber - b.orderNumber))
+                d.splice(0, d.length);
+                const filterday = computed(() => planList.value.filter((item) => item.day === index + 1).sort((a, b) => a.orderNumber - b.orderNumber))
                 d.push(...filterday.value)
             })
+
+            // Yjs의 현재 상태와 비교하여, 로컬 상태를 업데이트합니다.
+            // 이미 yCardList에 카드가 존재하는 경우, 로컬 카드리스트를 yCardList의 상태로 설정합니다.
+            if (yPlanList.length > 0) {
+                planList.value = yPlanList.toArray();
+            } else {
+                // Yjs 배열에 백엔드로부터 가져온 여행 상세 계획 리스트를 초기화합니다.
+                yPlanList.push(planList.value);
+            }
+
         } else {
             alert(response.data.dataHeader.resultMessage);
         }
@@ -259,7 +330,7 @@ function getPlanDetailsConvert() {
 async function planDetailSave() {
     try {
         const param = getPlanDetailsConvert();
-        console.log('param',param)
+        console.log('param', param)
         const response = await planDetailCreateApi(planId, param);
         if (response.data.dataHeader.successCode === 0) {
             alert("여행 계획이 저장되었습니다.");
@@ -274,7 +345,7 @@ async function planDetailSave() {
             console.error(error);
             const errorResponse = error.response.data;
             alert(errorResponse.dataHeader.resultMessage);
-            console.log('planlist',planList.value)
+            console.log('planlist', planList.value)
         } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
             // 네트워크 에러 처리
             alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
@@ -288,6 +359,10 @@ onBeforeMount(async () => {
     await fetchPlanDetailList();
 });
 
+onUnmounted(() => {
+    wsProvider.destroy();
+    doc.destroy();
+});
 </script>
 
 <template>
@@ -307,7 +382,7 @@ onBeforeMount(async () => {
                     <draggable class="DragArea list-group" :list="cardList"
                         :group="{ name: 'card', pull: 'clone', put: false }" item-key="id" @change="onCardMove">
                         <template #item="{ element, index }">
-                            <div >
+                            <div>
                                 <!-- :class="[cardHidden[index] ? 'hidden' : 'active']"> -->
                                 <div class="list-group-item font-content">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
