@@ -3,20 +3,17 @@
         <div class="container; card p-fluid" id="logInBox">
             <h1 id="logInTitle">로그인</h1>
             <form @submit.prevent="login()" id="logInForm">
-                <div class="box, card p-fluid" id="idInput">
-                    <img src="/아이디 아이콘.png" alt="아이디" id="idIcon">
-                    <label for="memberEmail"></label>
-                    <input type="text" id="memberEmail" v-model.trim="memberEmail" placeholder="EMAIL">
-                </div>
-
+              <div class="box, card p-fluid" id="idInput">
+                  <img src="/아이디 아이콘.png" alt="아이디" id="idIcon">
+                  <label for="memberEmail"></label>
+                  <input type="text" id="memberEmail" v-model.trim="memberEmail" placeholder="EMAIL">
+              </div>
               <div class="box, card p-fluid" id="pwInput">
                 <img src="/비밀번호 아이콘.png" alt="비밀번호" id="pwIcon">
                 <label for="memberPassword"></label>
                 <input type="password" id="memberPassword" v-model.trim="memberPassword" placeholder="PW">
               </div>
-              <div class="box, card p-fluid" id="loginSubmit">
-                <input type="submit" value="LogIn">
-              </div>
+              <input type="submit" value="로그인" class="box, card p-fluid" id="loginSubmit">
             </form>
             <div id="guide1">
               <p id="signUpGuide">아직 회원이 아니신가요?</p>
@@ -121,6 +118,7 @@ const goSignUp = function () {
   #box {
     display: flex;
     justify-content: center;
+    margin-top: 70px;
   }
   #logInBox {
     border: 1px solid rgba(52, 152, 219, 0.5);
@@ -183,8 +181,13 @@ const goSignUp = function () {
     color: #FFFFFF;
     /* font-weight: bold; */
     font-size: medium;
-    height: 20px;
-    padding: 20px;
+    height: 40px;
+    padding: 0px;
+    transition: transform 0.2s, border-color 0.2s; /* 부드러운 전환 효과를 위한 설정 */
+    cursor: pointer;
+  }
+  #loginSubmit input[type="submit"] {
+    height: 100%; /* 버튼의 높이를 기준으로 텍스트를 수직 정렬 */
   }
   #loginSubmit:hover {
     transform: scale(1.05);
