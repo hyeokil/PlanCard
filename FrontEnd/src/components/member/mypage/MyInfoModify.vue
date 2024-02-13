@@ -31,9 +31,7 @@
             </div>
           </div>
           
-          <div class="box, card p-fluid"  id="modifySubmit">
-            <input type="submit" value="변경하기">
-          </div>
+          <input type="submit" value="변경하기" class="box, card p-fluid"  id="modifySubmit">
         </form>
 
         <div id="etc1">
@@ -44,7 +42,7 @@
         <div id="overlay" v-if="withdrawalActive"></div>
         <div class="card p-fluid" v-if="withdrawalActive" id="withdrawalBox">
           <h3 id="withdrawalTitle">회원 탈퇴 확인</h3>
-            <p style="text-align: center;">진짜 탈퇴해?</p>
+            <p style="text-align: center; margin: 10px; margin-bottom: 0px;">진짜 탈퇴해?</p>
             <div style="display: flex;">
               <form class="box, card p-fluid" @submit.prevent="" id="withdrawalForm">
                 <input class="box card p-fluid" type="submit" id="withdrawalSubmit" value="탈퇴">
@@ -283,7 +281,12 @@ const withdrawalRequest = () => {
     margin-bottom: 10px;
   }
 
-  #memberNickname, #memberPhoto {
+  #memberNickname {
+    height: 35px;
+    width: 250px;
+    padding-left: 10px;
+  }
+  #memberPhoto {
     height: 35px;
     width: 250px;
   }
@@ -295,6 +298,7 @@ const withdrawalRequest = () => {
     border: 1px solid rgba(52, 152, 219, 0.5);
     height: 40px;
     margin-bottom: 0px;
+    
   }
 
   #modifySubmit {
@@ -302,14 +306,18 @@ const withdrawalRequest = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #3498db;
     color: #FFFFFF;
     /* font-weight: bold; */
     font-size: medium;
-    height: 20px;
-    padding: 20px;
+    height: 40px;
+    padding: 0px;
+    transition: transform 0.2s, border-color 0.2s; /* 부드러운 전환 효과를 위한 설정 */
+    cursor: pointer;
+  }
+  #modifySubmit input[type="submit"] {
+    height: 100%; /* 버튼의 높이를 기준으로 텍스트를 수직 정렬 */
   }
   #modifySubmit:hover {
     transform: scale(1.05);
@@ -331,9 +339,11 @@ const withdrawalRequest = () => {
   #withdrawalBtn {
     /* font-weight: bold; */
     color: rgba(255, 0, 0, 0.3);
+    transition: transform 0.3s ease;
   }
   #withdrawalBtn:hover {
     color: rgb(255, 0, 0);
+    transform: scale(1.05);
   }
 
   #overlay {
@@ -384,6 +394,7 @@ const withdrawalRequest = () => {
     padding: 10px;
     margin-top: 5px; /* 위쪽 여백 추가 */
     line-height: 0px;
+    transition: transform 0.3s ease;
   }
   #withdrawalSubmit:hover {
     transform: scale(1.05);
@@ -400,8 +411,8 @@ const withdrawalRequest = () => {
     line-height: 25px;
     /* font-weight: bold; */
     border-radius: 5cm;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     top: 15px;
+    transition: transform 0.3s ease;
   }
   #withdrawalCloseBtn:hover {
     transform: scale(1.05);

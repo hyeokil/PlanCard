@@ -3,6 +3,7 @@ package com.ssafy.backend.domain.alarm.controller;
 import com.ssafy.backend.domain.alarm.dto.AlarmCreateRequestDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmFriendRequestDto;
+import com.ssafy.backend.domain.alarm.dto.AlarmPlanRequestDto;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.service.AlarmService;
 import com.ssafy.backend.domain.member.dto.MemberLoginActiveDto;
@@ -44,6 +45,14 @@ public class AlarmController {
 //        SliceResponse alarms = alarmService.getAlarmList(loginActiveDto.getId(), pageable);
 //        return ResponseEntity.ok().body(Message.success(alarms));
 //    }
+
+    @PostMapping("/plan/request")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<Message<Void>> planRequestAlarm(@AuthenticationPrincipal MemberLoginActiveDto loginActiveDto,
+                                                          @RequestBody List<AlarmPlanRequestDto> planRequestDtoList) {
+        alarmService.planRequestAlarm(loginActiveDto.getId(), planRequestDtoList);
+        return ResponseEntity.ok().body(Message.success());
+    }
 
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")

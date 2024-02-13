@@ -7,10 +7,8 @@
                     <button @click="activeTab = !activeTab" class="chat-btn" id="chat-btn">
                         <i class="pi pi-comments" style="font-size: 23px;"></i> 채 팅
                     </button>
-                    <div :class="{ 'sidebar-active': activeTab, 'sidebar-hidden': !activeTab }">
-                        <!-- <ItemFace style="display: none;"></ItemFace> -->
-                        <ItemFace></ItemFace>
-                        <!-- 조건부 렌더링으로 채팅 컴포넌트 표시 -->
+                    <div :class="{ 'sidebar-active': activeTab, 'sidebar-hidden': !activeTab }" style="height: 100vh; display: flex; flex-direction: column;">
+                        <ItemFace class="itemFace"></ItemFace>
                         <Chat class="chat" v-if="activeTab"></Chat>
                     </div>
                 </div>
@@ -41,7 +39,6 @@ onBeforeUnmount(() => {
 
 // 탭 상태 추가
 const activeTab = ref('');
-
 
 </script>
 
@@ -100,10 +97,13 @@ const activeTab = ref('');
     color: #fff;
 }
 
+.itemFace {
+  height: 30%;
+}
 .chat {
     position: absolute;
     background-color: #dfecf7 ;
-    height: 69.5vh;
+    height: 70%;
     width: 100%;
     bottom: 0px;
     left: 0px;

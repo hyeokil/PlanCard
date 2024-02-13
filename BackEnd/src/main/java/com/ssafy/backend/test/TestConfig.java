@@ -9,7 +9,6 @@ import com.ssafy.backend.domain.friend.repository.FriendshipRepository;
 import com.ssafy.backend.domain.member.entity.Member;
 import com.ssafy.backend.domain.member.entity.enums.MemberRole;
 import com.ssafy.backend.domain.member.repository.MemberRepository;
-import com.ssafy.backend.domain.place.service.PlaceService;
 import com.ssafy.backend.domain.plan.entity.Plan;
 import com.ssafy.backend.domain.plan.repository.PlanRepository;
 import com.ssafy.backend.domain.plan.entity.PlanMember;
@@ -18,13 +17,8 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
@@ -73,7 +67,7 @@ public class TestConfig {
                 .build();
 
         Member member5 = Member.builder()
-                .email("tlsehdrms95@ssafy.com")
+                .email("tlsehdrms@ssafy.com")
                 .password(passwordEncoder.encode("1234"))
                 .name("신동근")
                 .nickname("동근 닉네임")
@@ -81,7 +75,7 @@ public class TestConfig {
                 .build();
 
         Member member6 = Member.builder()
-                .email("qkrwjddls96@ssafy.com")
+                .email("qkrwjddls@ssafy.com")
                 .password(passwordEncoder.encode("1234"))
                 .name("박정인")
                 .nickname("정인 닉네임")
@@ -89,7 +83,7 @@ public class TestConfig {
                 .build();
 
         Member member7 = Member.builder()
-                .email("강지수96@ssafy.com")
+                .email("rkdwltn@ssafy.com")
                 .password(passwordEncoder.encode("1234"))
                 .name("강지수")
                 .nickname("지수 닉네임")
@@ -97,7 +91,7 @@ public class TestConfig {
                 .build();
 
         Member member8 = Member.builder()
-                .email("rlagurdlf97@ssafy.com")
+                .email("rlagurdlf@ssafy.com")
                 .password(passwordEncoder.encode("1234"))
                 .name("김혁일")
                 .nickname("혁일 닉네임")
@@ -105,7 +99,7 @@ public class TestConfig {
                 .build();
 
         Member member9 = Member.builder()
-                .email("rlawogns98@ssafy.com")
+                .email("rlawogns@ssafy.com")
                 .password(passwordEncoder.encode("1234"))
                 .name("김재훈")
                 .nickname("재훈 닉네임")
@@ -113,7 +107,7 @@ public class TestConfig {
                 .build();
 
         Member member10 = Member.builder()
-                .email("dltpdms99@ssafy.com")
+                .email("dltpdms@ssafy.com")
                 .password(passwordEncoder.encode("1234"))
                 .name("이세은")
                 .nickname("세은 닉네임")
@@ -145,8 +139,15 @@ public class TestConfig {
                 .endDate(LocalDate.of(2024, 3, 5)) // 예시 날짜
                 .build();
 
+        Plan plan3 = Plan.builder()
+                .name("싸핑 여행 가즈아!")
+                .startDate(LocalDate.of(2024, 3, 1)) // 예시 날짜
+                .endDate(LocalDate.of(2024, 3, 5)) // 예시 날짜
+                .build();
+
         planRepository.save(plan1);
         planRepository.save(plan2);
+        planRepository.save(plan3);
 
 
         PlanMember planMember1 = PlanMember.builder()
@@ -171,7 +172,7 @@ public class TestConfig {
         Alarm alarm1 = Alarm.builder()
                 .fromMember(member2)
                 .toMember(member1)
-                .type(AlarmType.CONFERENCE)
+                .type(AlarmType.PLAN)
                 .content(member2.getNickname() + " 님이 화상 회의 요청을 보냈습니다.")
                 .status(AlarmStatus.UNREAD)
                 .url("http://localhost:5173/meeting/view/1")
@@ -188,7 +189,7 @@ public class TestConfig {
         Alarm alarm3 = Alarm.builder()
                 .fromMember(member3)
                 .toMember(member1)
-                .type(AlarmType.CONFERENCE)
+                .type(AlarmType.PLAN)
                 .content(member3.getNickname() + " 님이 화상 회의 요청을 보냈습니다.")
                 .status(AlarmStatus.UNREAD)
                 .build();
@@ -212,7 +213,7 @@ public class TestConfig {
         Alarm alarm6 = Alarm.builder()
                 .fromMember(member4)
                 .toMember(member1)
-                .type(AlarmType.CONFERENCE)
+                .type(AlarmType.PLAN)
                 .content(member4.getNickname() + " 님이 화상 회의 요청을 보냈습니다.")
                 .status(AlarmStatus.UNREAD)
                 .build();

@@ -15,7 +15,7 @@
             <input v-model="mySessionId" type="text" required />
           </p> -->
           <p>
-            <button @click="joinSession">
+            <button @click="joinSession" id="camOn">
               <span>cam&nbsp;</span>
               <span style="color: #3498DB;">ON</span>
             </button>
@@ -40,18 +40,18 @@
 
         <div style="display: flex; align-items: center;">
           <!-- 캠활성화, 음소거 버튼 -->
-          <button id="camera-activate" @click="handleCameraBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.5) solid; margin-right: 3px;">
+          <button id="camera-activate" @click="handleCameraBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.7) solid; margin-right: 3px;">
             <img src="/녹화on.png" alt="녹화on" style="width: 100%; height: 100%; padding: 2px;">
           </button>
-          <button id="mute-activate" @click="handleMuteBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.5) solid; margin-right: 3px;">
+          <button id="mute-activate" @click="handleMuteBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.7) solid; margin-right: 3px;">
             <img src="/녹음on.png" alt="녹음on" style="width: 100%; height: 100%; padding: 2px;">
           </button>
 
           <!-- 캠,오디오 선택 옵션 -->
-          <select name="cameras" @change="handleCameraChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;">
+          <select name="cameras" @change="handleCameraChange" style="border: 2px rgba(0, 0, 0, 0.7) solid; width: 30px; font-size: 11px; margin-right: 3px; cursor: pointer;" class="font-content">
             <option disabled>Camera Select</option>
           </select>
-          <select name="audios" @change="handleAudioChange" style="border: 2px rgba(0, 0, 0, 0.5) solid; width: 30px; font-size: 11px; margin-right: 3px;">
+          <select name="audios" @change="handleAudioChange" style="border: 2px rgba(0, 0, 0, 0.7) solid; width: 30px; font-size: 11px; margin-right: 3px; cursor: pointer" class="font-content">
             <option disabled>MIC Select</option>
           </select>
         </div>
@@ -514,4 +514,20 @@ connectWebSocket();
   height: auto;        /* 높이를 자동으로 조정 */
   object-fit: cover;   /* 비디오를 컨테이너에 맞추어 확장 */
 }
+
+
+
+#camOn {
+  transition: transform 0.3s ease;
+}
+#camOn:hover {
+  transform: scale(1.05);
+}
+#buttonLeaveSession {
+  transition: transform 0.3s ease;
+}
+#buttonLeaveSession:hover {
+  transform: scale(1.05);
+}
+
 </style>

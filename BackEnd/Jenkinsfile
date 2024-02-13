@@ -124,7 +124,6 @@ pipeline {
 //                             def topComposePath = "${env.WORKSPACE}/docker-compose.yml"
 //                             sh "sudo chmod +x /usr/local/bin/docker-compose"
                             sh "docker-compose -f ${env.WORKSPACE}/docker-compose.yml up -d"
-//                             sh "docker-compose -f ../docker-compose.yml up -d"
 
 
 //                             sh "docker run -d --name back -p 8081:8080 \

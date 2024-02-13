@@ -207,12 +207,9 @@ const onTopBarMenuProfileButton = () => {
   /* font-weight: 900; */
   color: #3498DB;
   cursor: pointer;
+  transition: transform 0.3s ease;
 }
-.userName-hover {
-  cursor: pointer;
-  /* 마우스 커서를 포인터로 변경 */
-  color: #3498DB;
-  /* 텍스트 색상 변경 */
+.userName:hover {
   text-decoration: underline;
   /* 밑줄 스타일 적용 */
 }

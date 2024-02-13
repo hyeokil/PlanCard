@@ -104,7 +104,7 @@ const handleAlarm = async (alarmId, action) => {
       const alarm = notifications.value.find(n => n.alarmId === alarmId);
 
       // 화상 회의 알람을 수락한 경우
-      if (alarm && alarm.type === 'CONFERENCE' && action === 'ACCEPT') {
+      if (alarm && alarm.type === 'PLAN' && action === 'ACCEPT') {
         window.location.href = alarm.url; // 해당 화상회의 링크로 이동
       } 
     
@@ -220,6 +220,8 @@ const deleteAlarmAll = async () => {
   width: 35px;
   height: 35px;
   margin-right: 3px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 #acceptBtn:hover {
@@ -236,6 +238,8 @@ const deleteAlarmAll = async () => {
   width: 35px;
   height: 35px;
   margin-left: 3px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 #rejectBtn:hover {

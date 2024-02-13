@@ -3,6 +3,7 @@ package com.ssafy.backend.domain.alarm.service;
 import com.ssafy.backend.domain.alarm.dto.AlarmCreateRequestDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmDto;
 import com.ssafy.backend.domain.alarm.dto.AlarmFriendRequestDto;
+import com.ssafy.backend.domain.alarm.dto.AlarmPlanRequestDto;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmStatus;
 import com.ssafy.backend.domain.alarm.entity.enums.AlarmType;
 import com.ssafy.backend.global.common.dto.SliceResponse;
@@ -16,6 +17,8 @@ public interface AlarmService {
 //    SliceResponse getAlarmList(Long memberId, Pageable pageable);
 
     void friendRequestAlarm(Long fromMemberId, AlarmFriendRequestDto friendRequestDto);
+
+    void planRequestAlarm(Long fromMemberId, List<AlarmPlanRequestDto> planRequestDtoList);
 
     List<AlarmDto> getAlarmList(Long memberId, Long lastAlarmId, int limit);
 

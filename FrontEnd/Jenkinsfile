@@ -71,7 +71,6 @@ pipeline {
                             sh "docker run -d --name front -p 8083:4173 \
                             ${DOCKERHUB_REGISTRY}"
 
-                            // sh "docker-compose -f ../docker-compose.yml up -d"
                         } catch (Exception e){
                             sh "docker restart front || true"
                         }
