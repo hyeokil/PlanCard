@@ -59,6 +59,7 @@ yCardList.observe(debounce(() => {
 
 // yPlanList의 변화를 감지하여 planList 업데이트
 yPlanList.observe(debounce(() => {
+    console.log('yPlanList',yPlanList._first.content.arr)
     planList.value = yPlanList.toArray();
     console.log('이벤트 발생 및 planList 확인', planList.value);
 }, 500));
