@@ -427,12 +427,107 @@ const sttOn = ref(false)
 const sttToggle = () => {
     if (sttOn.value == false) {
         sttOn.value = true
+        connectWebSocket(); //웹소켓 연결
         console.log(sttOn.value)
     } else {
         sttOn.value = false
         console.log(sttOn.value)
     }
 }
+
+//오디오 저장 및 서버 전송위한 변수
+const audioChunks = ref([]); // 오디오 데이터를 저장할 배열
+const audioRecorder = ref(null); // 녹음기 객체
+const mediaRecorderOptions = { mimeType: 'audio/webm' }; // 녹음기 옵션 설정
+const sendingAudio = ref(false); // 오디오 데이터를 서버로 전송 중인지 여부
+
+//웹소켓
+let socket = null;
+const url = 'ws://localhost:8080/send';
+
+async function connectWebSocket() {
+  // 웹소켓 연결
+  socket = new WebSocket(url);
+
+  // 연결이 열렸을 때 이벤트 처리
+  socket.onopen = () => {
+    console.log('WebSocket connection opened.');
+    sendAudioDataToServer();
+  };
+
+  // 오류가 발생했을 때 이벤트 처리
+  socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+  };
+
+  // 연결이 닫혔을 때 이벤트 처리
+  socket.onclose = () => {
+    console.log('WebSocket connection closed.');
+  };
+}
+
+
+// 오디오 스트림을 받아서 바이트 배열로 변환하고 서버로 전송하는 함수
+async function sendAudioToServer(audioStream) {
+  const mediaRecorder = new MediaRecorder(audioStream, mediaRecorderOptions);
+
+  // 녹음이 시작되었을 때 이벤트 처리
+  mediaRecorder.onstart = () => {
+    console.log('Recording started...');
+  };
+
+  // 데이터가 수신될 때마다 이벤트 처리
+  mediaRecorder.ondataavailable = (event) => {
+    if (event.data.size > 0) {
+      audioChunks.value.push(event.data); // 데이터를 배열에 추가
+    }
+  };
+
+  // 녹음이 중지되었을 때 이벤트 처리
+  mediaRecorder.onstop = async () => {
+    console.log('Recording stopped...');
+
+    // 녹음된 데이터를 Blob 형식으로 변환
+    const audioBlob = new Blob(audioChunks.value, { type: mediaRecorderOptions.mimeType });
+
+    // Blob 데이터를 ArrayBuffer로 변환
+    const arrayBuffer = await audioBlob.arrayBuffer();
+
+    // ArrayBuffer를 Uint8Array로 변환하여 바이트 배열 생성
+    const byteArray = new Uint8Array(arrayBuffer);
+
+    // WebSocket을 통해 바이트 배열 서버로 전송
+    socket.send(byteArray);
+
+    // 오디오 데이터를 서버로 전송 완료 후 초기화
+    audioChunks.value = [];
+    sendingAudio.value = false;
+  };
+
+  // 녹음 시작
+  mediaRecorder.start();
+
+  // 녹음기 객체 저장
+  audioRecorder.value = mediaRecorder;
+}
+
+// 웹소켓을 통한 오디오 데이터 전송 함수
+ async function sendAudioDataToServer() {
+  // 이미 오디오를 전송 중이라면 중복 전송 방지
+  if (sendingAudio.value) return;
+
+  // 오디오 스트림 가져오기
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then((audioStream) => {
+      // 오디오를 서버로 전송
+      sendAudioToServer(audioStream);
+      sendingAudio.value = true;
+    })
+    .catch((error) => {
+      console.error('Error capturing audio:', error);
+    });
+}
+
 
 </script>
 
