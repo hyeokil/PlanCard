@@ -26,7 +26,7 @@ public class SttController {
     @MessageMapping("/api/v1/audio") //websocket에서 제공하는 vue에서 메시지 받을 컨트롤러
     public void SttHandler(@Payload byte[] audioData) throws LineUnavailableException, IOException {
 
-        System.out.println("호출!");
+        log.info("호출!");
         log.info("오디오데이터 들어옴: " + audioData.length + "bytes");
 
 
