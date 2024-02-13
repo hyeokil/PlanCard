@@ -336,6 +336,7 @@ async function getMedia() {
         option.value = audio.deviceId;
         option.text = audio.label;
         audioSelect.appendChild(option);
+
       });
     } else {
       const notAudio = audioSelect.querySelector('option:disabled');
@@ -424,10 +425,68 @@ async function replaceAudioTrack(deviceId) {
     const newStream = await navigator.mediaDevices.getUserMedia(newConstraints);
     const newAudioTrack = newStream.getAudioTracks()[0];
     await publisher.value.replaceTrack(newAudioTrack);
+
+    sendAudio();
   } catch (error) {
     console.error("Error replacing audio track:", error);
   }
 }
+
+import { Client } from '@stomp/stompjs';
+let stompClient = null;
+
+const connectWebSocket = () => {
+  const serverURL = 'ws://localhost:8080/send';
+  stompClient = new Client({
+    brokerURL: serverURL,
+    connectHeaders: {},
+    debug: function (str) {
+      console.log("연결 관련 디버깅: " + str);
+    },
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+  console.log("웹소켓 연결!")
+  stompClient.activate();
+};
+
+const handleAudioData = (event) => {
+  // console.log("마이크 입력 데이터:", event.inputBuffer.getChannelData(0));
+  const audioData = event.inputBuffer.getChannelData(0);
+  const uint8ArrayData = new Float32Array(audioData).map(value => value * 32767);
+  console.log("음성 데이터 서버 전송 전");
+  console.log(uint8ArrayData);
+  // if (stompClient && stompClient.connected) {
+    
+    stompClient.publish({ destination: '/app/api/v1/audio', body: uint8ArrayData });
+    console.log("서버 전송");
+  // }
+};
+
+//웹소켓 연결
+connectWebSocket();
+
+ async function sendAudio(){
+
+    navigator.mediaDevices.getUserMedia(
+      {
+      audio: {
+        deviceId: { exact: selectedAudio.value },
+      },
+      video: false,
+    })
+    .then(stream => {
+      const audioContext = new AudioContext();
+      const mediaStreamSource = audioContext.createMediaStreamSource(stream);
+      const scriptProcessorNode = audioContext.createScriptProcessor(1024, 1, 1); // 버퍼 사이즈 및 채널 수 설정
+
+      scriptProcessorNode.onaudioprocess = handleAudioData;
+
+      mediaStreamSource.connect(scriptProcessorNode);
+      scriptProcessorNode.connect(audioContext.destination);
+    })
+ }
 
 
 </script>
