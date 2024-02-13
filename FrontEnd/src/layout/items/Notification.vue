@@ -104,7 +104,7 @@ const handleAlarm = async (alarmId, action) => {
       const alarm = notifications.value.find(n => n.alarmId === alarmId);
 
       // 화상 회의 알람을 수락한 경우
-      if (alarm && alarm.type === 'CONFERENCE' && action === 'ACCEPT') {
+      if (alarm && alarm.type === 'PLAN' && action === 'ACCEPT') {
         window.location.href = alarm.url; // 해당 화상회의 링크로 이동
       } 
     

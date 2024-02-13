@@ -70,8 +70,6 @@ const timerInterval = ref(null);
 const isEmailVerified = ref(false);
 
 
-
-
 // 이메일 입력 유무 (이메일이 양식에 유효하면 true, 아니면 false)
 const memberEmailStatus = computed(() => {
   if (memberEmail.value === '') {

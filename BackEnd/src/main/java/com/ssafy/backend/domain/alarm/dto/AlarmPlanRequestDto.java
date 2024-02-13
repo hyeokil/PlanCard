@@ -13,19 +13,21 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlarmFriendRequestDto {
-    private final String FRIEND_ALARM_CONTENT = " 님이 친구 요청을 보냈습니다.";
+public class AlarmPlanRequestDto {
+    private String planAlarmContent = " 여행 계획 참여 요청을 보냈습니다.";
 
-    private String email;
+    private Long friendId;
     private AlarmType type;
+    private String planName;
+    private String url;
 
     public Alarm toEntity(Member fromMember, Member toMember) {
-
         return Alarm.builder()
                 .fromMember(fromMember)
                 .toMember(toMember)
                 .type(type)
-                .content(fromMember.getNickname() + FRIEND_ALARM_CONTENT)
+                .content(fromMember.getName() + " 님이 " +  planName + planAlarmContent)
+                .url(url)
                 .status(AlarmStatus.UNREAD)
                 .build();
     }

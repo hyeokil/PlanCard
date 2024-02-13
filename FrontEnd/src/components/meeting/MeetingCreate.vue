@@ -92,6 +92,7 @@ import Calendar from 'primevue/calendar'
 import { useRouter } from "vue-router";
 import { planCreateApi } from "@/api/planApi"; // planApi.js에서 API 함수를 import
 import { friendListGetApi } from '@/api/friendApi';
+import { alarmPlanRequestApi } from "@/api/alarmApi";
 
 const router = useRouter();
 
@@ -127,6 +128,7 @@ const goMeeting = async () => {
         if (response.data.dataHeader.successCode === 0) {
           alert("여행 계획이 성공적으로 생성되었습니다.");
           const planId = response.data.dataBody;
+          fetchAlarmPlan(planId);
           router.push(`/meeting/view/${planId}`); // 생성된 planId를 사용하여 라우팅
         } else {
           alert(response.data.dataHeader.resultMessage);
@@ -148,6 +150,32 @@ const goMeeting = async () => {
   // router.push({ name: 'meeting-detail', params: { id: 1 } })
 }
 
+const fetchAlarmPlan = async (planId) => {
+  // 친구들에게 여행 요청 알람 보내기
+  const alarmRequests = selectedFriends.value.map(friend => ({
+        friendId: friend.friendId,
+        type: "PLAN",
+        planName: tripTitle.value,
+        url: `${window.location.origin}/meeting/view/${planId}`
+  }));
+
+  try {
+    const response = await alarmPlanRequestApi(alarmRequests);
+    if (response.data.dataHeader.successCode === 1) {
+      alert(response.data.dataBody.resultMessage);
+    } 
+  } catch (error) {
+    if (error.response) {
+            console.error(error);
+            const errorResponse = error.response.data;
+            alert(errorResponse.dataHeader.resultMessage);
+        } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+            // 네트워크 에러 처리
+            alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+        }
+  }
+}
+
 
 
 // 유저 리스트 dummy
@@ -161,19 +189,6 @@ const users = ref([
   { id: 18, name: '유저에요7', email: "user7@ssafy.com" },
   { id: 19, name: '유저에요8', email: "user8@ssafy.com" },
 ]);
-
-// 친구 리스트 dummy
-// const friends = ref([
-//   { id: 2, name: '김재훈1', email: "rlawogns1@ssafy.com" },
-//   { id: 3, name: '김재훈2', email: "rlawogns2@ssafy.com" },
-//   { id: 4, name: '김재훈3', email: "rlawogns3@ssafy.com" },
-//   { id: 5, name: '김재훈4', email: "rlawogns4@ssafy.com" },
-//   { id: 6, name: '김재훈5', email: "rlawogns5@ssafy.com" },
-//   { id: 7, name: '김재훈6', email: "rlawogns6@ssafy.com" },
-//   { id: 8, name: '김재훈7', email: "rlawogns7@ssafy.com" },
-//   { id: 9, name: '김재훈8', email: "rlawogns8@ssafy.com" },
-// ]);
-
 
 // 친구 검색어
 const searchText = ref("");
