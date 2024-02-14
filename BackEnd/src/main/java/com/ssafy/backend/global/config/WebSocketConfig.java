@@ -1,22 +1,27 @@
 package com.ssafy.backend.global.config;
 
+import com.ssafy.backend.global.component.websocket.AudioWebSocketHandler;
 import com.ssafy.backend.global.component.websocket.RabbitMqProps;
 import com.ssafy.backend.global.component.websocket.WebSocketAuthenticationInterceptor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 @RequiredArgsConstructor
 @EnableWebSocketMessageBroker
+@EnableWebSocket
 @Configuration
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSocketConfigurer {
     private final RabbitMqProps rabbitMqProps;
     private final WebSocketAuthenticationInterceptor authenticationInterceptor;
+    private final AudioWebSocketHandler audioWebSocketHandler;
 
+    // STOMP 구성
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
@@ -40,5 +45,21 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(authenticationInterceptor);
+    }
+
+    // 일반 WebSocket 핸들러 추가
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(audioWebSocketHandler, "/audio").setAllowedOrigins("*");
+    }
+
+    @Bean
+    public ServletServerContainerFactoryBean createWebSocketContainer() {
+        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+        //Text Message의 최대 버퍼 크기 설정
+        container.setMaxTextMessageBufferSize(8192);
+        //Binary Message의 최대 버퍼 크기 설정
+        container.setMaxBinaryMessageBufferSize(512 * 1024);
+        return container;
     }
 }

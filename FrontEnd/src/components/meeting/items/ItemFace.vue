@@ -35,23 +35,29 @@
           <span style="color: red;">OFF</span>
         </button>
         <!-- <input type="button" id="buttonLeaveSession" @click="leaveSession" value="cam OFF" /> -->
-        
+
         <v-spacer></v-spacer>
 
         <div style="display: flex; align-items: center;">
           <!-- 캠활성화, 음소거 버튼 -->
-          <button id="camera-activate" @click="handleCameraBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.7) solid; margin-right: 3px;">
+          <button id="camera-activate" @click="handleCameraBtn"
+            style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.7) solid; margin-right: 3px;">
             <img src="/녹화on.png" alt="녹화on" style="width: 100%; height: 100%; padding: 2px;">
           </button>
-          <button id="mute-activate" @click="handleMuteBtn" style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.7) solid; margin-right: 3px;">
+          <button id="mute-activate" @click="handleMuteBtn"
+            style="width: 20px; height: 20px; border-radius: 50%; border: 2px rgba(0, 0, 0, 0.7) solid; margin-right: 3px;">
             <img src="/녹음on.png" alt="녹음on" style="width: 100%; height: 100%; padding: 2px;">
           </button>
 
           <!-- 캠,오디오 선택 옵션 -->
-          <select name="cameras" @change="handleCameraChange" style="border: 2px rgba(0, 0, 0, 0.7) solid; width: 30px; font-size: 11px; margin-right: 3px; cursor: pointer;" class="font-content">
+          <select name="cameras" @change="handleCameraChange"
+            style="border: 2px rgba(0, 0, 0, 0.7) solid; width: 30px; font-size: 11px; margin-right: 3px; cursor: pointer;"
+            class="font-content">
             <option disabled>Camera Select</option>
           </select>
-          <select name="audios" @change="handleAudioChange" style="border: 2px rgba(0, 0, 0, 0.7) solid; width: 30px; font-size: 11px; margin-right: 3px; cursor: pointer" class="font-content">
+          <select name="audios" @change="handleAudioChange"
+            style="border: 2px rgba(0, 0, 0, 0.7) solid; width: 30px; font-size: 11px; margin-right: 3px; cursor: pointer"
+            class="font-content">
             <option disabled>MIC Select</option>
           </select>
         </div>
@@ -62,21 +68,21 @@
         <!-- <div id="main-video">
           <UserVideo :stream-manager="mainStreamManagerComputed" />
       </div> -->
-    </div>
-    <hr>
-
-
-      
-      
-      
-    
+      </div>
+      <hr>
 
 
 
 
-      
+
+
+
+
+
+
+
       <!-- 모든 캠 -->
-      <div  class="card p-fluid" id="video-container">
+      <div class="card p-fluid" id="video-container">
         <UserVideo :stream-manager="publisherComputed" @click.native="updateMainVideoStreamManager(publisher)" />
 
         <UserVideo v-for="sub in subscribersComputed" :key="sub.stream.connection.connectionId" :stream-manager="sub"
@@ -99,7 +105,9 @@
       </div> -->
 
 
-
+      <button class="btn sttBtn" @click="sttToggle()">
+        {{ sttOn ? "stt OFF" : "stt ON" }}
+      </button>
     </div>
 
 
@@ -109,12 +117,13 @@
 
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router';
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "@/components/meeting/items/UserVideo.vue";
 import { createSessionApi, connectionSessionApi } from "@/api/webrtcApi";
 import { useAccountsStore } from '@/stores/accountsStore'; // accountsStore 가져오기
+
 
 // OpenVidu objects
 const OV = ref(undefined)
@@ -181,13 +190,13 @@ async function joinSession() {
   });
 
   // 채팅 이벤트 수신 처리
-  session.value.on('signal:chat', (event) => { // event.from.connectionId === session.value.connection.connectionId (수신자와 발신자가 같으면?)
-    const messageData = JSON.parse(event.data);
-    if (event.from.connectionId === session.value.connection.connectionId) {
-      messageData['username'] = '나'
-    }
-    messages.value.push(messageData);
-  });
+  // session.value.on('signal:chat', (event) => { // event.from.connectionId === session.value.connection.connectionId (수신자와 발신자가 같으면?)
+  //   const messageData = JSON.parse(event.data);
+  //   if (event.from.connectionId === session.value.connection.connectionId) {
+  //     messageData['username'] = '나'
+  //   }
+  //   messages.value.push(messageData);
+  // });
 
   // 세션 생성
   await createSession(mySessionId.value);
@@ -196,32 +205,49 @@ async function joinSession() {
 
   // WebSocket 연결 시도
   if (connectionToken.value) {
-    session.value.connect(connectionToken.value, { clientData: myUserName })
-      .then(() => {
-        let publisher_tmp = OV.value.initPublisher(undefined, {
-          audioSource: undefined, // The source of audio. If undefined default microphone
-          videoSource: undefined, // The source of video. If undefined default webcam
-          publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-          publishVideo: true, // Whether you want to start publishing with your video enabled or not
-          resolution: "640x480", // The resolution of your video
-          frameRate: 30, // The frame rate of your video
-          insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-          mirror: false, // Whether to mirror your local video or not
-        });
+    await session.value.connect(connectionToken.value, { clientData: myUserName });
+    // .then(() => {
+    //   let publisher_tmp = OV.value.initPublisher(undefined, {
+    //     audioSource: undefined, // The source of audio. If undefined default microphone
+    //     videoSource: undefined, // The source of video. If undefined default webcam
+    //     publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+    //     publishVideo: true, // Whether you want to start publishing with your video enabled or not
+    //     resolution: "640x480", // The resolution of your video
+    //     frameRate: 30, // The frame rate of your video
+    //     insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
+    //     mirror: false, // Whether to mirror your local video or not
+    //   });
 
-        // Set the main video in the page to display our webcam and store our Publisher
-        mainStreamManager.value = publisher_tmp;
-        publisher.value = publisher_tmp;
+    //   // Set the main video in the page to display our webcam and store our Publisher
+    //   mainStreamManager.value = publisher_tmp;
+    //   publisher.value = publisher_tmp;
 
-        // --- 6) Publish your stream ---
+    //   // --- 6) Publish your stream ---
 
-        session.value.publish(publisher.value);
-      })
-      .catch((error) => {
-        console.error("There was an error connecting to the session:", error);
-      });
+    //   session.value.publish(publisher.value);
+    // })
+    // .catch((error) => {
+    //   console.error("There was an error connecting to the session:", error);
+    // });
+
+    let publisher_tmp = OV.value.initPublisher(undefined, {
+      audioSource: undefined, // The source of audio. If undefined default microphone
+      videoSource: undefined, // The source of video. If undefined default webcam
+      publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+      publishVideo: true, // Whether you want to start publishing with your video enabled or not
+      resolution: "640x480", // The resolution of your video
+      frameRate: 30, // The frame rate of your video
+      insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
+      mirror: false, // Whether to mirror your local video or not
+    });
+    mainStreamManager.value = publisher_tmp;
+    publisher.value = publisher_tmp;
+    await session.value.publish(publisher.value);
   }
-  
+
+
+
+
   await getMedia();
 
   window.addEventListener("beforeunload", leaveSession)
@@ -430,17 +456,125 @@ async function replaceAudioTrack(deviceId) {
 }
 
 
+const webSocket = ref(null);
+const mediaRecorder = ref(null); // MediaRecorder 인스턴스를 관리할 ref
+
+// OpenVidu Publisher 객체에서 오디오 스트림을 얻습니다.
+async function getAudioStreamFromPublisher(publisher) {
+  // publisher.stream이 유효한지 확인
+  if (!publisher || !publisher.stream || typeof publisher.stream.getMediaStream !== 'function') {
+    throw new Error('Invalid publisher or stream');
+  }
+
+  const mediaStream = publisher.stream.mediaStream;
+  // console.log("mediaStream 확인: ", mediaStream);
+  const audioTracks = mediaStream.getAudioTracks();
+  // console.log("audioTracks 확인하기: ", audioTracks);
+
+  // 오디오 트랙이 존재하는지 확인
+  if (audioTracks.length === 0) {
+    throw new Error('No audio tracks found');
+  }
+
+  return new MediaStream([audioTracks[0]]);
+}
+
+// 웹소켓 시작 메서드
+function startAudioWebSocket() {
+  const serverURL = `${import.meta.env.VITE_VUE_AUDIO_WS_URL}`;
+  webSocket.value = new WebSocket(serverURL);
+
+  webSocket.value.onopen = function(event) {
+    console.log("Audio WebSocket is open now.", event);
+  };
+
+  webSocket.value.onmessage = function(event) {
+    console.log("Received message from server", event.data);
+  };
+
+  webSocket.value.onclose = function(event) {
+    console.log("Audio WebSocket is closed now.", event);
+  };
+
+  webSocket.value.onerror = function(event) {
+    console.error("Audio WebSocket error observed:", event);
+  };
+}
+
+// 웹소켓 종료 메서드
+function closeAudioWebSocket() {
+      if (webSocket.value) {
+        webSocket.value.close();
+        webSocket.value = null;
+      }
+    }
+
+
+// 오디오 스트림을 캡쳐하고 AudioWebSocket을 통해 서버로 전송합니다.
+async function captureAndSendAudio(publisher) {
+  try {
+    const audioStream = await getAudioStreamFromPublisher(publisher);
+    // 오디오 스트림 가져오기
+    // const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    mediaRecorder.value = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+    console.log("MediaRecorder 객체 생성됨:", mediaRecorder.value);
+
+    mediaRecorder.value.ondataavailable = async (event) => {
+      if (event.data.size > 0 && webSocket.value && webSocket.value.readyState === WebSocket.OPEN) {
+        const arrayBuffer = await event.data.arrayBuffer();
+        webSocket.value.send(arrayBuffer); // WebSocket을 통해 바이너리 데이터 전송
+        console.log("서버로 오디오 데이터 전송됨: ", arrayBuffer);
+      }
+    };
+
+    // 5초 간격으로 데이터 캡쳐 시작
+    mediaRecorder.value.start(5000);
+    console.log("MediaRecorder 캡쳐 시작됨");
+
+  } catch (error) {
+    console.error('Error capturing audio:', error);
+  }
+}
+
+const sttOn = ref(false);
+
+const sttToggle = async () => {
+  sttOn.value = !sttOn.value;
+
+  if (sttOn.value) {
+    // STT가 활성화된 경우, 오디오 캡처 시작
+    await captureAndSendAudio(publisher.value);
+  } else {
+    // STT 비활성화
+    mediaRecorder.value.stop();
+    mediaRecorder.value = null;
+  }
+}
+
+onMounted(() => {
+  startAudioWebSocket();
+});
+
+onUnmounted(() => {
+  closeAudioWebSocket();
+})
 </script>
 
 <style scoped>
 #main-container {
   margin: 0;
 }
+
 #video-container {
-  width: 100%;         /* 컨테이너의 너비를 부모 요소의 100%로 설정 */
-  height: auto;        /* 높이를 자동으로 조정 */
-  overflow: auto;    /* 내용이 넘칠 경우 숨김 처리 */
-  position: relative;  /* 비디오 포지셔닝을 위한 상대 위치 지정 */
+  width: 100%;
+  /* 컨테이너의 너비를 부모 요소의 100%로 설정 */
+  height: auto;
+  /* 높이를 자동으로 조정 */
+  overflow: auto;
+  /* 내용이 넘칠 경우 숨김 처리 */
+  position: relative;
+  /* 비디오 포지셔닝을 위한 상대 위치 지정 */
 
   display: flex;
 
@@ -451,9 +585,12 @@ async function replaceAudioTrack(deviceId) {
 }
 
 .video {
-  width: 100%;         /* 비디오 너비를 컨테이너의 100%로 설정 */
-  height: auto;        /* 높이를 자동으로 조정 */
-  object-fit: cover;   /* 비디오를 컨테이너에 맞추어 확장 */
+  width: 100%;
+  /* 비디오 너비를 컨테이너의 100%로 설정 */
+  height: auto;
+  /* 높이를 자동으로 조정 */
+  object-fit: cover;
+  /* 비디오를 컨테이너에 맞추어 확장 */
 }
 
 
@@ -461,14 +598,26 @@ async function replaceAudioTrack(deviceId) {
 #camOn {
   transition: transform 0.3s ease;
 }
+
 #camOn:hover {
   transform: scale(1.05);
 }
+
 #buttonLeaveSession {
   transition: transform 0.3s ease;
 }
+
 #buttonLeaveSession:hover {
   transform: scale(1.05);
 }
 
+.sttBtn {
+  top: 5px;
+  right: 170px;
+  border: rgba(0, 0, 0, 0.1) 2.5px solid;
+  border-radius: 5cm;
+  background-color: #FFC0CB;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
 </style>

@@ -6,7 +6,7 @@ import com.ssafy.backend.domain.card.dto.CardUpdateMemoDto;
 import com.ssafy.backend.domain.card.entity.Card;
 import com.ssafy.backend.domain.card.repository.CardRepository;
 import com.ssafy.backend.domain.place.entity.Place;
-import com.ssafy.backend.domain.place.repository.PlaceInfoRepository;
+import com.ssafy.backend.domain.place.repository.PlaceRepository;
 import com.ssafy.backend.domain.plan.entity.Plan;
 import com.ssafy.backend.domain.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +27,12 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final PlanRepository planRepository;
-    private final PlaceInfoRepository placeInfoRepository;
+    private final PlaceRepository placeRepository;
 
     @Override
     public void createCard(Long planId, Long placeId, CardCreateRequestDto cardCreateRequestDto) {
         Optional<Plan> currentPlan = planRepository.findById(planId);
-        Optional<Place> findPlace = placeInfoRepository.findById(placeId);
+        Optional<Place> findPlace = placeRepository.findById(placeId);
         if (currentPlan.isPresent() & findPlace.isPresent()) {
 //            log.info(findPlace.toString());
 //            log.info(currentPlan.toString());

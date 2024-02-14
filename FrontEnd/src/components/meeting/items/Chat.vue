@@ -29,12 +29,12 @@
 
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useCookies } from 'vue3-cookies';
 import { useRoute } from 'vue-router';
-import Stomp from 'webstomp-client';
 import { localAxios } from '@/util/http-commons';
 import { useAccountsStore } from '@/stores/accountsStore'; // accountsStore 가져오기
+import { connectStompClient, getStompClient } from '@/util/stompConnection';
 
 
 const { cookies } = useCookies();
@@ -44,7 +44,6 @@ const accountStore = useAccountsStore(); // accountsStore 사용
 const chats = ref([]);
 const chatText = ref('');
 const isConnected = ref(false);
-let stompClient = reactive(null);
 
 // 채팅방 내역 불러오기
 const fetchChatHistory = async () => {
@@ -60,22 +59,17 @@ const fetchChatHistory = async () => {
 const connect = () => {
     const serverURL = `${import.meta.env.VITE_VUE_WS_URL}`;
     const accessToken = cookies.get("accessToken");
-    const socket = new WebSocket(serverURL);
-    stompClient = Stomp.over(socket);
 
-    stompClient.connect(
-        { Authorization: `Bearer ${accessToken}` },
-        async () => {
-            isConnected.value = true;
-            await fetchChatHistory();
-            stompClient.subscribe(`/topic/room.${roomId}`, message => {
-                chats.value.push(JSON.parse(message.body));
-            });
-        },
-        error => {
-            console.error("Connection error: ", error);
-        }
-    );
+    connectStompClient(serverURL, accessToken, async () => {
+        isConnected.value = true;
+        // 여기서 추가적인 연결 후 로직 (예: 구독 설정)을 구현할 수 있습니다.
+        await fetchChatHistory();
+        getStompClient().subscribe(`/topic/room.${roomId}`, message => {
+            chats.value.push(JSON.parse(message.body));
+        });
+    }, error => {
+        console.error("Connection error: ", error);
+    });
 };
 
 const sendMessage = () => {
@@ -88,12 +82,11 @@ const sendMessage = () => {
             // memberId 설정은 서버에서 처리하거나 필요에 따라 추가
         };
 
-        // 메시지 전송 전에 로컬 채팅 목록에 추가
-        //   chats.value.push(message);
 
-        stompClient.send(`/pub/api/v1/chat/${roomId}`, JSON.stringify(message), {
+        getStompClient().send(`/pub/api/v1/chat/${roomId}`, JSON.stringify(message), {
             Authorization: `Bearer ${cookies.get("accessToken")}`
         });
+
         chatText.value = '';
     }
 };
@@ -103,8 +96,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    if (stompClient && stompClient.connected) {
-        stompClient.disconnect();
+    if (getStompClient() && getStompClient().connected) {
+        getStompClient().disconnect();
     }
 });
 </script>

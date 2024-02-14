@@ -59,7 +59,7 @@ public class MemberController {
         // JWT 토큰을 쿠키에 저장
         Cookie accessTokenCookie = new Cookie("accessToken", tokenDto.getAccessToken());
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(3600); // 60분(3600초)으로 설정
+        accessTokenCookie.setMaxAge(100000000); // 60분(3600초)으로 설정 (3600)
         response.addCookie(accessTokenCookie);
 
         return ResponseEntity.ok().body(Message.success(loginResponseDto));
@@ -103,6 +103,7 @@ public class MemberController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<Message<List<MemberGetResponseDto>>> searchMembersByEmail(@RequestParam String email) {
         List<MemberGetResponseDto> memberSearchList = memberService.searchMembersByEmail(email);
         return ResponseEntity.ok().body(Message.success(memberSearchList));

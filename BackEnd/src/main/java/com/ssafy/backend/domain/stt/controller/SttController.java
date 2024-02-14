@@ -4,8 +4,11 @@ import com.ssafy.backend.domain.stt.service.SttService;
 import com.ssafy.backend.global.common.dto.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,20 +18,27 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
+@RequestMapping("/api/v1/stt")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
 public class SttController {
+
     private final SttService sttService;
 
-    @PostMapping("/stt")
-    public void startStt() throws LineUnavailableException, IOException {
-        sttService.startStt();
+    @PostMapping("/{planId}/start")
+    public ResponseEntity<Message<Void>> startTranscribe(@PathVariable Long planId) throws LineUnavailableException, IOException, ParseException {
+        sttService.startTranscribe(planId);
+        return ResponseEntity.ok().body(Message.success());
     }
 
-    @PostMapping("/stt/stop")
-    public ResponseEntity<Message<Void>> stopStt() {
-        sttService.stopStt();
+    @PostMapping("/{planId}/stop")
+    public ResponseEntity<Message<Void>> stopStt(@PathVariable Long planId) {
+        sttService.stopStt(planId);
         return ResponseEntity.ok().body(Message.success());
+    }
+
+    @MessageMapping("/audio")
+    public void audioRequest(@Payload byte[] audioData) {
+        log.info("audio 데이터 들어옴: " + audioData.length + "bytes");
     }
 
 }

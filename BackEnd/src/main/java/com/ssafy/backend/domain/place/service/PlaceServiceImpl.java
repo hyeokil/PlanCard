@@ -1,7 +1,8 @@
 package com.ssafy.backend.domain.place.service;
 
+import com.ssafy.backend.domain.place.dto.PlaceGetResponseDto;
 import com.ssafy.backend.domain.place.dto.PlaceRegisterDto;
-import com.ssafy.backend.domain.place.repository.PlaceInfoRepository;
+import com.ssafy.backend.domain.place.repository.PlaceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.geom.Point2D;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -29,10 +32,10 @@ public class PlaceServiceImpl implements PlaceService {
     private final String SPOT_IMAGES = "spot_Images"; //이미지
     private final String SPOT_LATITUDE = "spot_Latitude"; //위도
     private final String SPOT_LONGITUDE = "spot_Longitude"; //경도
-    private final PlaceInfoRepository placeInfoRepository;
+    private final PlaceRepository placeRepository;
 
-    public PlaceServiceImpl(PlaceInfoRepository placeInfoRepository) {
-        this.placeInfoRepository = placeInfoRepository;
+    public PlaceServiceImpl(PlaceRepository placeRepository) {
+        this.placeRepository = placeRepository;
     }
 
 
@@ -65,7 +68,7 @@ public class PlaceServiceImpl implements PlaceService {
                     dto.setAddress(adds);
 
                     log.info(dto.getAddress());
-                    placeInfoRepository.save(dto.toEntity());
+                    placeRepository.save(dto.toEntity());
 
                 }
             }
@@ -124,7 +127,7 @@ public class PlaceServiceImpl implements PlaceService {
                             dto.setLatitude(location.getX());
                             dto.setLongitude(location.getY());
 
-                            placeInfoRepository.save(dto.toEntity());
+                            placeRepository.save(dto.toEntity());
                         }
 
                     }
@@ -135,5 +138,14 @@ public class PlaceServiceImpl implements PlaceService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<PlaceGetResponseDto> searchPlaceByName(String name) {
+        return placeRepository.findByNameContaining(name).stream()
+                .map(place -> new PlaceGetResponseDto(
+                        place.getId(),
+                        place.getName()))
+                .collect(Collectors.toList());
     }
 }
