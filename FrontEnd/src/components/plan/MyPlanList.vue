@@ -8,9 +8,9 @@
                             <div style="font-size: 1.6rem;">
                                 <div>친구, 연인, 가족, 나와 함께 쓰는 여행 플래너</div>
                             </div>
-                            <div style="font-size: 5rem;">플랜카드</div>
+                            <div style="font-size: 5rem; color: #3498DB;">플랜카드</div>
                             <div style="font-size: 1.2rem;">플랜카드로 모두 함께 즐거운 여행을 만들어요.</div>
-                            <button style="background-color: #3498DB; color: #fff; width: 13rem; height: 4rem; border-radius: 5px; font-size: 1.2rem;">바로 시작하기</button>
+                            <button id="startBtn" @click="goLogin()">바로 시작하기</button>
                         </div>
                     </div>
                 </div>
@@ -21,7 +21,7 @@
                         </div>
                         <div class="text-content">
                             <div style="position: relative;">
-                                <div class="bubble1">잠깐만, 방금 전에 어디 말했더라?</div>
+                                <div class="bubble1" >잠깐만, 방금 전에 어디 말했더라?</div>
                             </div>
                             <div class="main">기억이 나지 않을 땐,</div>
                             <div><span :class="{'fadein':isIntersecting1}">STT</span>를 통해 말했던 장소를 바로 카드로 만들어줘요.</div>
@@ -98,6 +98,8 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const firstPage = ref()
 const secondPage = ref()
 const thirdPage = ref()
@@ -106,6 +108,10 @@ const isIntersecting1 = ref(false)
 const isIntersecting2 = ref(false)
 const isIntersecting3 = ref(false)
 const isIntersecting = ref(false)
+
+const goLogin = () => {
+    router.push({name: 'member-login'})
+}
 onMounted(() => {
     function callback([entry], observer) {
         console.log(entry.isIntersecting, 'logo')
@@ -168,6 +174,7 @@ border-radius: 5px;
 width: fit-content;
 z-index: 2;
 margin-bottom: 1rem;
+color: white;
 }
 .bubble1::before{
     content:'';
@@ -193,6 +200,7 @@ border-radius: 5px;
 width: fit-content;
 z-index: 2;
 margin-bottom: 1rem;
+color: white;
 }
 .bubble2::after{
     content:'';
@@ -273,6 +281,8 @@ img{
     animation:  fadein 2s ease-in 0s forwards;
     /* -webkit-animation: fadein 2s ease-in 0s forwards; */
     animation-fill-mode: both;
+    border-radius: 5cm;
+    padding: 3px 7px 1px 7px;
 }
 @keyframes fadein{
     from{
@@ -307,4 +317,19 @@ img{
 }
 .st0{fill:none;stroke:#FFFFFF;stroke-width:12;stroke-linecap:round;stroke-miterlimit:10;}
 .st1{fill:none;stroke:#FFFFFF;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+
+
+#startBtn {
+  background-color: #3498DB;
+  color: #fff;
+  width: 13rem;
+  height: 4rem;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+#startBtn:hover {
+transform: scale(1.05);
+  border-color: #3498db
+}
 </style>

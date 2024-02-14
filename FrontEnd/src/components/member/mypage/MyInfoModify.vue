@@ -339,9 +339,11 @@ const withdrawalRequest = () => {
   #withdrawalBtn {
     /* font-weight: bold; */
     color: rgba(255, 0, 0, 0.3);
+    transition: transform 0.3s ease;
   }
   #withdrawalBtn:hover {
     color: rgb(255, 0, 0);
+    transform: scale(1.05);
   }
 
   #overlay {
@@ -392,6 +394,7 @@ const withdrawalRequest = () => {
     padding: 10px;
     margin-top: 5px; /* 위쪽 여백 추가 */
     line-height: 0px;
+    transition: transform 0.3s ease;
   }
   #withdrawalSubmit:hover {
     transform: scale(1.05);
@@ -408,8 +411,8 @@ const withdrawalRequest = () => {
     line-height: 25px;
     /* font-weight: bold; */
     border-radius: 5cm;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     top: 15px;
+    transition: transform 0.3s ease;
   }
   #withdrawalCloseBtn:hover {
     transform: scale(1.05);

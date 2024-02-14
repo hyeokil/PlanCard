@@ -110,6 +110,10 @@ const truncateName = (name) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 0.3s ease;
+}
+#addBtn:hover {
+  transform: scale(1.05);
 }
 
 h1 {
@@ -194,6 +198,10 @@ h1 {
   font-weight: bold;
   margin-right: 2%;
   margin-left: 2%;
+  transition: transform 0.3s ease;
+}
+.startBtn:hover {
+  transform: scale(1.05);
 }
 
 .router-link-active {

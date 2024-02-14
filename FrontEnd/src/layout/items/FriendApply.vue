@@ -117,6 +117,8 @@
   padding: 10px;
   margin-top: 5px;
   line-height: 0px;
+  transition: transform 0.3s ease;
+
 }
 #friendRequestSubmit:hover {
   transform: scale(1.05);

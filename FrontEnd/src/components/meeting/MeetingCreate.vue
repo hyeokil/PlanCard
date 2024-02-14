@@ -226,11 +226,12 @@ const filteredUsers = computed(() => {
 
 // 친구를 선택하여 selectedFriends 배열에 추가
 const addFriend = (friend) => {
-  if (!selectedFriends.value.some(fr => fr.friendId === friend.friendId)) {
+  if (!selectedFriends.value.some(fr => fr.email === friend.email)) {
     selectedFriends.value.unshift(friend);
     console.log(selectedFriends.value);
   }
 }
+
 // 친구를 선택하여 배열에서 삭제 (email을 추적)
 const removeFriend = (friend) => {
   const index = selectedFriends.value.findIndex(fr => fr.email === friend.email);
@@ -392,6 +393,10 @@ h3 {
   white-space: nowrap;
   justify-content: space-between;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+#selectedFriend:hover {
+  transform: scale(1.03);
 }
 
 #FriendsDiv {
@@ -438,6 +443,7 @@ h2 {
   height: 20px;
   padding: 20px;
   line-height: 0px;
+  transition: transform 0.3s ease;
 }
 
 #createSubmit:hover {
@@ -463,5 +469,10 @@ h2 {
 #friendList {
   cursor: pointer;
   display: flex;
+  transition: transform 0.3s ease;
+}
+#friendList:hover {
+  transform: scale(1.03);
+
 }
 </style>

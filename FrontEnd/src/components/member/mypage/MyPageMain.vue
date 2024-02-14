@@ -155,6 +155,11 @@ onMounted(() => {
     margin-right: 20px;
     border-radius: 15px; /* 라운드 모서리 적용 */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 적용 */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  #myplanImg:hover {
+    transform: scale(1.05);
   }
   #infoModifyImg {
     text-align: center;
@@ -163,12 +168,22 @@ onMounted(() => {
     margin-right: 20px;
     border-radius: 15px; /* 라운드 모서리 적용 */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 적용 */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  #infoModifyImg:hover {
+    transform: scale(1.05);
   }
   #pwResettingImg {
     text-align: center;
     margin-left: 20px;
     border-radius: 15px; /* 라운드 모서리 적용 */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 적용 */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  #pwResettingImg:hover {
+    transform: scale(1.05);
   }
 
   p {

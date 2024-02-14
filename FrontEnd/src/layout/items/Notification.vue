@@ -220,6 +220,8 @@ const deleteAlarmAll = async () => {
   width: 35px;
   height: 35px;
   margin-right: 3px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 #acceptBtn:hover {
@@ -236,6 +238,8 @@ const deleteAlarmAll = async () => {
   width: 35px;
   height: 35px;
   margin-left: 3px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 #rejectBtn:hover {
