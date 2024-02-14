@@ -1,5 +1,5 @@
 <template>
-  <div id="main-container" class="card p-fluid">
+  <div id="main-container" class="card p-fluid" style="border-radius: 10px 0px 0px 0px;">
 
 
     <!-- session이 false일때! 즉, 방에 들어가지 않았을때 -->

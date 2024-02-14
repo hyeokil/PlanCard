@@ -7,7 +7,7 @@ export const usePlanStore = defineStore(
 
     const planMemberList = ref([]);
     const planDetailList = ref([]);
-    const cardList = ref([]);
+    const cardListRaw = ref([]);
 
     const dateDiff = computed(
       () =>
@@ -18,14 +18,16 @@ export const usePlanStore = defineStore(
         1
     );
     const isMeetingView = ref(false);
+    const Added = ref(true);
 
     return {
       plan,
       planMemberList,
       planDetailList,
-      cardList,
+      cardListRaw,
       dateDiff,
       isMeetingView,
+      Added,
     };
   }
 );

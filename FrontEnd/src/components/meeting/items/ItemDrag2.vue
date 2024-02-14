@@ -8,13 +8,13 @@ import { WebsocketProvider } from 'y-websocket';
 // import * as Y from 'yjs';
 import _ from 'lodash'
 import { debounce } from "lodash";
-import { cardListGetApi, cardCreateApi, placeSearchApi } from '@/api/cardApi';
+import { cardListGetApi } from '@/api/cardApi';
 import { planDetailCreateApi, planDetailListGetApi } from '@/api/planApi';
 import { doc, yCardList, yPlanList } from '@/api/yjs';
-
+import { usePlanStore } from "@/stores/planStore";
 const router = useRouter()
 const route = useRoute();
-
+const planStore = usePlanStore()
 
 const planId = route.params.id; // URL에서 planId를 추출합니다.
 const cardListRaw = ref([]); // 카드 목록을 담을 반응형 변수를 선언합니다.
@@ -264,7 +264,6 @@ const moveCenter = (lat, lng) => {
 // 카드 데이터를 가져오는 메서드
 async function fetchCardList() {
     try {
-
         const response = await cardListGetApi(planId);
         if (response.data.dataHeader.successCode === 0) {
             const backendCardList = response.data.dataBody;
@@ -281,6 +280,7 @@ async function fetchCardList() {
             }));
 
             console.log('fetch후 cardListRaw 값', cardListRaw.value)
+            planStore.cardListRaw = cardListRaw
         } else {
             alert(response.data.dataHeader.resultMessage);
         }
@@ -295,6 +295,7 @@ async function fetchCardList() {
         }
     }
 }
+
 
 // 여행 일수를 계산하는 함수
 const calculateDateDiff = (startDate, endDate) => {
@@ -415,21 +416,6 @@ async function planDetailSave() {
     }
 }
 
-// 여행지 검색
-const searchText = ref("")
-const searchPlaces = ref([])
-watch(searchText, async(newV, oldV) => {
-    if (newV === "") {
-        searchPlaces.value = []
-    } else {
-        console.log('검색어가 바껴요', newV, typeof(newV))
-        const response = await placeSearchApi(newV);
-        if (response.data.dataHeader.successCode === 0) {
-            searchPlaces.value = response.data.dataBody
-            console.log('검색완?',searchPlaces.value)
-        }
-    }
-    }, {deep:true})
 
 
 
@@ -458,25 +444,15 @@ const sttToggle = () => {
         <div class="row" style="display: flex;">
             <div class="drag-list">
                 <ItemTitle class="title" @update-dates="handleUpdateDates"></ItemTitle>
+                
+
+                <!-- 카드목록 -->
                 <h6 style="margin-left: 11%;">카드 목록</h6>
-                
-                <!-- 검색 -->
-                <div class="searchPlace">
-                    <input type="text" v-model="searchText" placeholder="너뭐야">
-                    <div class="searchResult">
-                        <div v-for="place in searchPlaces" :key="place.placeId">
-                            {{ place.placeName }}
-                        </div>
-                    </div>
-                </div>
-                <!-- 검색 -->
-                
                 <div>
                     <draggable class="DragArea list-group" :list="cardList"
                         :group="{ name: 'card', pull: 'clone', put: false }" item-key="id" @change="onCardMove">
                         <template #item="{ element, index }">
                             <div >
-                                <!-- :class="[cardHidden[index] ? 'hidden' : 'active']"> -->
                                 <div class="list-group-item font-content">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
                                         <div class="card-card-list d-flex justify-content-start gap-3 align-items-center">
@@ -492,10 +468,11 @@ const sttToggle = () => {
                         </template>
                     </draggable>
                 </div>
-
             </div>
+            <!-- 카드목록 -->
+
+            <!-- 2번째 열 -->
             <div class="drag-list">
-                <!-- {{ planList }} -->
                 <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
                     <div class="d-flex align-items-center">
                         <div style="font-size: 28px;">
@@ -505,6 +482,7 @@ const sttToggle = () => {
                     </div>
                 </div>
                 <div>
+
                     <!-- 여행 상세 계획 -->
                     <div class="plan-list-margin">
                         <div class="drag-plan-list" v-for="(fixCard, index) in days" :key="index">
@@ -531,6 +509,9 @@ const sttToggle = () => {
                             </div>
                         </div>
                     </div>
+                    <!-- 여행 상세 계획 -->
+
+                    <!-- 버튼 -->
                     <div class="btns">
                         <div class="btns-box">
                             <button class="btn sttBtn" @click="sttToggle()">
@@ -544,8 +525,11 @@ const sttToggle = () => {
                             </button>
                         </div>
                     </div>
+                    <!-- 버튼 -->
+
                 </div>
             </div>
+            <!-- 2번째 열 -->
 
             <div class="map">
                 <!-- {{ newC }} -->
@@ -556,6 +540,7 @@ const sttToggle = () => {
 </template>
     
 <style scoped>
+
 .map {
     position: relative;
 }
