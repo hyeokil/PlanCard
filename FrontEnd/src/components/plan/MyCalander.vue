@@ -2,7 +2,7 @@
     <div class="d-flex gap-5 container"> 
         <div class="font-content calendar">
             <VCalendar
-            style="width: 100%; height: 477px; padding-top: 5rem; padding-left:1rem; padding-right: 1rem;"
+            class="calendar-v"
             :attributes="attributes" 
             ></VCalendar>
         </div>
@@ -103,8 +103,29 @@ const truncateName = (name) => {
 
 onMounted(fetchPlans)
 </script>
-
+<style>
+.calendar-v{
+    width: 100%; 
+    height: 477px; 
+    padding: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.vc-weeks{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 400px;
+}
+.vc-weekday-1{
+    color: red;
+}
+.vc-weekday-7{
+    color: blue;
+}
+</style>
 <style scoped>
+
 .container{
     margin-bottom: 0;
     margin-top: 0;

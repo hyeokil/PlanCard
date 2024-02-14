@@ -11,21 +11,23 @@
           <div style="width: 295px;">
             <h3>여행 이름</h3>
             <input type="text" class="box, card p-fluid font-content" id="tripTitleInput" v-model.trim="tripTitle" placeholder="여행 이름을 알려주세요">
-            <div class="font-content">
+            <div class="font-content flex-auto">
               <h3>여행 일정 선택</h3>
               <Calendar v-model="selectedDates" dataFormat="yy/mm/dd" selectionMode="range" :manualInput="false"
-                showButtonBar locale="ko-KR" placeholder="여행 일정을 선택하세요" class="field box font-content"
+                locale="ko-KR" placeholder="여행 일정을 선택하세요" class="field box font-content"
                 id="selectDateCalendar"
-                breakpoint="10px"
-                :inputStyle="{'border-radius':'5px', 'width':'500px'}"
+                showIcon
+                iconDisplay="input"
+                :inputStyle="{'border-radius':'5px', 'width':'280px'}"
                 :panelStyle="{
-                  'width':'300px', 
+                  'width':'200px', 
                   'display':'flex', 
-                  'flex-direction':'column', 
                   'align-items':'center', 
                   'justify-content':'center', 
-                  'font-family':'sans-serif'
+                  'font-family':'Pretendard Variable',
+                  'padding':'0'
                   }"
+                  panelClass="panel"
               />
             </div>
           </div>
@@ -189,17 +191,18 @@ const fetchAlarmPlan = async (planId) => {
 
 
 
+const users = ref([])
 // 유저 리스트 dummy
-const users = ref([
-  { id: 12, name: '유저에요1', email: "user1@ssafy.com" },
-  { id: 13, name: '유저에요2', email: "user2@ssafy.com" },
-  { id: 14, name: '유저에요3', email: "user3@ssafy.com" },
-  { id: 15, name: '유저에요4', email: "user4@ssafy.com" },
-  { id: 16, name: '유저에요5', email: "user5@ssafy.com" },
-  { id: 17, name: '유저에요6', email: "user6@ssafy.com" },
-  { id: 18, name: '유저에요7', email: "user7@ssafy.com" },
-  { id: 19, name: '유저에요8', email: "user8@ssafy.com" },
-]);
+// const users = ref([
+//   { id: 12, name: '유저에요1', email: "user1@ssafy.com" },
+//   { id: 13, name: '유저에요2', email: "user2@ssafy.com" },
+//   { id: 14, name: '유저에요3', email: "user3@ssafy.com" },
+//   { id: 15, name: '유저에요4', email: "user4@ssafy.com" },
+//   { id: 16, name: '유저에요5', email: "user5@ssafy.com" },
+//   { id: 17, name: '유저에요6', email: "user6@ssafy.com" },
+//   { id: 18, name: '유저에요7', email: "user7@ssafy.com" },
+//   { id: 19, name: '유저에요8', email: "user8@ssafy.com" },
+// ]);
 
 // 친구 검색어
 const searchText = ref("");
@@ -282,6 +285,26 @@ onUnmounted(() => {
 </script>
 
 
+<style>
+.panel, .p-datepicker-group-container{
+  margin: 0px;
+  padding: 0px;
+}
+.p-datepicker-header{
+  width: 236.56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.p-datepicker-calendar{
+  width: 100%;
+}
+.p-datepicker table td {
+  padding: 0.5rem;
+  cursor: pointer;
+
+}
+</style>
 
 <style scoped>
 h3 {
@@ -315,6 +338,7 @@ h3 {
   display: flex;
   align-items: center;
   border: 1px solid rgba(52, 152, 219, 0.5);
+  border-radius: 10px;
   height: 30px;
   padding: 15px;
   margin-bottom: 10px;
