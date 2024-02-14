@@ -15,6 +15,6 @@ public interface SttService {
 
     void stopStt(Long planId);
 
-    void processAudioData(byte[] audioData);
+    void processAudioData(byte[] audioData) throws IOException;
 
 }

@@ -37,7 +37,8 @@ public class SttController {
     }
 
     @MessageMapping("/audio")
-    public void audioRequest(@Payload byte[] audioData) {
+    public void audioRequest(@Payload byte[] audioData) throws IOException {
+        sttService.processAudioData(audioData);
         log.info("audio 데이터 들어옴: " + audioData.length + "bytes");
     }
 

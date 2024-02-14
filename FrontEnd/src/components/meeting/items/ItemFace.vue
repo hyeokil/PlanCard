@@ -520,6 +520,8 @@ async function captureAndSendAudio(publisher) {
     mediaRecorder.value.ondataavailable = async (event) => {
       if (event.data.size > 0 && webSocket.value && webSocket.value.readyState === WebSocket.OPEN) {
         const arrayBuffer = await event.data.arrayBuffer();
+        const view = new Uint8Array(arrayBuffer);
+        console.log(view[0]);
         webSocket.value.send(arrayBuffer); // WebSocket을 통해 바이너리 데이터 전송
         console.log("서버로 오디오 데이터 전송됨");
       }
