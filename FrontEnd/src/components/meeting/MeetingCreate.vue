@@ -100,11 +100,11 @@
 
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
 import Calendar from 'primevue/calendar'
 import { useRouter } from "vue-router";
 import { planCreateApi } from "@/api/planApi"; // planApi.js에서 API 함수를 import
-import { friendListGetApi } from '@/api/friendApi';
+import { friendListGetApi, userSearchGetApi } from '@/api/friendApi';
 import { alarmPlanRequestApi } from "@/api/alarmApi";
 
 const router = useRouter();
@@ -190,39 +190,44 @@ const fetchAlarmPlan = async (planId) => {
 }
 
 
-
 const users = ref([])
-// 유저 리스트 dummy
-// const users = ref([
-//   { id: 12, name: '유저에요1', email: "user1@ssafy.com" },
-//   { id: 13, name: '유저에요2', email: "user2@ssafy.com" },
-//   { id: 14, name: '유저에요3', email: "user3@ssafy.com" },
-//   { id: 15, name: '유저에요4', email: "user4@ssafy.com" },
-//   { id: 16, name: '유저에요5', email: "user5@ssafy.com" },
-//   { id: 17, name: '유저에요6', email: "user6@ssafy.com" },
-//   { id: 18, name: '유저에요7', email: "user7@ssafy.com" },
-//   { id: 19, name: '유저에요8', email: "user8@ssafy.com" },
-// ]);
 
 // 친구 검색어
 const searchText = ref("");
 
 
 // 검색어를 기반으로 친구 필터링
-const filteredUsers = computed(() => {
-  if (!searchText.value) {
-    return;
-  } else {
+// const filteredUsers = computed(() => {
+//   if (!searchText.value) {
+//     return;
+//   } else {
+//     return;
+//   }
+// });
 
-    // 유저 목록 중 이메일이 맞는 친구 필터링 (동명이인 이슈로 유저는 이름으로 서치 x)
-    const filteredUsersList = users.value.filter(user =>
-      user.email.toLowerCase().includes(searchText.value.toLowerCase())
-    );
-    // 합치기
-    const combinedList = [...filteredUsersList];
-    return combinedList;
+const filteredUsers = ref([])
+watch(searchText, async(newV, oldV) => {
+  console.log('검색어가 바껴요', newV)
+  if (newV === "") {
+    filteredUsers.value = []
+  } else {
+    const response = await userSearchGetApi(newV);
+    console.log(response)
+    if (response.data.dataHeader.successCode === 0) {
+      filteredUsers.value = response.data.dataBody
+      console.log('검색완?',filteredUsers.value)
+    }
   }
-});
+  }, { deep: true })
+
+
+// // 유저 목록 중 이메일이 맞는 친구 필터링 (동명이인 이슈로 유저는 이름으로 서치 x)
+// const filteredUsersList = users.value.filter(user =>
+//   user.email.toLowerCase().includes(searchText.value.toLowerCase())
+// );
+// // 합치기
+// const combinedList = [...filteredUsersList];
+// return combinedList;
 
 // 친구를 선택하여 selectedFriends 배열에 추가
 const addFriend = (friend) => {
@@ -357,6 +362,9 @@ h3 {
   padding: 15px;
   margin-bottom: 10px;
   margin-left: 5px;
+}
+#searchFriendsDiv:focus {
+  outline: 2px solid #3498DB;
 }
 
 #selectFriendsDiv {
