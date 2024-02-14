@@ -8,7 +8,7 @@ import { WebsocketProvider } from 'y-websocket';
 // import * as Y from 'yjs';
 import _ from 'lodash'
 import { debounce } from "lodash";
-import { cardListGetApi, cardCreate, placeSearch } from '@/api/cardApi';
+import { cardListGetApi, cardCreateApi, placeSearchApi } from '@/api/cardApi';
 import { planDetailCreateApi, planDetailListGetApi } from '@/api/planApi';
 import { doc, yCardList, yPlanList } from '@/api/yjs';
 
@@ -419,18 +419,17 @@ async function planDetailSave() {
 const searchText = ref("")
 const searchPlaces = ref([])
 watch(searchText, async(newV, oldV) => {
-    console.log('검색어가 바껴요', newV)
     if (newV === "") {
         searchPlaces.value = []
     } else {
-        const response = await placeSearch(newV);
-        console.log(response)
+        console.log('검색어가 바껴요', newV, typeof(newV))
+        const response = await placeSearchApi(newV);
         if (response.data.dataHeader.successCode === 0) {
             searchPlaces.value = response.data.dataBody
             console.log('검색완?',searchPlaces.value)
         }
     }
-    })
+    }, {deep:true})
 
 
 

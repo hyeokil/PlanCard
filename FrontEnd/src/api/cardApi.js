@@ -18,14 +18,14 @@ async function cardDeleteApi(cardId) {
 }
 
 // 여행지 검색
-async function placeSearch(param) {
+async function placeSearchApi(param) {
   return await local.get(`/place/search?name=${param}`);
 }
 
 // 카드 생성
-async function cardCreate(planId, placeId) {
+async function cardCreateApi(planId, placeId) {
   const param = { memo: "" };
   return await local.post(`plan/${planId}/card/${placeId}`, param);
 }
 
-export { cardListGetApi, cardMemoUpdateApi, cardDeleteApi, placeSearch, cardCreate };
+export { cardListGetApi, cardMemoUpdateApi, cardDeleteApi, placeSearchApi, cardCreateApi };
