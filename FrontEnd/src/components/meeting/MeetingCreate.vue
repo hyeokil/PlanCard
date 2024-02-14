@@ -119,20 +119,18 @@ const size = ref(10); // 페이지당 아이템 수
 const isLastPage = ref(false); // 마지막 페이지 여부
 
 
+// 값 입력 끝내고, 미팅 생성 및 미팅화면으로 이동
 const goMeeting = async () => {
   if (!tripTitle.value || !selectedDates.value || selectedDates.value.length < 2) {
     alert("여행 이름과 일정을 모두 입력해주세요.");
     return;
   }
-
   const [startDate, endDate] = selectedDates.value;
-
   const param = {
     name: tripTitle.value,
     startDate: startDate.toLocaleDateString('en-CA'), // 'YYYY-MM-DD' 형식
     endDate: endDate.toLocaleDateString('en-CA'), // 'YYYY-MM-DD' 형식
   };
-
   try {
     await planCreateApi(param,
       (response) => {
@@ -163,7 +161,6 @@ const fetchAlarmPlan = async (planId) => {
         planName: tripTitle.value,
         url: `${window.location.origin}/meeting/view/${planId}`
   }));
-
   try {
     const response = await alarmPlanRequestApi(alarmRequests);
     if (response.data.dataHeader.successCode === 1) {
@@ -182,9 +179,9 @@ const fetchAlarmPlan = async (planId) => {
 }
 
 
-// 친구 검색어
+// 유저 검색어 (이메일)
 const searchText = ref("");
-
+// 검색해서 찾은 유저
 const filteredUsers = ref([])
 watch(searchText, async(newV, oldV) => {
   console.log('검색어가 바껴요', newV)

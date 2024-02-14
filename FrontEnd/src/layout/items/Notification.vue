@@ -34,15 +34,15 @@
 import { ref, watch } from 'vue';
 import { alarmGetListApi, alarmActionApi, alarmDeleteAllApi } from "@/api/alarmApi";
 
-// props로 상태를 받습니다.
+// props로 값 받기
 const props = defineProps({
   notificationActive: Boolean
 });
 
-// props.notificationActive의 변화를 감지합니다.
+// props.notificationActive의 변화를 감지(watch)
 watch(() => props.notificationActive, (newVal) => {
   if (newVal) {
-    fetchAlarms(); // 알람 팝업이 활성화될 때마다 알람 목록을 새로고침합니다.
+    fetchAlarms(); // 알람 팝업이 활성화될 때마다 알람 목록을 새로고침(fetchAlarms 실행)합니다.
   }
 });
 
@@ -89,8 +89,6 @@ const fetchAlarms = async () => {
       alert("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
     }
   }
-
-  // console.log(notifications.value);
 };
 
 // 알람 처리 메서드 (수락/거절)
@@ -212,7 +210,7 @@ const deleteAlarmAll = async () => {
 
 #acceptBtn {
   font-size: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 3px solid rgba(0, 0, 0, 0.3);
   border-radius: 50%;
   padding: 5px;
   background-color: #3498DB;
@@ -230,7 +228,7 @@ const deleteAlarmAll = async () => {
 
 #rejectBtn {
   font-size: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 3px solid rgba(0, 0, 0, 0.3);
   border-radius: 50%;
   padding: 5px;
   background-color: red;

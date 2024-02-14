@@ -55,8 +55,8 @@
 
     <!-- 친구 요청 입력 modal -->
     <div>
-      <div v-if="friendRequestActive" id="overlay" @close-friend-request="closeFriendRequest"></div>
-      <FriendApply v-if="friendRequestActive" @close-friend-request="closeFriendRequest" />
+      <div v-if="friendRequestActive" id="overlay" @close-friend-request="closeFriendRequest" @click="closeFriendRequest"></div>
+      <FriendApply v-if="friendRequestActive" @close-friend-request="closeFriendRequest" style="z-index: 998;" />
     </div>
 
   </v-card>
@@ -65,7 +65,7 @@
 
 
 <script setup>
-import { ref, onUnmounted, getCurrentInstance, nextTick, watch } from 'vue';
+import { ref, onUnmounted, onMounted, getCurrentInstance, nextTick, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccountsStore } from '@/stores/accountsStore';
 import { memberLogoutApi } from "@/api/memberApi";
@@ -165,7 +165,7 @@ const handleScroll = () => {
   }
 };
 
-const friendRequestActive = ref(false);  // 친구요청창
+const friendRequestActive = ref(false);  // 친구요청 팝업 on/off 변수
 // 친구요청 팝업 on/off
 const goFriendRequest = () => {
   friendRequestActive.value = !friendRequestActive.value;
@@ -178,6 +178,7 @@ const closeFriendRequest = () => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
+
 </script>
 
 

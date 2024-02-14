@@ -44,18 +44,17 @@ import { memberLoginApi, startSocialLoginApi } from "@/api/memberApi";
 import { useAccountsStore } from '@/stores/accountsStore';
 
 const router = useRouter()
-
-const memberEmail = ref('');
-const memberPassword = ref('');
-
 const accountsStore = useAccountsStore();
 
+const memberEmail = ref('');  // 로그인할 때 입력할 Email
+const memberPassword = ref('');  // 로그인할 때 입력할 비밀번호
+
+// 로그인 함수
 const login = async () => {
     const param = {
         email: memberEmail.value,
         password: memberPassword.value
     };
-
     try {
         await memberLoginApi(param,
             (response) => {
@@ -82,6 +81,7 @@ const login = async () => {
     }
 };
 
+// 소셜 로그인 함수
 const socialLogin = async (oAuthDomain) => {
     // window.location.href = `${import.meta.env.VITE_VUE_API_URL}/oauth/${oAuthDomain}`;
 
@@ -107,6 +107,7 @@ const socialLogin = async (oAuthDomain) => {
 
 };
 
+// 회원가입 페이지로 이동
 const goSignUp = function () {
     router.push({ name: 'member-signup' });
 }

@@ -50,15 +50,15 @@ import { fileUploadApi } from "@/api/commonApi";
 
 const router = useRouter();
 
-const memberEmail = ref('');
-const memberEmailCode = ref('');
-const memberName = ref('');
-const memberNickname = ref('');
-const memberPassword = ref('');
-const memberPasswordCheck = ref('');
-const memberImage = ref('');
+const memberEmail = ref('');  // 이메일
+const memberEmailCode = ref('');  // 이메일 인증코드
+const memberName = ref('');  // 이름 (본명)
+const memberNickname = ref('');  // 별명
+const memberPassword = ref('');  // 비밀번호
+const memberPasswordCheck = ref('');  // 비밀번호 확인
+const memberImage = ref('');  // 프로필 이미지
 
-const memberPreviewPhotoUrl = ref('');
+const memberPreviewPhotoUrl = ref('');  // 프로필 이미지 url값
 const fileInput = ref('');
 
 
@@ -79,10 +79,6 @@ const memberEmailStatus = computed(() => {
     return emailStatus.test(memberEmail.value);
   }
 });
-
-
-// 이메일 인증코드 확인 유무 로직
-
 
 
 // 이메일 유효성 검사
@@ -109,7 +105,6 @@ const startCountdown = () => {
     clearInterval(timerInterval.value);
     countdownTime.value = 300; // 5분으로 리셋
   }
-
   // 초 단위로 카운트다운 진행
   timerInterval.value = setInterval(() => {
     if (countdownTime.value > 0) {
@@ -131,12 +126,10 @@ const sendEmailCode = async () => {
     alert("유효한 이메일 주소를 입력해주세요.");
     return;
   }
-
   try {
     const response = await sendEmailCodeApi(memberEmail.value);
     if (response.data.dataHeader.successCode === 0) {
       alert("이메일 인증 코드가 발송되었습니다. 이메일을 확인해주세요.");
-
       // 타이머 시작
       if (response.data.dataHeader.successCode === 0) {
         startCountdown();
@@ -200,7 +193,6 @@ const signUp = async () => {
     alert("폼을 올바르게 작성하고 이메일 인증을 완료해주세요.");
     return;
   }
-
   const signUpData = {
     email: memberEmail.value,
     emailCode: memberEmailCode.value,
@@ -256,6 +248,7 @@ const handlePhotoUpload = (event) => {
 onUnmounted(() => {
   stopCountdown();
 });
+
 // 입력 필드 리셋
 const resetFileInput = () => {
   if (fileInput.value) {
@@ -264,12 +257,12 @@ const resetFileInput = () => {
   memberPreviewPhotoUrl.value = "";
 };
 
+// 프로필 이미지를 업로드하는 함수
 const imageUpload = async (file) => {
   // 파일을 FormData에 추가하여 전송 가능
   const formData = new FormData();
   formData.append('file', file);
   formData.append('nameFile', file.name);
-
   try {
     const response = await fileUploadApi(formData);
     if (response.data.dataHeader.successCode === 0) {

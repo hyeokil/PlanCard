@@ -39,7 +39,7 @@
           <button id="withdrawalBtn" @click="withdrawalRequest()">[회원탈퇴]</button>
         </div>
 
-        <div id="overlay" v-if="withdrawalActive"></div>
+        <div id="overlay" v-if="withdrawalActive" @click="withdrawalRequest()"></div>
         <div class="card p-fluid" v-if="withdrawalActive" id="withdrawalBox">
           <h3 id="withdrawalTitle">회원 탈퇴 확인</h3>
             <p style="text-align: center; margin: 10px; margin-bottom: 0px;">진짜 탈퇴해?</p>
@@ -72,13 +72,11 @@ import { useAccountsStore } from '@/stores/accountsStore';
 const router = useRouter();
 const accountStore = useAccountsStore();
 
-const memberNickname = ref('');
+const memberNickname = ref('');  // 새로운 닉네임
 const existingNickname = accountStore.memberInfo?.nickname  // 기존 닉네임
-memberNickname.value = existingNickname;  // 기존 닉네임을 초기값으로 설정
-
-const memberImage = ref('');
-
-const memberPreviewPhotoUrl = ref('');
+memberNickname.value = existingNickname;  // 처음에 들어갔을 때, 기존 닉네임을 초기값으로 설정
+const memberImage = ref('');  // 프로필 이미지
+const memberPreviewPhotoUrl = ref('');  // 새로운 프로필 이미지
 const fileInput = ref(null);
 
 // 파일 업로드를 위한 이벤트 핸들러
@@ -111,6 +109,7 @@ const resetFileInput = () => {
   memberPreviewPhotoUrl.value = "";
 };
 
+
 const imageUpload = async (file) => {
   // 파일을 FormData에 추가하여 전송 가능
   const formData = new FormData();
@@ -132,6 +131,7 @@ const imageUpload = async (file) => {
   }
 }
 
+// 프로필을 수정하는 함수
 const modify = async () => {
   if (memberNickname.value.trim() === '') {
     alert("변경할 닉네임을 입력해주세요.");
@@ -180,8 +180,9 @@ onMounted(() => {
   fetchMemberInfo();
 });
 
-const withdrawalActive = ref(false);
-// 회원탈퇴 팝업 on/off
+
+const withdrawalActive = ref(false);  // 회원 탈퇴 팝업 on/off 변수
+// 회원탈퇴 팝업 on/off 전환
 const withdrawalRequest = () => {
   withdrawalActive.value = !withdrawalActive.value;
 };

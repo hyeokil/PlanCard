@@ -49,14 +49,17 @@ import { memberGetApi } from '@/api/memberApi';
 const router = useRouter();
 const accountStore = useAccountsStore();
 
+// 내 계획 페이지로 이동
 const goMyPlan = () => {
   router.push({ name: "mypage-myplan" })
 }
 
+// 회원정보수정 페이지로 이동
 const goMyInfoModify = () => {
   router.push({ name: "mypage-myInfoModify" })
 }
 
+// 비밀번호변경 페이지로 이동
 const goMyPasswordResetting = () => {
   router.push({ name: "mypage-myPasswordResetting" })
 }

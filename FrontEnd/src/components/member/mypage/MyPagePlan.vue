@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div id="overlay" v-if="showCreateMeetingModal"></div>
+    <div id="overlay" v-if="showCreateMeetingModal" @click="closeMeetingCreate"></div>
     <div id="createMeetingBox">
       <MeetingCreate v-if="showCreateMeetingModal" @close-meeting-create="closeMeetingCreate" />
     </div>
@@ -40,14 +40,14 @@ import { onMounted, ref } from 'vue';
 import MeetingCreate from "@/components/meeting/MeetingCreate.vue";
 import { planListGetApi } from '@/api/planApi';
 
-const showCreateMeetingModal = ref(false);
-const plans = ref([]); // 초기 plans를 빈 배열로 설정
+const plans = ref([]); // 초기 여행계획 plans를 빈 배열로 설정
 
+const showCreateMeetingModal = ref(false);  // 여행 생성 창 on/off 변수
+// 여행 생성 창 닫기
 const closeMeetingCreate = () => {
   showCreateMeetingModal.value = false;
 }
-
-
+// 여행 생성 창 열기
 const showCreateMeeting = () => {
   showCreateMeetingModal.value = !showCreateMeetingModal.value
 }
