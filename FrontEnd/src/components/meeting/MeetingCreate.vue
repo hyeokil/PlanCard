@@ -100,7 +100,7 @@
 
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, watch, onMounted, onUnmounted, nextTick } from "vue";
 import Calendar from 'primevue/calendar'
 import { useRouter } from "vue-router";
 import { planCreateApi } from "@/api/planApi"; // planApi.js에서 API 함수를 import
@@ -153,14 +153,6 @@ const goMeeting = async () => {
     console.error("여행 계획 생성 중 오류가 발생했습니다:", error);
     alert("여행 계획 생성 중 오류가 발생했습니다.");
   }
-
-
-  // 화상회의 생성
-  // 여행계획 생성
-  // 여행 세부계획 생성
-  // 사람들에게 초대 요청
-  // 화상회의로 바로 이동
-  // router.push({ name: 'meeting-detail', params: { id: 1 } })
 }
 
 const fetchAlarmPlan = async (planId) => {
@@ -190,20 +182,8 @@ const fetchAlarmPlan = async (planId) => {
 }
 
 
-const users = ref([])
-
 // 친구 검색어
 const searchText = ref("");
-
-
-// 검색어를 기반으로 친구 필터링
-// const filteredUsers = computed(() => {
-//   if (!searchText.value) {
-//     return;
-//   } else {
-//     return;
-//   }
-// });
 
 const filteredUsers = ref([])
 watch(searchText, async(newV, oldV) => {
@@ -220,14 +200,6 @@ watch(searchText, async(newV, oldV) => {
   }
   }, { deep: true })
 
-
-// // 유저 목록 중 이메일이 맞는 친구 필터링 (동명이인 이슈로 유저는 이름으로 서치 x)
-// const filteredUsersList = users.value.filter(user =>
-//   user.email.toLowerCase().includes(searchText.value.toLowerCase())
-// );
-// // 합치기
-// const combinedList = [...filteredUsersList];
-// return combinedList;
 
 // 친구를 선택하여 selectedFriends 배열에 추가
 const addFriend = (friend) => {

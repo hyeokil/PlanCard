@@ -14,8 +14,18 @@ async function cardMemoUpdateApi(param, success, fail) {
 
 // 카드 사용한 것 삭제
 async function cardDeleteApi(cardId) {
-  return await local.delete(`/plan/card/${cardId}`)
+  return await local.delete(`/plan/card/${cardId}`);
 }
 
+// 여행지 검색
+async function placeSearch(param) {
+  return await local.get(`/place/search?name=${param}`);
+}
 
-export { cardListGetApi, cardMemoUpdateApi, cardDeleteApi };
+// 카드 생성
+async function cardCreate(planId, placeId) {
+  const param = { memo: "" };
+  return await local.post(`plan/${planId}/card/${placeId}`, param);
+}
+
+export { cardListGetApi, cardMemoUpdateApi, cardDeleteApi, placeSearch, cardCreate };

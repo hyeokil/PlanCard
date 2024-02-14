@@ -38,7 +38,7 @@ const plans = ref([])
 const attributes = computed(() => [
     ...plans.value.map(plan => {
         const color = _.sample(colors.value)
-        console.log(color)
+        // console.log(color)
         return (
             {
                 key: plan.name,
