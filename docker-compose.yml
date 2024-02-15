@@ -23,15 +23,6 @@ services:
     volumes:
       - mongodb_data:/data/db 
 
-  openvidu:
-    image: openvidu/openvidu-dev:2.29.0
-    container_name: openvidu
-    ports:
-      - "4443:4443"
-    environment:
-      OPENVIDU_SECRET: MY_SECRET
-    restart: unless-stopped
-
 # Docker volume 정의
 volumes:
   mongodb_data:

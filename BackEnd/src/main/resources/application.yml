@@ -20,19 +20,18 @@ spring:
     username: ssafy                     # 데이터베이스 계정명
     password: ssafy                       # 데이터베이스 계정 비밀번호
 
-  http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-
   # data_테이블명.sql 관련 실행 setting
   sql:
     init:
       mode: always
       data-locations:
+        - 'classpath:/data_member.sql'
         - 'classpath:/data_place.sql'
+        - 'classpath:/data_plan.sql'
         - 'classpath:/data_card.sql'
+        - 'classpath:/data_alarm.sql'
+        - 'classpath:/data_friendship.sql'
+        - 'classpath:/data_plan_member.sql'
 
   batch:
     jdbc:
@@ -80,8 +79,8 @@ jwt:
     refresh: TestRefreshKey111111122222222223333333333333aaaaaaaaabbbbbbbbccccccccdddddddddfqwrqwfqwifjaisfjoihfoiqwflasjdglkkjasdlgjlkasdgjiowejgliasjglasjdgio
 
   expired-min:
-    access: 10080   # 액세스 토큰 만료제한시간 60분 (1시간)
-    refresh: 10080  # 리프레쉬 토큰 만료제한시간 10080분 (7일)
+    access: 100000000   # 액세스 토큰 만료제한시간 60분 (1시간) (60)
+    refresh: 100000000  # 리프레쉬 토큰 만료제한시간 10080분 (7일) (10080)
 
 # log 관리
 logging:

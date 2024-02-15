@@ -1,0 +1,121 @@
+INSERT INTO `member` (
+                       `created_at`
+                     ,`updated_at`
+                     ,`email`
+                     ,`image`
+                     ,`name`
+                     ,`nickname`
+                     ,`password`
+                     ,`provider`
+                     ,`role`
+)
+VALUES (
+         NOW()
+       ,NOW()
+       ,'test1@test.com'
+       ,NULL
+       ,'테스트1'
+       ,'테스트 1트'
+       ,'$2a$10$70ayhKkdaxt3n20QJoCNTODPiBka/qRjDdTM1bXG1kXrcv6CFA7JW'
+       ,NULL
+       ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'test2@test.com'
+      ,NULL
+      ,'테스트2'
+      ,'테스트 2트'
+      ,'$2a$10$m78cf3HN84dmqfJVzoLJpuB1A5rxUC3MX4lMZJnzkxJB1LDZqRhU2'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'test3@test.com'
+      ,NULL
+      ,'테스트3'
+      ,'테스트 3트'
+      ,'$2a$10$BbUgBIDxT0Vn0ojDLCFX0ubVXNvISW2oJBFvlDBzPcFeo40kZQ4Nu'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'test4@test.com'
+      ,NULL
+      ,'테스트4'
+      ,'테스트 4트'
+      ,'$2a$10$MhGy.eCDmCLqC3ThraquW.bYEIcsvks1OtfqKDOp9W0eGoFm/u.32'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'tlsehdrms@ssafy.com'
+      ,NULL
+      ,'신동근'
+      ,'동근쓰'
+      ,'$2a$10$4tbLdHdAHvrJhYm6ZQ/Yf.LkDOYdqHyYjURJ2hTcFg6W/Jhz7TQLS'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'qkrwjddls@ssafy.com'
+      ,NULL
+      ,'박정인'
+      ,'정인쓰'
+      ,'$2a$10$C4Fkp2hshr4NPlRepqt4K.Tc1fN2hmKwTDkepqKnczzBy1bTRZxKa'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'rkdwltn@ssafy.com'
+      ,NULL
+      ,'강지수'
+      ,'지수쓰'
+      ,'$2a$10$b/TuGwaoeg2M6FPu.jy/0ezLLU/w5AgAp6vHxE4AN7Wfddi7.gFBu'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'rlagurdlf@ssafy.com'
+      ,NULL
+      ,'김혁일'
+      ,'혁일쓰'
+      ,'$2a$10$7wzce210fkJmKUfJymCLy.IBn4sf4TbU6oyHWd8BmdiZOOn1TLJEC'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'rlawogns@ssafy.com'
+      ,NULL
+      ,'김재훈'
+      ,'재훈쓰'
+      ,'$2a$10$ojM5sOtA4E8Xc4o3rEjlv.U/YoJdgZiijlWbsoQuhsvjPmu/6D7ka'
+      ,NULL
+      ,'USER'
+)
+     ,(
+        NOW()
+      ,NOW()
+      ,'dltpdms@ssafy.com'
+      ,NULL
+      ,'이세은'
+      ,'세은쓰'
+      ,'$2a$10$JK.qfrMP3YkCym4VTDfLWufVxx7JHT9M2aAeJk3oLlTwfTbd7we5u'
+      ,NULL
+      ,'USER'
+);
