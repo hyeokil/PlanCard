@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mt-0 pt-0">
-            <ItemDrag2></ItemDrag2>
+            <ItemDrag2 activeTab="activeTab"></ItemDrag2>
             <!-- 채팅창 -->
             <div class="chat-tab">
                 <div class="chat-container">

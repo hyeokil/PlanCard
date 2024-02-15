@@ -426,6 +426,7 @@ async function planDetailSave() {
 }
 
 
+const detailTab = ref(true)
 
 
 onBeforeMount(async () => {
@@ -481,9 +482,11 @@ const sttToggle = () => {
             <!-- 카드목록 -->
 
             <!-- 2번째 열 -->
-            <div :class="{'drag-list': true, 'drag-list-active':true, 'drag-list-hidden':false}">
-                <div style="position: absolute; background-color: aqua; top: 0px; left: 0px;">
-                    <button>상세계획 접기</button>
+            <div :class="{'drag-list': true, 'drag-list-active':detailTab, 'drag-list-hidden':!detailTab}">
+                <div id="detail-btn">
+                    <button @click="detailTab = !detailTab"> 
+                        <i class="pi pi-angle-left" style="font-size: 1.7rem;"></i>
+                    </button>
                 </div>
                 <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
                     <div class="d-flex align-items-center">
@@ -553,6 +556,18 @@ const sttToggle = () => {
     
 <style scoped>
 
+#detail-btn{
+    position: absolute; 
+    background-color: #fff; 
+    top: 30vh; 
+    right: -1.7rem; 
+    z-index: 999; 
+    height: 25rem; 
+    width: 1.7rem; 
+    border-radius: 0px 10px 10px 0px;
+    display: flex;
+}
+
 .map {
     position: relative;
 }
@@ -617,10 +632,17 @@ const sttToggle = () => {
 }
 
 .drag-list-active{
+    display: block;
     min-width: 380px;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 .drag-list-hidden{
-    min-width: 0px;
+    display: block;
+    min-width: none;
+    width: 0px;
+    transition: width 1s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 .card-list-margin{
     position: absolute;
