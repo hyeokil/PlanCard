@@ -157,9 +157,10 @@ const goMeeting = async () => {
 }
 
 const fetchAlarmPlan = async (planId) => {
-  // 친구들에게 여행 요청 알람 보내기
+  // 친구들에게  여행 요청알람 보내기
   const alarmRequests = selectedFriends.value.map(friend => ({
         friendId: friend.friendId,
+        // memberID; friend.memberId,
         type: "PLAN",
         planName: tripTitle.value,
         url: `${window.location.origin}/meeting/view/${planId}`
