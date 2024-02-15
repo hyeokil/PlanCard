@@ -11,8 +11,14 @@ const route = useRoute();
 const planId = route.params.id; // URL에서 planId를 추출합니다.
 
 // 여행지 검색
-const searchText = ref("")
+const searchText = ref('')
+// const searchText = computed(()=>planStore.sttSearchText)
 const searchPlaces = ref([])
+
+// 검색결과 가져오기
+watch(() => planStore.sttSearchText, (newV) => {
+  searchText.value = planStore.sttSearchText
+})
 
 // 검색결과가 cardListRaw에 있으면 파랑색 글씨+ 클릭불가능으로 바꿈
 
@@ -69,9 +75,12 @@ async function addToCardList(place) {
 <template>
   <div class="searchPlace">
     <!-- 검색 -->
-    <div>
+    <div style="position: relative;">
       <h6 style="margin-left: 1rem;">장소 검색하기</h6>
-      <input type="text" v-model="searchText" placeholder="장소를 입력해주세요">
+      <input type="text" v-model="searchText">
+      <!-- <input type="text" v-model="searchText" placeholder="장소를 입력해주세요"> -->
+      <button style="position: absolute; top: 2.8rem; right: 1rem; color: #3498DB;"><i class="pi pi-check"></i></button>
+      <!-- 사실 이 버튼은 의미가 없음 그냥 검색결과가 나오기까지 시간벌기용 -->
     </div>
       <!-- 검색 -->
       

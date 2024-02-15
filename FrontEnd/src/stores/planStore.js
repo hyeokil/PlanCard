@@ -19,7 +19,7 @@ export const usePlanStore = defineStore(
     );
     const isMeetingView = ref(false);
     const Added = ref(true);
-
+    const sttSearchText = ref("");
     return {
       plan,
       planMemberList,
@@ -28,6 +28,7 @@ export const usePlanStore = defineStore(
       dateDiff,
       isMeetingView,
       Added,
+      sttSearchText,
     };
   }
 );

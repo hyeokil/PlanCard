@@ -434,17 +434,55 @@ onBeforeMount(async () => {
 });
 
 
-const sttOn = ref(false)
+const sttOn = ref(false);
 
-const sttToggle = () => {
-    if (sttOn.value == false) {
-        sttOn.value = true
-        console.log(sttOn.value)
+// SpeechRecognition 인스턴스를 관리할 ref 추가
+const speechRecognition = ref(null);
+
+const sttToggle = async () => {
+  sttOn.value = !sttOn.value;
+
+  if (sttOn.value) {
+    // STT 활성화 시
+    // SpeechRecognition 인스턴스 생성
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      speechRecognition.value = new SpeechRecognition();
+      speechRecognition.value.continuous = true; // 연속적인 입력 처리
+      speechRecognition.value.lang = 'ko-KR'; // 언어 설정 (한국어)
+      speechRecognition.value.interimResults = true; // 중간 결과 반환
+
+      // 음성 인식 시작
+      speechRecognition.value.start();
+
+      // 음성 인식 결과 이벤트 처리
+      speechRecognition.value.onresult = function(event) {
+        const current = event.resultIndex;
+        const transcript = event.results[current][0].transcript;  // 변환된 텍스트
+        const text = transcript.split(" "); // 변환된 텍스트를 공백단위로 끊어서 배열로 저장
+        // console.log(text);
+        const lastWord = text[text.length - 1]; // 배열의 맨 마지막 요소(단어) 추출
+        planStore.sttSearchText = lastWord
+        console.log(lastWord); // 맨 마지막 단어 
+      };
+
+      speechRecognition.value.onerror = function(event) {
+        console.error('SpeechRecognition error', event.error);
+      };
+
+      console.log("STT 시작");
     } else {
-        sttOn.value = false
-        console.log(sttOn.value)
+      console.error("이 브라우저는 SpeechRecognition을 지원하지 않습니다.");
     }
-}
+  } else {
+    // STT 비활성화 시
+    if (speechRecognition.value) {
+      speechRecognition.value.stop(); // 음성 인식 중지
+      speechRecognition.value = null;
+      console.log("STT 중지");
+    }
+  }
+};
 
 // 20글자를 넘어가면 요약 ("...")
 const truncateName = (name) => {

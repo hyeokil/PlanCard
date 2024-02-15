@@ -6,11 +6,11 @@
                     <div class="background-image">
                         <div class="first-text-content">
                             <div style="font-size: 1.6rem;">
-                                <div id="pageTop">친구, 연인, 가족, 나와 함께 쓰는 여행 플래너</div>
+                                <div>친구, 연인, 가족, 나와 함께 쓰는 여행 플래너</div>
                             </div>
-                            <div style="font-size: 5rem; color: #3498DB;">플랜카드</div>
+                            <div style="font-size: 5rem;">플랜카드</div>
                             <div style="font-size: 1.2rem;">플랜카드로 모두 함께 즐거운 여행을 만들어요.</div>
-                            <button id="startBtn" @click="goLogin()">바로 시작하기</button>
+                            <button style="background-color: #3498DB; color: #fff; width: 13rem; height: 4rem; border-radius: 5px; font-size: 1.2rem;">바로 시작하기</button>
                         </div>
                     </div>
                 </div>
@@ -21,7 +21,7 @@
                         </div>
                         <div class="text-content">
                             <div style="position: relative;">
-                                <div class="bubble1" >잠깐만, 방금 전에 어디 말했더라?</div>
+                                <div class="bubble1">잠깐만, 방금 전에 어디 말했더라?</div>
                             </div>
                             <div class="main">기억이 나지 않을 땐,</div>
                             <div><span :class="{'fadein':isIntersecting1}">STT</span>를 통해 말했던 장소를 바로 카드로 만들어줘요.</div>
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="part">
-                    <div class="background-image" style="height: calc(100vh - 103px);" ref="thirdPage">
+                    <div class="background-image" ref="thirdPage">
                         <div class="img-content">
                             <img src="/manager-two-color.png" alt="">
                         </div>
