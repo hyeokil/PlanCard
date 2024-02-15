@@ -510,20 +510,43 @@ function closeAudioWebSocket() {
     }
 
 
+  async function uploadBlobFile(blobFile) {
+  const formData = new FormData();
+  formData.append('audioFile', blobFile, 'audio.wav'); // 'audio.wav'는 파일 이름입니다.
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/v1/stt/audio', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    console.log('파일 전송 완료:', response.data);
+  } catch (error) {
+    console.error('파일 전송 실패:', error);
+  }
+}
+
+
 // 오디오 스트림을 캡쳐하고 STOMP를 통해 서버로 전송합니다.
 async function captureAndSendAudio(publisher) {
   try {
     const audioStream = await getAudioStreamFromPublisher(publisher);
     mediaRecorder.value = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
-    console.log("MediaRecorder 객체 생성됨:", mediaRecorder.value);
+    // console.log("MediaRecorder 객체 생성됨:", mediaRecorder.value);
 
     mediaRecorder.value.ondataavailable = async (event) => {
       if (event.data.size > 0 && webSocket.value && webSocket.value.readyState === WebSocket.OPEN) {
         const arrayBuffer = await event.data.arrayBuffer();
-        const view = new Uint8Array(arrayBuffer);
-        console.log(view[0]);
+        // const view = new Uint8Array(arrayBuffer);
+        // console.log(view[0]);
         webSocket.value.send(arrayBuffer); // WebSocket을 통해 바이너리 데이터 전송
-        console.log("서버로 오디오 데이터 전송됨");
+        // const blob = new File([event.data], {type: "audio/wav"});
+
+        console.log("서버로 오디오 데이터 전송");
+        // uploadBlobFile(blob);
+        // webSocket.value.send(blob);
+        
+        
       }
     };
 

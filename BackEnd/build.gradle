@@ -74,6 +74,9 @@ dependencies {
 
 	// firebase 추가
 //	implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+	//구글 stt
+	implementation 'com.google.cloud:google-cloud-speech:4.29.0'
 }
 
 tasks.named('test') {

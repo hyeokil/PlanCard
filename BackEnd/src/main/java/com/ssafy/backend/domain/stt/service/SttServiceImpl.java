@@ -15,6 +15,7 @@ import okhttp3.*;
 import okio.ByteString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -167,22 +168,29 @@ public class SttServiceImpl implements SttService {
         log.info("Stopped STT session for planId: {}", planId);
     }
 
-    // 오디오 데이터를 STT 서비스로 전송하고 변환된 텍스트를 처리
     @Override
-    public void processAudioData(byte[] audioData) throws IOException {
-        //audioData 출력
-//        log.info("audioData: {}", audioData);
+    public void processAudioData(byte[] audioData) throws IOException, InterruptedException {
 
-        // STT 서비스 호출 및 텍스트 변환 로직 구현
-        // 예시 코드는 실제 STT API 호출 과정을 단순화하여 표현합니다.
-        String text = callSttService(audioData);
-
-        // 변환된 텍스트 처리 로직 (예: 데이터베이스 저장, 로깅 등)
-        log.info("Converted text: {}", text);
-
-        // 변환된 텍스트를 기반으로 필요한 처리 수행
-        // 예: 특정 조건에 맞는 데이터 처리, 응답 메시지 전송 등
     }
+
+    // 오디오 데이터를 STT 서비스로 전송하고 변환된 텍스트를 처리
+//    @Override
+//    public void processAudioData(byte[] audioData) throws IOException, InterruptedException {
+//        //audioData 출력
+////        log.info("audioData: {}", audioData);
+//
+//        // STT 서비스 호출 및 텍스트 변환 로직 구현
+//        // 예시 코드는 실제 STT API 호출 과정을 단순화하여 표현합니다.
+//        String text = callSttService(audioData);
+//
+//        // 변환된 텍스트 처리 로직 (예: 데이터베이스 저장, 로깅 등)
+//        log.info("Converted text: {}", text);
+//
+//        // 변환된 텍스트를 기반으로 필요한 처리 수행
+//        // 예: 특정 조건에 맞는 데이터 처리, 응답 메시지 전송 등
+//    }
+
+//    @Override
 
     //바이트 배열 wav파일로 변경 메서드
     public static void bytesToWav(byte[] byteArray, String outputFilePath, int sampleRate, int sampleSizeInBits, int channels) throws IOException {
@@ -318,20 +326,24 @@ public class SttServiceImpl implements SttService {
     }
 
 
-    private String callSttService(byte[] audioData) throws IOException {
+//    private String callSttService(byte[] audioData) throws IOException, InterruptedException {
+    private String callSttService(MultipartFile file) throws IOException, InterruptedException {
         // 여기에 STT API 호출 로직 구현
         // 이 부분은 실제 STT 서비스 제공자의 API 문서를 참조하여 구현합니다.
         // 이 예시에서는 변환된 가상의 텍스트를 반환합니다.
 
         //텍스트 음성 인식 stt 서비스에 파일 형태로 제공하기 위해 byte배열을 wav로 변환 후 텍스트 변환 처리합니다.
-//        log.info(audioData.toString());
-        bytesToWav(audioData, "audio.wav", 44100, 8, 1);
-        try {
-            saveByteArrayAsWav(audioData, "new.wav");
-            log.info("WAV 파일이 생성되었습니다.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+//        for (byte b : audioData) {
+//            log.info("오디오 데이터 : {}", b);
+//        }
+//        bytesToWav(audioData, "audio.wav", 44100, 8, 1);
+//        try {
+//            saveByteArrayAsWav(audioData, "audio.wav");
+//            log.info("WAV 파일이 생성되었습니다.");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         String accessToken = getAccessToken();
 
@@ -345,7 +357,8 @@ public class SttServiceImpl implements SttService {
         httpConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=authsample");
         httpConn.setDoOutput(true);
 
-        File file = new File("audio.wav");
+//        File file = new File("audio.wav");
+
 
         DataOutputStream outputStream;
         outputStream = new DataOutputStream(httpConn.getOutputStream());
@@ -356,8 +369,10 @@ public class SttServiceImpl implements SttService {
         outputStream.writeBytes("Content-Transfer-Encoding: binary" + "\r\n");
         outputStream.writeBytes("\r\n");
 
-        FileInputStream in = new FileInputStream(file);
-        byte[] fileBuffer = new byte[(int) file.length()];
+//        FileInputStream in = new FileInputStream(file);
+//        byte[] fileBuffer = new byte[(int) file.length()];
+        FileInputStream in = (FileInputStream) file.getInputStream();
+        byte[] fileBuffer = new byte[(int) file.getSize()];
         int fileBytesRead = -1;
         while ((fileBytesRead = in.read(fileBuffer)) != -1) {
             outputStream.write(fileBuffer, 0, fileBytesRead);

@@ -8,17 +8,18 @@ import org.json.simple.parser.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/stt")
+@CrossOrigin("http://localhost:8080")
 @RequiredArgsConstructor
 public class SttController {
 
@@ -37,9 +38,20 @@ public class SttController {
     }
 
     @MessageMapping("/audio")
-    public void audioRequest(@Payload byte[] audioData) throws IOException {
-        sttService.processAudioData(audioData);
+    public void audioRequest(@Payload byte[] audioData) throws IOException, InterruptedException {
         log.info("audio 데이터 들어옴: " + audioData.length + "bytes");
     }
+
+//    @PostMapping("/upload")
+//    public void audioBlobRequest(@RequestParam("file") MultipartFile file) throws UnsupportedAudioFileException, IOException, InterruptedException {
+//        sttService.processAudioData(file);
+//        log.info("wav 데이터 받음 {}", file);
+//    }
+
+//    @MessageMapping("/audio")
+//    public void audioRequest(@Payload MultipartFile file) throws IOException, UnsupportedAudioFileException, InterruptedException {
+//        sttService.processAudioData(file);
+//
+//    }
 
 }
