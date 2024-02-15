@@ -8,7 +8,7 @@ import { WebsocketProvider } from 'y-websocket';
 // import * as Y from 'yjs';
 import _ from 'lodash'
 import { debounce } from "lodash";
-import { cardListGetApi } from '@/api/cardApi';
+import { cardListGetApi, cardCreateApi, placeSearchApi } from '@/api/cardApi';
 import { planDetailCreateApi, planDetailListGetApi } from '@/api/planApi';
 import { doc, yCardList, yPlanList } from '@/api/yjs';
 import { usePlanStore } from "@/stores/planStore";
