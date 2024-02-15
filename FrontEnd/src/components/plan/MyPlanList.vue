@@ -3,7 +3,8 @@
         <div style="margin-top: 5rem; display: flex; flex-direction: column; gap: 3rem;">
             <div class="parent">
                 <div class="part">
-                    <div class="background-image">
+                    <div class="background-image" >
+                        <a id="top"></a>
                         <div class="first-text-content">
                             <div style="font-size: 1.6rem;">
                                 <div>친구, 연인, 가족, 나와 함께 쓰는 여행 플래너</div>
@@ -144,6 +145,14 @@ console.log(child)
 </script>
 
 <style scoped>
+html {
+    scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
 span{
     background-color: #3498DB;
     color: #fff;

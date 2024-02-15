@@ -451,7 +451,7 @@ const sttToggle = () => {
 <template>
     <div class="drag-container">
         <div class="row" style="display: flex;">
-            <div class="drag-list">
+            <div class="drag-list drag-list-active">
                 <ItemTitle class="title" @update-dates="handleUpdateDates"></ItemTitle>
                 
 
@@ -481,7 +481,10 @@ const sttToggle = () => {
             <!-- 카드목록 -->
 
             <!-- 2번째 열 -->
-            <div class="drag-list">
+            <div :class="{'drag-list': true, 'drag-list-active':true, 'drag-list-hidden':false}">
+                <div style="position: absolute; background-color: aqua; top: 0px; left: 0px;">
+                    <button>상세계획 접기</button>
+                </div>
                 <div style="height: 80px; padding: 1rem ; display:flex; align-items: end;">
                     <div class="d-flex align-items-center">
                         <div style="font-size: 28px;">
@@ -607,10 +610,17 @@ const sttToggle = () => {
 }
 
 .drag-list {
+    position: relative;
     height: 100vh;
-    min-width: 380px;
     border-left: rgba(0, 0, 0, 0.1) 1px solid;
     background-color: #fff;
+}
+
+.drag-list-active{
+    min-width: 380px;
+}
+.drag-list-hidden{
+    min-width: 0px;
 }
 .card-list-margin{
     position: absolute;

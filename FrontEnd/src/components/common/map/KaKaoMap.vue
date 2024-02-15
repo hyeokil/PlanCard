@@ -7,10 +7,10 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 const map = ref(null);
-// const markers = ref(new Map());
-// const overlays = ref(new Map());
 let markers = []
 let overlays = []
+// const markers = ref(new Map());
+// const overlays = ref(new Map());
 const polyline = ref(null);
 
 
@@ -118,6 +118,8 @@ const displayMarkersAndPolyline = () => {
     let path = []
     
     // 계획 마커 만들기
+    if (detailPlaces.value.length !== 0) {
+        
     detailPlaces.value.forEach((detailPlace, index) => {
         // console.log(detailPlace)
         const position = new kakao.maps.LatLng(
@@ -177,10 +179,11 @@ const displayMarkersAndPolyline = () => {
     }
 
     const pos = calculateCenter(detailPlaces.value)
-    // console.log('pos', pos)
-    const newC = new kakao.maps.LatLng(pos.lat, pos.lng) 
-    if (pos !== undefined) {
-        map.value.setCenter(newC)
+        console.log('pos', typeof (+pos.lat))
+        if (pos != undefined) {
+        console.log('계산완료')
+    }
+    map.value.setCenter(new kakao.maps.LatLng(+pos.lat, +pos.lng))
     }
 }
 
@@ -196,9 +199,11 @@ const initMap = () => {
 
     map.value = new kakao.maps.Map(container, options);
     // console.log('로드됐니?')
-    
+
     // 마커 표시
-    displayMarkersAndPolyline();
+    if (detailPlaces.value.length !== 0) {
+        displayMarkersAndPolyline();
+    }
 }
 
 const loadKaKaoMapScript = () => {
