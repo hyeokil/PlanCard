@@ -10,7 +10,7 @@
                             </div>
                             <div style="font-size: 5rem;">플랜카드</div>
                             <div style="font-size: 1.2rem;">플랜카드로 모두 함께 즐거운 여행을 만들어요.</div>
-                            <button style="background-color: #3498DB; color: #fff; width: 13rem; height: 4rem; border-radius: 5px; font-size: 1.2rem;">바로 시작하기</button>
+                            <button id="startBtn" @click="goLogin()">바로 시작하기</button>
                         </div>
                     </div>
                 </div>
