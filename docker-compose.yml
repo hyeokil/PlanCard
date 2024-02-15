@@ -39,7 +39,7 @@ services:
     networks:
       - jenkins-network
     environment:
-      - HOST=i10c110.p.ssafy.io  # y-websocket에 필요한 환경 변수
+      - HOST=0.0.0.0  # y-websocket에 필요한 환경 변수
       - PORT=1234       # y-websocket에 필요한 환경 변수
 
   y-websocket:
