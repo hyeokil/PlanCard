@@ -96,9 +96,9 @@
       </div> -->
 
 
-      <!-- <button class="btn sttBtn" @click="sttToggle()">
+      <button class="btn sttBtn" @click="sttToggle()">
         {{ sttOn ? "stt OFF" : "stt ON" }}
-      </button> -->
+      </button>
 
     </div>
 

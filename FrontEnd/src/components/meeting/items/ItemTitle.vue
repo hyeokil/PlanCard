@@ -5,6 +5,7 @@
             </div>
             <form :class="[checkName === '0' ? 'hidden' : 'active']" @submit.prevent="fetchPlanNameUpdate()">
                 <input type="text" v-model="planDetail.name" style="width: 250px; color: gray;">
+                <input type="submit" id="titleSubmit" value="확인">
                 <!-- <input class="primary" type="submit" value="확인"> -->
             </form>
         </div>
@@ -204,6 +205,13 @@ onMounted(fetchPlanDetail);
     justify-content: end;
 }
 
+#titleSubmit {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5cm;
+    padding: 5px;
+    padding-bottom: 1px;
+    margin-bottom: 3px;
+}
 .title-name {
     font-size: 20px;
 }
