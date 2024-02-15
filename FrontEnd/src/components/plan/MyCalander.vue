@@ -9,7 +9,7 @@
         
         <div class="font-content card detail">
             <div>
-                <div v-for="plan in plans" :key="plan.index" class="planList">
+                <div v-for="plan in plans.slice().reverse()" :key="plan.index" class="planList">
                     <div class="p-3" style="position: relative;">
                         <div style="position: absolute;  top:0px; left: 0px; border-radius: 10px 10px 0px 0px; background-color: #3498DB; width:100%; height: 40px;"></div>
                         <div style="position: absolute; width:95%;">
