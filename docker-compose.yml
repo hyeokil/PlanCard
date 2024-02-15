@@ -44,7 +44,7 @@ services:
 
   y-websocket:
     image: node:latest
-    container_name: y-websocket
+    container_name: y-websocket-server
     command: sh -c "npm install yjs y-websocket && HOST=0.0.0.0 PORT=1234 npx y-websocket"
     ports:
       - "1234:1234"  # y-websocket 포트
