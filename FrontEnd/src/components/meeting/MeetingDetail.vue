@@ -12,14 +12,20 @@
                         <i class="pi pi-search" style="font-size: 23px;"></i> 검 색
                     </button>
                     <div :class="{ 'sidebar-active': activeTab !=='', 'sidebar-hidden': activeTab ==='' }" style="height: 100vh;">
-                        <div v-if="activeTab==='채팅'" id="chat" style="width: 100%; height: 100vh; display: flex; flex-direction: column;">
+                        <div
+                        :class="{'active':activeTab==='채팅', 'hidden':activeTab!=='채팅'}"
+                        id="chat" style="width: 100%; height: 100vh; display: flex; flex-direction: column;">
                             <ItemFace class="itemFace"></ItemFace>
                             <ItemChat class="chat"></ItemChat>
                         </div>
-                        <div v-else-if="activeTab==='검색'" id="search" style="width: 100%; height: 100%; background-color: #dfecf7; border-radius: 10px 0px 0px 0px;">
+                        <div
+                        :class="{'active':activeTab==='검색', 'hidden':activeTab!=='검색'}"
+                        id="search" style="width: 100%; height: 100%; background-color: #dfecf7; border-radius: 10px 0px 0px 0px;">
                             <ItemSearch class="search"></ItemSearch>
                         </div>
-                        <div v-else id="else" style="height: 100%; background-color: #dfecf7; border-radius: 10px 0px 0px 0px;"></div>
+                        <div
+                        :class="{'active':activeTab!=='', 'hidden':activeTab!==''}"
+                        id="else" style="height: 100%; background-color: #dfecf7; border-radius: 10px 0px 0px 0px;"></div>
                     </div>
                 </div>
             </div>
@@ -74,7 +80,12 @@ const whatIsActive = (tab) => {
     height: 60vh;
 }
 
-
+.active{
+    display: block;
+}
+.hidden{
+    display: none;
+}
 .plan {
     height: 30vh;
 }

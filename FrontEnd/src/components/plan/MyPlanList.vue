@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="part">
-                    <div class="background-image" ref="thirdPage">
+                    <div class="background-image" style="height: calc(100vh - 103px);" ref="thirdPage">
                         <div class="img-content">
                             <img src="/manager-two-color.png" alt="">
                         </div>
@@ -162,7 +162,7 @@ span{
 
 }
 .part{
-    scroll-snap-align: start;
+    scroll-snap-align: center;
 }
 .bubble1{
 padding-top: 8px;

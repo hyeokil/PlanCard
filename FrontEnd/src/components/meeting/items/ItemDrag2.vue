@@ -19,7 +19,6 @@ const planStore = usePlanStore()
 const planId = route.params.id; // URL에서 planId를 추출합니다.
 const cardListRaw = ref([]); // 카드 목록을 담을 반응형 변수를 선언합니다.
 const cardList = ref([])
-const cardHidden = ref([])
 const cardToPlan = ref(false)
 const planList = ref([]);
 const changeCheck = ref(true);
@@ -28,7 +27,10 @@ const dayCountRef = ref('');
 watch(() => planList,
     (newplanList) => {
     cardList.value = cardListRaw.value.filter(data => planList.value.reduce((acc, item) => acc && (item.cardId !== data.cardId), true))
-    cardHidden.value = cardListRaw.value.map(data => planList.value.reduce((acc, item) => acc || (item.cardId === data.cardId), false))
+}, {deep:true}, {immediate:true})
+watch(() => cardListRaw,
+    (newcardListRaw) => {
+    cardList.value = cardListRaw.value.filter(data => planList.value.reduce((acc, item) => acc && (item.cardId !== data.cardId), true))
 }, {deep:true}, {immediate:true})
 const days = ref([]);
 const checkDay = ref(0);
@@ -296,6 +298,13 @@ async function fetchCardList() {
     }
 }
 
+// 서치창에서 카드 추가시 다시 카드리스트 불러오기
+let Added = computed(() => planStore.Added);
+watch(Added, (newV, oldV) => {
+    fetchCardList();
+    console.log(cardListRaw.value)
+}, { deep: true })
+
 
 // 여행 일수를 계산하는 함수
 const calculateDateDiff = (startDate, endDate) => {
@@ -448,7 +457,7 @@ const sttToggle = () => {
 
                 <!-- 카드목록 -->
                 <h6 style="margin-left: 11%;">카드 목록</h6>
-                <div>
+                <div class="card-list-margin">
                     <draggable class="DragArea list-group" :list="cardList"
                         :group="{ name: 'card', pull: 'clone', put: false }" item-key="id" @change="onCardMove">
                         <template #item="{ element, index }">
@@ -603,7 +612,13 @@ const sttToggle = () => {
     border-left: rgba(0, 0, 0, 0.1) 1px solid;
     background-color: #fff;
 }
-
+.card-list-margin{
+    position: absolute;
+    top: 100x;
+    overflow: auto;
+    width: 380px;
+    height: calc(100vh - 146.8px - 73px);
+}
 .plan-list-margin {
     position: absolute;
     top: 80px;

@@ -165,14 +165,16 @@ const displayMarkersAndPolyline = () => {
     })
     
     // 패스 만들기
-    polyline.value = new kakao.maps.Polyline({
-        path: path,
-        strokeWeight: 5,
-        strokeColor: "rgba(52, 152, 219, 1)",
-        strokeOpacity: 1,
-        strokeStyle: "solid",
-    });
-    polyline.value.setMap(map.value);
+    if (path.length !== 0) {
+        polyline.value = new kakao.maps.Polyline({
+            path: path,
+            strokeWeight: 5,
+            strokeColor: "rgba(52, 152, 219, 1)",
+            strokeOpacity: 1,
+            strokeStyle: "solid",
+        });
+        polyline.value.setMap(map.value);
+    }
 
     const pos = calculateCenter(detailPlaces.value)
     // console.log('pos', pos)
