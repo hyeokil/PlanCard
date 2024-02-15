@@ -88,6 +88,9 @@
                         <div style="text-align: center; margin-top: 1rem; font-size: 2rem; width: 300px;">
                             <div>다같이 쓰는 플랜카드,</div>
                             <div>한번 시작해볼까요? </div>
+                            <div>
+                                <button id="startBtn" @click="goLogin()">시작하기</button>
+                            </div>
                         </div>
                     </div>
                 </div>
