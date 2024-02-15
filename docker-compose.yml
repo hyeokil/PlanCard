@@ -39,13 +39,13 @@ services:
     networks:
       - jenkins-network
     environment:
-      - HOST=localhost  # y-websocket에 필요한 환경 변수
+      - HOST=i10c110.p.ssafy.io  # y-websocket에 필요한 환경 변수
       - PORT=1234       # y-websocket에 필요한 환경 변수
 
   y-websocket:
     image: node:latest
     container_name: y-websocket
-    command: sh -c "npm install yjs y-websocket && npm install -g y-websocket && HOST=localhost PORT=1234 npx y-websocket"
+    command: sh -c "npm install yjs y-websocket && npm install -g y-websocket && HOST=i10c110.p.ssafy.io PORT=1234 npx y-websocket"
     ports:
       - "1234:1234"  # y-websocket 포트
     networks:
