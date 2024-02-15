@@ -145,6 +145,8 @@ const whatIsActive = (tab) => {
     bottom: 0px;
     width: 30vw;
     left: 0px;
+    overflow: hidden;
+    height: auto;
 }
 .search{
     /* position: absolute; */
