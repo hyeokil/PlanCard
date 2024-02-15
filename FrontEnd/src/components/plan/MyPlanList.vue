@@ -89,7 +89,7 @@
                             <div>다같이 쓰는 플랜카드,</div>
                             <div>한번 시작해볼까요? </div>
                             <div>
-                                <a href="#pageTop">맨위로가즈아</a>
+                                <button id="startBtn" @click="goLogin()">시작하기</button>
                             </div>
                         </div>
                     </div>
