@@ -239,7 +239,6 @@ const goSignUp = function () {
   }
 
   #socialLoginLogoImg {
-    border: 1px solid rgba(0, 0, 0, 0.1);
     width: 130px;
     margin-right: 5px;
     margin-left: 5px;
