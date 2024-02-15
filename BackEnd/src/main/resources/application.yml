@@ -20,6 +20,12 @@ spring:
     username: ssafy                     # 데이터베이스 계정명
     password: ssafy                       # 데이터베이스 계정 비밀번호
 
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
   # data_테이블명.sql 관련 실행 setting
   sql:
     init:
