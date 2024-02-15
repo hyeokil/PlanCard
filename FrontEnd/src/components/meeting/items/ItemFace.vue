@@ -583,27 +583,76 @@ function stopAudioCapture() {
 
 const sttOn = ref(false);
 
+// SpeechRecognition 인스턴스를 관리할 ref 추가
+const speechRecognition = ref(null);
+
 const sttToggle = async () => {
   sttOn.value = !sttOn.value;
 
   if (sttOn.value) {
-    // STT가 활성화된 경우, 오디오 캡처 시작
-    // await captureAndSendAudio(publisher.value);
-    startAudioCapture();
+    // STT 활성화 시
+    // SpeechRecognition 인스턴스 생성
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      speechRecognition.value = new SpeechRecognition();
+      speechRecognition.value.continuous = true; // 연속적인 입력 처리
+      speechRecognition.value.lang = 'ko-KR'; // 언어 설정 (한국어)
+      speechRecognition.value.interimResults = true; // 중간 결과 반환
+
+      // 음성 인식 시작
+      speechRecognition.value.start();
+
+      // 음성 인식 결과 이벤트 처리
+      speechRecognition.value.onresult = function(event) {
+        const current = event.resultIndex;
+        const transcript = event.results[current][0].transcript;  // 변환된 텍스트
+        const text = transcript.split(" "); // 변환된 텍스트를 공백단위로 끊어서 배열로 저장
+        const lastWord = text[text.length - 1]; // 배열의 맨 마지막 요소(단어) 추출
+  
+        console.log(lastWord); // 맨 마지막 단어 
+      };
+
+      speechRecognition.value.onerror = function(event) {
+        console.error('SpeechRecognition error', event.error);
+      };
+
+      console.log("STT 시작");
+    } else {
+      console.error("이 브라우저는 SpeechRecognition을 지원하지 않습니다.");
+    }
   } else {
-    // STT 비활성화
-    recorder.value.destroy();
-    recorder.value = null;
+    // STT 비활성화 시
+    if (speechRecognition.value) {
+      speechRecognition.value.stop(); // 음성 인식 중지
+      speechRecognition.value = null;
+      console.log("STT 중지");
+    }
   }
+};
+
+function processNewWords(currentTranscript) {
+  // 새로운 전체 텍스트(currentTranscript)와 이전 텍스트(lastTranscript)를 공백으로 분리
+  const lastWords = lastTranscript.value.split(' ');
+  const currentWords = currentTranscript.split(' ');
+
+  // 새로운 단어만 필터링
+  const newWords = currentWords.filter(word => !lastWords.includes(word));
+
+  // 새로운 단어들이 있으면 콘솔에 출력
+  newWords.forEach(word => console.log(word));
+
+  // 이전 텍스트 업데이트
+  lastTranscript.value = currentTranscript;
 }
 
 
+
 onMounted(() => {
-  startAudioWebSocket();
+  // startAudioWebSocket();
 });
 
 onUnmounted(() => {
-  stopAudioCapture();
+  // stopAudioCapture();
 })
 </script>
 

@@ -9,6 +9,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:8080"
+    networks:
+      - jenkins-network
     environment:
       RABBITMQ_HOST: rabbitmq
     # depends_on:
@@ -16,9 +18,12 @@ services:
 
   mongodb:
     image: mongo
+    command: mongod --bind_ip 0.0.0.0
     container_name: mongodb
     ports:
       - "27017:27017"
+    networks:
+      - jenkins-network
     # 마운트
     volumes:
       - mongodb_data:/data/db 
@@ -27,6 +32,9 @@ services:
 volumes:
   mongodb_data:
 
+networks:
+  jenkins-network:
+    external: true
 
 
 # rabbitmq:
