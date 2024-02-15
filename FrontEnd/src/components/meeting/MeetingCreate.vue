@@ -11,7 +11,7 @@
           <div style="width: 295px;">
             <h3>여행 이름</h3>
             <input type="text" class="box, card p-fluid font-content" id="tripTitleInput" v-model.trim="tripTitle" placeholder="여행 이름을 알려주세요">
-            <div class="font-content flex-auto">
+            <div>
               <h3>여행 일정 선택</h3>
               <Calendar v-model="selectedDates" dataFormat="yy/mm/dd" selectionMode="range" :manualInput="false"
                 locale="ko-KR" placeholder="여행 일정을 선택하세요" class="field box font-content"
