@@ -530,9 +530,9 @@ const truncateName = (name) => {
                     <!-- 버튼 -->
                     <div class="btns">
                         <div class="btns-box">
-                            <button class="btn sttBtn" @click="sttToggle()">
+                            <!-- <button class="btn sttBtn" @click="sttToggle()">
                                 {{ sttOn ? "stt OFF" : "stt ON" }}
-                            </button>
+                            </button> -->
                             <button class="btn quit-btn" @click="goMain">
                                 <i class="pi pi-times"></i> 종료
                             </button>
