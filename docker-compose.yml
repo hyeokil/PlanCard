@@ -27,6 +27,29 @@ services:
     # 마운트
     volumes:
       - mongodb_data:/data/db 
+  
+  frontend:
+    image: pji0128/front:latest
+    container_name: front
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+    ports:
+      - "8083:4173"  # Vue.js 앱 포트
+    networks:
+      - jenkins-network
+    environment:
+      - HOST=localhost  # y-websocket에 필요한 환경 변수
+      - PORT=1234       # y-websocket에 필요한 환경 변수
+
+  y-websocket:
+    image: node:latest
+    container_name: y-websocket
+    command: sh -c "npm install yjs y-websocket && npm install -g y-websocket && HOST=i10c110.p.ssafy.io PORT=1234 npx y-websocket"
+    ports:
+      - "1234:1234"  # y-websocket 포트
+    networks:
+      - jenkins-network
 
 # Docker volume 정의
 volumes:

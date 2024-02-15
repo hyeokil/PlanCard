@@ -68,8 +68,10 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD')]) {
                         try{
-                            sh "docker run -d --name front -p 8083:4173 \
-                            ${DOCKERHUB_REGISTRY}"
+                            // sh "docker run -d --name front -p 8083:4173 \
+                            // ${DOCKERHUB_REGISTRY}"
+
+                            sh "docker-compose -f ${env.WORKSPACE}/docker-compose.yml up -d"
 
                         } catch (Exception e){
                             sh "docker restart front || true"
