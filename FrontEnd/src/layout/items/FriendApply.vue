@@ -26,7 +26,6 @@
   const SendFriendRequest = async () => {
   // 이메일 형식을 검사하는 정규 표현식
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
   // 입력된 이메일이 정규 표현식과 일치하는지 확인
   if (emailRegex.test(friendEmail.value)) {
       try {

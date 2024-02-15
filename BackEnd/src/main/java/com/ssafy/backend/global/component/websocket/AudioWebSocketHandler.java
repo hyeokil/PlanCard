@@ -8,11 +8,12 @@ import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.*;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,15 +26,14 @@ public class AudioWebSocketHandler extends BinaryWebSocketHandler {
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
         ByteBuffer payload = message.getPayload();
         log.info("Received binary message of size: {}", payload.remaining());
-
+        log.info("payload 확인하기: {}", payload);
         byte[] audioData = new byte[payload.remaining()];
-        payload.get(audioData);
+//        payload.get(audioData);
 
 
-        // 변환된 오디오 데이터를 STT 서비스에 전달
         sttService.processAudioData(audioData);
-
     }
+
 
 
 }

@@ -41,7 +41,7 @@ const newC = ref({
 })
 
 const roomId = route.params.id; // URL에서 roomId 추출
-const wsUrl = `ws://localhost:1234`; // WebSocket 서버 URL
+const wsUrl = `${import.meta.env.VITE_VUE_YJS_WS_URL}`; // WebSocket 서버 URL
 
 // const doc = new Y.Doc();// Yjs 배열 초기화
 

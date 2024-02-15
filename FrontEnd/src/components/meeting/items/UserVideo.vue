@@ -2,7 +2,7 @@
   <div v-if="streamManager" id="videoContainer">
     <ov-video :stream-manager="streamManager" id="userVideo" class="card" />
     <!-- {{ clientData }}이게 내 현재 이름임 -->
-    <p style="color: #3498DB;">{{ clientData }}</p>
+    <p style="color: #3498DB; margin-bottom: 5px;">{{ clientData }}</p>
   </div>
 </template>
 
@@ -56,7 +56,7 @@
 
 #userVideo {
   width: auto;
-  height: 80px;
+  height: 100px;
   border: 3px #3498DB solid;
   margin-bottom: 0;
   padding: 0;

@@ -42,10 +42,11 @@
   const router = useRouter();
 
 
-  const nowPassword = ref(null);
-  const changePassword1 = ref(null);
-  const changePassword2 = ref(null);
+  const nowPassword = ref(null);  // 현재 비밀번호
+  const changePassword1 = ref(null);  // 변경할 비밀번호
+  const changePassword2 = ref(null);  // 변경할 비밀번호 확인
   
+  // 비밀번호를 변경하는 함수
   const passwordResetting = async () => {
     if (changePassword1.value !== changePassword2.value) {
       alert("변경할 비밀번호가 같지 않습니다.")
@@ -54,7 +55,6 @@
         nowPassword: nowPassword.value,
         changePassword: changePassword1.value
       };
-      
       try {
         await passwordResettingApi(passwordResettingData,
         (response) => {

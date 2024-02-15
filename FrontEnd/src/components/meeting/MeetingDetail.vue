@@ -140,6 +140,14 @@ const whatIsActive = (tab) => {
     width: 30vw;
 }
 .chat {
+    /* position: absolute; */
+    background-color: #dfecf7 ;
+    /* height: 70vh; */
+    bottom: 0px;
+    width: 30vw;
+    left: 0px;
+}
+.search{
     position: absolute;
     background-color: #dfecf7 ;
     height: 70vh;

@@ -38,20 +38,26 @@
 
 
     <!-- 알림 클릭 시 나오는 창 -->
+    <div id="overlay2" v-if="topbarNotificationActive" @click="closeNotification"></div>
     <div>
       <Notification :notificationActive="topbarNotificationActive"
         :class="[topbarNotificationActive ? 'notificationActive' : 'notificationHidden']"
-        @close-notification="closeNotification" />
+        @close-notification="closeNotification"
+        style="z-index: 998;" />
     </div>
 
     <!-- 프로필 클릭 시 나오는 창 -->
+    <div id="overlay2" v-if="topbarProfileActive" @click="closeProfile"></div>
     <div>
       <Profile :profileActive="topbarProfileActive"
-      :class="[topbarProfileActive ? 'profileActive' : 'profileHidden']" @close-profile="closeProfile" />
+      :class="[topbarProfileActive ? 'profileActive' : 'profileHidden']" 
+      @close-profile="closeProfile"
+      style="z-index: 998;" />
     </div>
 
     <!-- 미팅 생성 창 -->
-    <div id="overlay" v-if="showCreateMeetingModal"></div>
+    <div id="overlay" v-if="showCreateMeetingModal" @click="closeMeetingCreate"></div>  <!-- 미팅 생성할 때, 뒷 부분 화면 어둡게 처리 -->
+
     <div id="createMeetingBox">
       <MeetingCreate v-if="showCreateMeetingModal" @close-meeting-create="closeMeetingCreate" />
     </div>
@@ -236,7 +242,15 @@ const onTopBarMenuProfileButton = () => {
   z-index: 997;
   /* 모달보다 한 단계 낮은 z-index */
 }
-
+#overlay2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 997;
+}
 #createMeetingBox {
   position: fixed;
   top: 50%;

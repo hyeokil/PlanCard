@@ -25,9 +25,9 @@ public class CardController {
     //stt로 입력 받은 후 카드 생성, placeId받아서 처리하는 형식으로 해놓음
     @PostMapping("/{planId}/card/{placeId}")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<Message<Long>> createCard(@PathVariable Long planId, @PathVariable Long placeId, @RequestBody CardCreateRequestDto cardCreateRequestDto) {
+    public ResponseEntity<Message<Void>> createCard(@PathVariable Long planId, @PathVariable Long placeId, @RequestBody CardCreateRequestDto cardCreateRequestDto) {
         cardService.createCard(planId, placeId, cardCreateRequestDto);
-        return ResponseEntity.ok().body(Message.success(placeId));
+        return ResponseEntity.ok().body(Message.success());
     }
 
     //카드 전체조회
