@@ -2,7 +2,7 @@
 import ItemTitle from '@/components/meeting/items/ItemTitle.vue'
 import draggable from "@/vuedraggable";
 import KaKaoMap from '@/components/common/map/KaKaoMap.vue'
-import { ref, computed, watch, onMounted, onBeforeMount } from "vue";
+import { ref, computed, watch, onMounted, onBeforeMount, getCurrentInstance } from "vue";
 import { useRoute, useRouter } from 'vue-router';
 import { WebsocketProvider } from 'y-websocket';
 // import * as Y from 'yjs';
