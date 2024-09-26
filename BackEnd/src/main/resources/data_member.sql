@@ -15,7 +15,7 @@ VALUES (
        ,'test1@test.com'
        ,NULL
        ,'테스트1'
-       ,'테스트 1'
+       ,'테스트 1트'
        ,'$2a$10$70ayhKkdaxt3n20QJoCNTODPiBka/qRjDdTM1bXG1kXrcv6CFA7JW'
        ,NULL
        ,'USER'
@@ -26,7 +26,7 @@ VALUES (
       ,'test2@test.com'
       ,NULL
       ,'테스트2'
-      ,'테스트 2'
+      ,'테스트 2트'
       ,'$2a$10$m78cf3HN84dmqfJVzoLJpuB1A5rxUC3MX4lMZJnzkxJB1LDZqRhU2'
       ,NULL
       ,'USER'
@@ -37,7 +37,7 @@ VALUES (
       ,'test3@test.com'
       ,NULL
       ,'테스트3'
-      ,'테스트 3'
+      ,'테스트 3트'
       ,'$2a$10$BbUgBIDxT0Vn0ojDLCFX0ubVXNvISW2oJBFvlDBzPcFeo40kZQ4Nu'
       ,NULL
       ,'USER'
@@ -48,7 +48,7 @@ VALUES (
       ,'test4@test.com'
       ,NULL
       ,'테스트4'
-      ,'테스트 4'
+      ,'테스트 4트'
       ,'$2a$10$MhGy.eCDmCLqC3ThraquW.bYEIcsvks1OtfqKDOp9W0eGoFm/u.32'
       ,NULL
       ,'USER'
